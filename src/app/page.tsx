@@ -7,9 +7,11 @@ import { AppLayout } from '@/components/alpha/AppLayout'
 import { DashboardPage } from '@/components/alpha/dashboard'
 import { JournalPage, JournalNewPage, JournalDetailPage } from '@/components/alpha/journal'
 import { CoachingPage } from '@/components/alpha/coaching'
+import { AnalyticsPage } from '@/components/alpha/analytics'
+import { PlaybookPage } from '@/components/alpha/playbook'
 
 // ========================================
-// Lazy-loaded placeholder pages
+// Placeholder pages
 // ========================================
 const PlaceholderPage = ({ title, icon, description }: { title: string; icon: string; description: string }) => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -22,22 +24,6 @@ const PlaceholderPage = ({ title, icon, description }: { title: string; icon: st
       🚧 Coming Soon
     </span>
   </div>
-)
-
-const AnalyticsPage = () => (
-  <PlaceholderPage
-    title="Analytics"
-    icon="📊"
-    description="Process Score dashboard, emotion tracking, growth timeline, dan performance analytics."
-  />
-)
-
-const PlaybookPage = () => (
-  <PlaceholderPage
-    title="Playbook"
-    icon="📖"
-    description="Setup library, trading rules, checklist, dan pre-trade preparation guide."
-  />
 )
 
 const SettingsPage = () => (

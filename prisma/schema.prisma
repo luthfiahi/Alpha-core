@@ -39,6 +39,9 @@ model Trader {
   memoryL2Digest    MemoryL2Digest?
   processScoreSnaps ProcessScoreSnapshot[]
   weeklyReviews     WeeklyReviewRecord[]
+  playbooks         Playbook[]
+  behavioralEvents  BehavioralEvent[]
+  growthSnapshots   GrowthSnapshot[]
 }
 
 model TraderReadinessScore {
@@ -107,13 +110,21 @@ model TradeEntry {
   // Tags
   tags String? // JSON array of tags: ["revenge", "planned", "impulsive"]
 
+  // Playbook Link
+  playbookId    String?
+
+  // Behavioral Tags (AI-detected)
+  behavioralTags String? // JSON: ["revenge_trading", "fomo", "overconfidence"]
+  playbookCompliance Float? // 0.0 - 1.0 how well trade followed playbook checklist
+
   // Metadata
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime? // Soft delete
 
   // Relations
-  trader Trader @relation(fields: [traderId], references: [id])
+  trader   Trader   @relation(fields: [traderId], references: [id])
+  playbook Playbook? @relation(fields: [playbookId], references: [id])
 }
 
 // ========================================
@@ -131,6 +142,11 @@ model CoachingSession {
   traderRating  Int?     // 1-5 optional rating
 
   trader Trader @relation(fields: [traderId], references: [id])
+
+  // Structured Reflection Flow
+  reflectionStep      String? // Current step in reflection flow
+  reflectionProgress   String? // JSON: { "currentStep": 2, "totalSteps": 5, "completedSteps": [1] }
+  linkedTradeId       String? // Trade being reflected on (if any)
 
   // Relations
   conversationTurns ConversationTurn[]
@@ -180,6 +196,97 @@ model MemoryL2Digest {
   readinessTrend  String? // "IMPROVING", "STABLE", "DECLINING"
   psychologicalNotes String? // AI-generated psychological notes
   updatedAt   DateTime @updatedAt
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// PLAYBOOK DOMAIN
+// ========================================
+
+model Playbook {
+  id          String   @id @default(cuid())
+  traderId    String
+  name        String   // e.g., "ICT London Session"
+  description String?
+  sessionType String?  // e.g., "LONDON", "NEW_YORK", "ASIAN", "CUSTOM"
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  trader    Trader     @relation(fields: [traderId], references: [id])
+  checklists PlaybookChecklist[]
+  trades    TradeEntry[]
+}
+
+model PlaybookChecklist {
+  id          String   @id @default(cuid())
+  playbookId  String
+  title       String   // e.g., "Trend Structure"
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  playbook Playbook @relation(fields: [playbookId], references: [id], onDelete: Cascade)
+  items    PlaybookChecklistItem[]
+}
+
+model PlaybookChecklistItem {
+  id          String   @id @default(cuid())
+  checklistId String
+  text        String   // e.g., "HH/HL structure confirmed on H1+"
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  checklist PlaybookChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+}
+
+// ========================================
+// BEHAVIORAL ENGINE DOMAIN
+// ========================================
+
+model BehavioralEvent {
+  id            String   @id @default(cuid())
+  traderId      String
+  tradeId       String?  // Associated trade (if detected from trade context)
+  behaviorType  String   // REVENGE_TRADING, FOMO, OVERCONFIDENCE, FEAR, MOVING_STOP_LOSS, EARLY_CLOSE
+  severity      String   @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
+  confidence    Float    @default(0) // 0.0 - 1.0 AI confidence
+  evidence      String   // JSON: evidence data used for detection
+  aiAnalysis    String?  // AI explanation of the behavior
+  resolved      Boolean  @default(false)
+  resolvedAt    DateTime?
+  createdAt     DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// GROWTH TIMELINE DOMAIN
+// ========================================
+
+model GrowthSnapshot {
+  id               String   @id @default(cuid())
+  traderId         String
+  period           String   // "DAILY", "WEEKLY", "MONTHLY"
+  periodDate       String   // "2024-01-15", "2024-W03", "2024-01"
+
+  // Multi-dimensional scores (0-100)
+  emotionScore       Float? // Emotional control score
+  consistencyScore   Float? // Consistency of process
+  processScore       Float? // Overall process adherence
+  behaviorScore      Float? // Behavioral compliance
+  disciplineScore    Float? // Following rules/plan
+  riskMgmtScore       Float? // Risk management quality
+
+  // Context
+  totalTrades       Int      @default(0)
+  winRate           Float?
+  behavioralEvents  Int      @default(0)
+  notes             String?  // AI-generated notes
+
+  createdAt DateTime @default(now())
 
   trader Trader @relation(fields: [traderId], references: [id])
 }
@@ -267,7 +374,17 @@ model WeeklyReviewRecord {
   totalTrades Int      @default(0)
   winRate     Float?
   totalPnL    Float?
-  createdAt   DateTime @default(now())
+
+  // Enhanced weekly review fields
+  processScore      Int?     @default(0) // Process Score for the week
+  ruleCompliance    Float?   // 0-100% how well rules were followed
+  biggestMistake    String?  // AI-identified biggest mistake
+  recommendation     String?  // AI recommendation for next week
+  topBehavioralIssue String? // Most frequent behavioral issue
+  playbookUsage      Float?   // 0-100% playbook usage rate
+  emotionBreakdown   String? // JSON: { "calm": 60, "anxious": 25, "confident": 15 }
+
+  createdAt DateTime @default(now())
 
   trader Trader @relation(fields: [traderId], references: [id])
 }

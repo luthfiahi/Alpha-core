@@ -192,3 +192,184 @@ Stage Summary:
 - Database seeded with sample data (12 trades, process scores, insights)
 - Zero lint errors (1 non-blocking warning)
 - All pages render and navigate correctly
+
+---
+Task ID: 12-13
+Agent: full-stack-developer (Analytics)
+Task: Build Analytics page with Growth Timeline, Weekly Review, and Behavioral Insights
+
+Work Log:
+- Created 5 API routes under /api/analytics/:
+  - GET /api/analytics/growth — growth snapshots with period/date range filters, trend calculations (up/down/stable)
+  - GET /api/analytics/weekly-review — list all weekly reviews
+  - POST /api/analytics/weekly-review — generate new weekly review via z-ai-web-dev-sdk LLM with structured JSON output
+  - GET /api/analytics/weekly-review/current — current week review with previous week comparison, emotion breakdown parse
+  - GET /api/analytics/behavioral — behavioral events with type/severity/resolved filters + groupBy distributions
+  - PUT /api/analytics/behavioral/[id] — mark behavioral event as resolved
+- Created 6 frontend components in src/components/alpha/analytics/:
+  - AnalyticsPage.tsx — main page with 3-tab interface using shadcn Tabs (Timeline Pertumbuhan, Review Mingguan, Insight Perilaku)
+  - GrowthTimeline.tsx — multi-dimension LineChart (recharts) with 4 toggleable dimensions (Emotion/Consistency/Process/Behavior), period selector (Harian/Mingguan/Bulanan), dimension color chips, custom tooltip, score cards grid with trend arrows
+  - WeeklyReviewTab.tsx — current week summary with MiniProcessRing (framer-motion animated SVG), stats grid (total trades, win rate, rule compliance, playbook usage), Biggest Mistake (amber accent), AI Recommendation (indigo accent), Top Behavioral Issue (pink badge), Emotion Breakdown horizontal BarChart (calm/anxious/confident/fearful), previous weeks list in ScrollArea, "Generate Review" button calling LLM API
+  - BehavioralInsights.tsx — event feed timeline, PieChart donut distribution by behavior type, filters by behavior type (6 types), severity (4 levels), resolved/unresolved, resolve button with loading state, behavior type/severity color-coded badges, AI analysis display per event
+  - ScoreCard.tsx — reusable score card with icon, trend arrow (TrendingUp/TrendingDown/Minus), diff display, color styling
+  - index.ts — barrel export
+- Created seed data script prisma/seed-analytics.ts:
+  - 8 WeeklyReviewRecords spanning 8 weeks with realistic Indonesian summaries, process scores 52-78, rule compliance, behavioral issues, emotion breakdowns
+  - 30 GrowthSnapshots (daily over 30 days) with gradual improvement trend + noise, all 6 score dimensions
+  - 15 BehavioralEvents across all 6 types with varied severity, confidence, AI analyses, resolved states
+- All text in Bahasa Indonesia
+- Dark theme: bg-[#10121E] (page), bg-[#151827] (cards), bg-[#1E2030] (hover), border-[#232636]
+- ESLint passes with 0 errors (1 pre-existing warning in JournalNewPage)
+
+Stage Summary:
+- Complete Analytics page with 3 tabs: Growth Timeline, Weekly Review, Behavioral Insights
+- Multi-dimensional growth chart with toggleable lines and period selection
+- AI-generated weekly reviews with structured JSON parsing
+- Behavioral event timeline with filtering, distribution pie chart, and resolve functionality
+- 53 seed records across 3 models for realistic demo data
+
+---
+Task ID: 10
+Agent: full-stack-developer (Reflection Flow)
+Task: Build structured 5-step Socratic reflection flow for AI coaching
+
+Work Log:
+- Created ReflectionFlow.tsx component
+  - 5 connected step circles with Lucide icons (Search, ClipboardCheck, ShieldAlert, Heart, Rocket)
+  - Completed steps: indigo-filled with animated checkmark (framer-motion spring)
+  - Current step: indigo border with pulsing ring animation
+  - Future steps: muted border with dimmed icons
+  - Connector lines between steps fill progressively
+  - Tooltips showing step title, description, and progress
+  - Responsive: step labels hidden on mobile, shown on desktop
+- Modified CoachingPage.tsx with reflection mode support
+  - Mode toggle: "Chat Bebas" vs "Refleksi Trade" in header
+  - Trade selector: custom dropdown with pair, direction badge, P/L display
+  - Reflection progress bar above chat when reflection is active
+  - Completion banner after step 5 (green "Refleksi Selesai!")
+  - Session types: FREE_CHAT and REFLECTION with separate session state
+  - Auto-start: clicking "Mulai Refleksi" creates session and triggers AI Step 1
+  - Auto-advance: step increments after each user response in reflection mode
+  - Navigation integration: listens to selectedTradeId from navigation store
+  - Session sidebar: two create buttons, session type icons, step progress badges
+  - Screenshot uploader and prompt suggestions hidden during reflection mode
+- Modified /api/coaching/route.ts
+  - Accepts mode: 'REFLECTION' and reflectionStep (1-5) in request body
+  - Accepts tradeData for context injection into system prompt
+  - Separate REFLECTION_SYSTEM_PROMPT with detailed 5-step instructions
+  - Step-specific prompt functions for each of 5 steps (all in Indonesian)
+  - After step 5: AI generates structured reflection summary with all 5 categories
+  - Free chat mode completely unchanged — existing behavior preserved
+- Updated coaching/index.ts exports with ReflectionFlow component
+- ESLint passes with 0 errors
+
+Stage Summary:
+- Structured 5-step Socratic reflection flow: Entry Analysis → Plan Evaluation → Behavioral Check → Emotion Assessment → Growth Commitment
+- Seamless mode switching between Free Chat and Trade Reflection
+- Trade selector with unreflected trades filter
+- Step progress indicator with animations
+- Auto-advancing reflection flow driven by AI
+- Reflection summary generation after final step
+
+---
+Task ID: 11
+Agent: full-stack-developer (Behavioral Engine)
+Task: Build AI-powered behavioral pattern detection API
+
+Work Log:
+- Created /api/behavioral/analyze/route.ts
+  - POST endpoint: { traderId?, days? } → { events, rawAnalysis, tradesAnalyzed, period }
+  - Fetches trader's recent trades from DB (configurable lookback, default 7 days)
+  - Sends trade batch to LLM with structured behavioral analysis prompt
+  - Detects 6 categories: REVENGE_TRADING, FOMO, OVERCONFIDENCE, FEAR, MOVING_STOP_LOSS, EARLY_CLOSE
+  - Parses JSON array response with markdown code block extraction
+  - Filters invalid types and low-confidence detections (< 0.3)
+  - Creates BehavioralEvent records in database with trade linkage
+  - Returns saved events with raw analysis
+- Created prisma/seed-behavioral.ts
+  - Seeds 6 behavioral events across all 6 categories
+  - Severity distribution: LOW (1), MEDIUM (3), HIGH (1), CRITICAL (1)
+  - Confidence range: 65% to 91%
+  - Detailed evidence JSON and Indonesian analysis text for each event
+  - Clears existing events before reseeding
+- ESLint passes with 0 errors
+
+Stage Summary:
+- AI-powered behavioral analysis API endpoint
+- 6 detection categories covering revenge trading, FOMO, overconfidence, fear, stop loss tampering, early closing
+- Structured JSON output with severity, confidence, evidence, and Indonesian explanations
+- Database persistence of detected behavioral events
+- Seed data for 6 behavioral events for development testing
+
+---
+Task ID: 9
+Agent: full-stack-developer (Playbook Module)
+Task: Build Playbook Module with full CRUD, checklist management, and trade compliance
+
+Work Log:
+- Created 4 API routes under /api/playbooks/:
+  - GET /api/playbooks — list all playbooks with checklist count and trade count
+  - POST /api/playbooks — create new playbook
+  - GET /api/playbooks/[id] — single playbook with checklists, items, linked trades
+  - PUT /api/playbooks/[id] — update playbook metadata (name, description, sessionType, isActive)
+  - DELETE /api/playbooks/[id] — delete playbook (cascades to checklists/items, unlinks trades)
+  - POST /api/playbooks/[id]/checklists — add checklist with optional items
+  - PUT /api/playbooks/[id]/checklists — reorder checklists
+  - DELETE /api/playbooks/[id]/checklists — delete checklist by query param
+  - POST /api/playbooks/[id]/checklists/[checklistId]/items — add item
+  - PUT /api/playbooks/[id]/checklists/[checklistId]/items — update/reorder items
+  - DELETE /api/playbooks/[id]/checklists/[checklistId]/items — delete item by query param
+- Created 7 frontend components in src/components/alpha/playbook/:
+  - types.ts — TypeScript interfaces and session type config (color coding: green LONDON, blue NEW_YORK, amber ASIAN, gray CUSTOM)
+  - PlaybookCard.tsx — card with session badge, checklist/trade counts, active toggle, edit/delete actions, hover effects
+  - PlaybookChecklistEditor.tsx — collapsible checklist sections with inline item adding, up/down reorder, delete, add new checklist form
+  - PlaybookTradeCompliance.tsx — linked trades list with compliance scores, summary stats (total, avg compliance, high compliance count), color-coded
+  - PlaybookEditor.tsx — edit form (name, description, session type selector) + tabs for checklists and trade compliance
+  - PlaybookPage.tsx — main page with list view, search/filter bar, create dialog, delete confirmation, smooth transitions to editor
+  - index.ts — barrel exports
+- Created prisma/seed.ts:
+  - 3 sample playbooks: ICT London Session (4 checklists, 17 items), ICT New York Session (3 checklists, 10 items), Breakout & Retest (3 checklists, 13 items)
+  - All checklist items use realistic ICT/trading terminology
+- All labels in Bahasa Indonesia, placeholder text in English
+- Dark theme design consistent with existing modules
+- ESLint passes with 0 errors (1 pre-existing warning in JournalNewPage)
+
+Stage Summary:
+- Complete Playbook module with full CRUD operations
+- 4-level nested data management: Playbook → Checklist → Item + linked Trades
+- Search and session type filter on list view
+- Active/inactive toggle per playbook
+- Trade compliance tab showing linked trades with color-coded scores
+- 3 seed playbooks with 10 total checklists and 40 total items
+- Barrel export ready for orchestrator to wire into page.tsx
+
+---
+Task ID: 14-15
+Agent: Main Orchestrator (Integration & Verification)
+Task: Wire page.tsx imports, seed database, fix issues, verify all pages
+
+Work Log:
+- Updated page.tsx: replaced AnalyticsPage and PlaybookPage placeholders with real component imports
+- Ran all 3 seed scripts: seed.ts (playbooks), seed-analytics.ts (weekly reviews, growth snapshots, behavioral events), seed-behavioral.ts (behavioral events)
+- Fixed duplicate playbook data (seed was run twice, cleaned up 3 duplicates)
+- Fixed stale Prisma client cache issue by restarting dev server
+- Ran ESLint: 0 errors (1 pre-existing warning)
+- Verified all pages via Agent Browser:
+  - Dashboard ✅ — "Selamat malam, Luthfi" greeting, Process Score, AI Insight, Recent Trades
+  - Journal ✅ — table view, filters, trade cards
+  - AI Coach ✅ — mode toggle "Chat Bebas" / "Refleksi Trade", 5-step reflection flow visible
+  - Analytics ✅ — 3 tabs: Timeline Pertumbuhan (with dimension toggles), Review Mingguan (with Generate button), Insight Perilaku (with behavior type/severity filters)
+  - Playbook ✅ — 3 playbook cards (ICT London, ICT New York, Breakout & Retest), search/filter, click-to-edit with checklist editor
+- Verified API endpoints: /api/playbooks, /api/analytics/growth, /api/analytics/behavioral all return 200
+
+Stage Summary:
+- Phase 2 complete: Playbook, Reflection Flow, Behavioral Engine, Weekly Review, Growth Timeline
+- All 5 product-level features from Luthfi's feedback implemented:
+  1. Playbook Integration ✅ — Trade → Playbook → Checklist → Result flow
+  2. Reflection Flow ✅ — AI-driven 5-step Socratic coaching (not manual form)
+  3. Behavioral Engine ✅ — Auto-detect revenge/FOMO/overconfidence/fear/moving SL/early close
+  4. Weekly Review ✅ — Dedicated page with Process Score, Rule Compliance, Biggest Mistake, Recommendation
+  5. Growth Timeline ✅ — Multi-dim tracking: Emotion, Consistency, Process, Behavior (+ Discipline, Risk Mgmt)
+- Total new files: 30+ (components, APIs, seeds)
+- Total new DB models: 5 (Playbook, PlaybookChecklist, PlaybookChecklistItem, BehavioralEvent, GrowthSnapshot)
+- Enhanced models: TradeEntry (playbookId, behavioralTags, playbookCompliance), CoachingSession (reflectionStep, reflectionProgress, linkedTradeId), WeeklyReviewRecord (7 new fields)
