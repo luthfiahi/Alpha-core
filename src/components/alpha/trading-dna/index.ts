@@ -1,0 +1,5 @@
+export { TradingDNAPage } from './TradingDNAPage'
+export { IdentityCard } from './IdentityCard'
+export { StrengthsWeaknesses } from './StrengthsWeaknesses'
+export { PerformancePatterns } from './PerformancePatterns'
+export { AISummary } from './AISummary'

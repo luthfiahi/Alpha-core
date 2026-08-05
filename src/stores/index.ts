@@ -13,6 +13,7 @@ export type AppPage =
   | "coaching"
   | "analytics"
   | "playbook"
+  | "trading-dna"
   | "settings";
 
 interface NavigationState {

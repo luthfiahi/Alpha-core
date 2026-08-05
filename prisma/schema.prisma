@@ -42,6 +42,9 @@ model Trader {
   playbooks         Playbook[]
   behavioralEvents  BehavioralEvent[]
   growthSnapshots   GrowthSnapshot[]
+  reflectionGaps    ReflectionGapRecord[]
+  tradingDNA        TradingDNA?
+  growthReports     GrowthReport[]
 }
 
 model TraderReadinessScore {
@@ -195,6 +198,16 @@ model MemoryL2Digest {
   dominantPatterns String? // JSON array of dominant patterns
   readinessTrend  String? // "IMPROVING", "STABLE", "DECLINING"
   psychologicalNotes String? // AI-generated psychological notes
+  // Enhanced L2 memory fields
+  tradingStyle       String? // "SCALPER", "DAY_TRADER", "SWING", "POSITION"
+  dominantEmotions   String? // JSON: ["fear", "greed"]
+  strengths          String? // JSON: ["patient", "risk_management"]
+  weaknesses         String? // JSON: ["early_close", "fomo"]
+  bestSetup          String? // "ICT London"
+  bestSession        String? // "NEW_YORK"
+  bestRiskReward     String? // "1:2"
+  totalTradesAnalyzed Int?   @default(0)
+  analysisPeriod     String? // "3 months"
   updatedAt   DateTime @updatedAt
 
   trader Trader @relation(fields: [traderId], references: [id])
@@ -326,12 +339,22 @@ model PatternFinding {
 model ReflectionGapRecord {
   id          String   @id @default(cuid())
   traderId    String
+  tradeId     String?  // Trade where this gap was detected
   patternFindingId String?
-  gapType     String   // "PLAN_VS_EXECUTION", "NO_REFLECTION", etc
+  gapType     String   // "PLAN_VS_EXECUTION", "NO_REFLECTION", "EMOTION_IMPACT", "RULE_VIOLATION"
   description String
+  plan        String?  // What was planned
+  execution   String?  // What was actually executed
+  gapAnalysis String? // AI explanation of the gap
+  impact      String?  // HIGH, MEDIUM, LOW
+  recommendation String? // AI recommendation to close the gap
+  behaviorTag String?  // Related behavior: FOMO, REVENGE, etc
   severity    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  resolved    Boolean  @default(false)
   resolvedAt  DateTime?
   createdAt   DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
 }
 
 model InsightCard {
@@ -385,6 +408,68 @@ model WeeklyReviewRecord {
   emotionBreakdown   String? // JSON: { "calm": 60, "anxious": 25, "confident": 15 }
 
   createdAt DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// TRADING DNA DOMAIN
+// ========================================
+
+model TradingDNA {
+  id               String   @id @default(cuid())
+  traderId         String   @unique
+  // Identity
+  tradingStyle     String?  // "SCALPER", "DAY_TRADER", "SWING", "POSITION"
+  dominantEmotion  String?  // "FEAR", "GREED", "PATIENCE", "DISCIPLINE"
+  // Strengths & Weaknesses (AI-identified)
+  strengths        String?  // JSON: ["Sabar menunggu setup", "Risk Management bagus"]
+  weaknesses       String?  // JSON: ["Early Close", "FOMO saat London Open"]
+  // Performance Patterns
+  bestSetup        String?  // "ICT London"
+  bestSession      String?  // "NEW_YORK"
+  bestRiskReward   String?  // "1:2"
+  bestPair         String?  // "EURUSD"
+  worstSetup       String?  // "Breakout tanpa konfirmasi"
+  worstSession     String?  // "ASIAN"
+  // Stats
+  totalTradesAnalyzed Int?  @default(0)
+  analysisPeriod   String?  // "3 months"
+  // AI Summary
+  aiSummary        String?  // Full AI-generated DNA summary paragraph
+  // Metadata
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// GROWTH REPORT DOMAIN
+// ========================================
+
+model GrowthReport {
+  id               String   @id @default(cuid())
+  traderId         String
+  reportType       String   // "WEEKLY", "MONTHLY"
+  periodStart      String   // "2024-01-15"
+  periodEnd        String   // "2024-01-21"
+  // Stats
+  totalTrades      Int      @default(0)
+  processScore     Int?     @default(0)
+  processScoreChange Int?   // +/- from previous period
+  winRate          Float?
+  totalPnL         Float?
+  ruleCompliance   Float?   // 0-100%
+  playbookUsage    Float?   // 0-100%
+  // AI Analysis
+  behaviorsImproved  String? // JSON: ["Tidak lagi revenge trading"]
+  behaviorsToImprove String? // JSON: ["Early Close"]
+  nextWeekTargets   String? // JSON: ["Minimal 90% Rule Compliance"]
+  aiSummary        String?  // Full AI-generated report
+  highlight        String?  // Key highlight of the period
+  // Generated
+  generatedAt      DateTime @default(now())
 
   trader Trader @relation(fields: [traderId], references: [id])
 }

@@ -168,6 +168,22 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Fire L0 Memory Event (non-blocking)
+    db.memoryL0Event.create({
+      data: {
+        traderId: trader.id,
+        eventType: "TradeSaved",
+        eventData: JSON.stringify({
+          tradeId: trade.id,
+          pair: trade.pair,
+          direction: trade.direction,
+          profitLoss: trade.profitLoss,
+          status: trade.status,
+          processScore: trade.processScore,
+        }),
+      },
+    }).catch(() => { /* non-blocking */ });
+
     return NextResponse.json({ trade }, { status: 201 });
   } catch (error) {
     console.error("POST /api/trades error:", error);

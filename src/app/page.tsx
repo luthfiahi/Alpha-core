@@ -9,6 +9,7 @@ import { JournalPage, JournalNewPage, JournalDetailPage } from '@/components/alp
 import { CoachingPage } from '@/components/alpha/coaching'
 import { AnalyticsPage } from '@/components/alpha/analytics'
 import { PlaybookPage } from '@/components/alpha/playbook'
+import { TradingDNAPage } from '@/components/alpha/trading-dna'
 
 // ========================================
 // Placeholder pages
@@ -56,6 +57,7 @@ function PageContent() {
         {currentPage === 'coaching' && <CoachingPage />}
         {currentPage === 'analytics' && <AnalyticsPage />}
         {currentPage === 'playbook' && <PlaybookPage />}
+        {currentPage === 'trading-dna' && <TradingDNAPage />}
         {currentPage === 'settings' && <SettingsPage />}
       </motion.div>
     </AnimatePresence>

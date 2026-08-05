@@ -232,6 +232,22 @@ export async function POST(request: NextRequest) {
       savedEvents.push(saved)
     }
 
+    // Fire L0 Memory Event for pattern detection (non-blocking)
+    if (savedEvents.length > 0) {
+      db.memoryL0Event.create({
+        data: {
+          traderId: trader.id,
+          eventType: 'PatternDetected',
+          eventData: JSON.stringify({
+            behaviorTypes: savedEvents.map((e) => e.behaviorType),
+            severities: savedEvents.map((e) => e.severity),
+            tradesAnalyzed: recentTrades.length,
+            period: lookbackDays,
+          }),
+        },
+      }).catch(() => { /* non-blocking */ })
+    }
+
     return NextResponse.json({
       events: savedEvents,
       rawAnalysis: detectedEvents,

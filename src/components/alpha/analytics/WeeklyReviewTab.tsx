@@ -21,10 +21,20 @@ import {
   CheckCircle2,
   Calendar,
   Loader2,
+  RefreshCw,
+  FileText,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import {
+  GrowthReportCard,
+  GrowthReportHistoryItem,
+  type GrowthReportData,
+} from './GrowthReportCard'
 
 // ========================================
 // Types
@@ -188,6 +198,14 @@ export function WeeklyReviewTab() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
 
+  // Growth Report state
+  const [latestReport, setLatestReport] = useState<GrowthReportData | null>(null)
+  const [reportHistory, setReportHistory] = useState<GrowthReportData[]>([])
+  const [reportLoading, setReportLoading] = useState(true)
+  const [reportGenerating, setReportGenerating] = useState(false)
+  const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
+  const [historyOpen, setHistoryOpen] = useState(false)
+
   const fetchCurrent = useCallback(async () => {
     try {
       const res = await fetch('/api/analytics/weekly-review/current')
@@ -208,9 +226,45 @@ export function WeeklyReviewTab() {
     }
   }, [])
 
+  // Growth Report fetchers
+  const fetchReports = useCallback(async () => {
+    try {
+      const res = await fetch('/api/growth-report?limit=20')
+      const json = await res.json()
+      const reports: GrowthReportData[] = json.reports || []
+      setLatestReport(reports.length > 0 ? reports[0] : null)
+      setReportHistory(reports.slice(1))
+    } catch (err) {
+      console.error('Failed to fetch growth reports:', err)
+    }
+  }, [])
+
+  const handleGenerateReport = async (type: 'WEEKLY' | 'MONTHLY') => {
+    setReportGenerating(true)
+    try {
+      const res = await fetch('/api/growth-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: type }),
+      })
+      const json = await res.json()
+      if (json.report) {
+        await fetchReports()
+      }
+    } catch (err) {
+      console.error('Failed to generate growth report:', err)
+    } finally {
+      setReportGenerating(false)
+    }
+  }
+
   useEffect(() => {
     Promise.all([fetchCurrent(), fetchReviews()]).finally(() => setLoading(false))
   }, [fetchCurrent, fetchReviews])
+
+  useEffect(() => {
+    fetchReports().finally(() => setReportLoading(false))
+  }, [fetchReports])
 
   const handleGenerate = async () => {
     setGenerating(true)
@@ -448,6 +502,126 @@ export function WeeklyReviewTab() {
               ))}
           </div>
         </ScrollArea>
+      </div>
+
+      {/* ====== AI GROWTH REPORT SECTION ====== */}
+      <div className="space-y-4">
+        {/* Section Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-emerald-500/20 border border-indigo-500/20 flex items-center justify-center">
+              <FileText className="w-4 h-4 text-indigo-400" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-[#F3F4F6]">Laporan Pertumbuhan AI</h3>
+              <p className="text-xs text-[#6B7280] mt-0.5">Analisis komprehensif perkembangan trading kamu</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => handleGenerateReport('MONTHLY')}
+              disabled={reportGenerating}
+              variant="outline"
+              size="sm"
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+            >
+              {reportGenerating ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="w-3.5 h-3.5" />
+              )}
+              <span className="hidden sm:inline">Bulanan</span>
+            </Button>
+            <Button
+              onClick={() => handleGenerateReport('WEEKLY')}
+              disabled={reportGenerating}
+              className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
+              size="sm"
+            >
+              {reportGenerating ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5" />
+              )}
+              <span className="hidden sm:inline">Generate Laporan</span>
+              <span className="sm:hidden">Generate</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Latest Report */}
+        {reportLoading ? (
+          <Skeleton className="h-[400px] rounded-[14px]" />
+        ) : reportGenerating ? (
+          <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-12 text-center">
+            <div className="relative w-16 h-16 mx-auto mb-4">
+              <Loader2 className="w-16 h-16 text-indigo-400 animate-spin" />
+              <Sparkles className="w-5 h-5 text-amber-400 absolute top-0 right-0" />
+            </div>
+            <h4 className="text-sm font-semibold text-[#F3F4F6] mb-1">Menganalisis Periode Ini...</h4>
+            <p className="text-xs text-[#6B7280] max-w-xs mx-auto">
+              AI sedang menganalisis trade, perilaku, dan compliance untuk menghasilkan laporan pertumbuhan
+            </p>
+          </div>
+        ) : latestReport ? (
+          <GrowthReportCard report={latestReport} />
+        ) : (
+          <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-8 text-center">
+            <div className="w-12 h-12 rounded-xl bg-[#10121E] border border-[#232636] flex items-center justify-center mx-auto mb-3">
+              <FileText className="w-6 h-6 text-[#4B5563]" />
+            </div>
+            <p className="text-sm text-[#6B7280] mb-1">Belum ada laporan pertumbuhan</p>
+            <p className="text-xs text-[#4B5563]">
+              Klik &quot;Generate Laporan&quot; untuk membuat laporan AI pertama kamu
+            </p>
+          </div>
+        )}
+
+        {/* Report History (Collapsible) */}
+        {reportHistory.length > 0 && (
+          <div className="bg-[#151827] border border-[#232636] rounded-[14px] overflow-hidden">
+            <button
+              onClick={() => setHistoryOpen(!historyOpen)}
+              className="w-full flex items-center justify-between p-4 hover:bg-[#1a1d2e] transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#6B7280]" />
+                <h4 className="text-sm font-semibold text-[#F3F4F6]">Riwayat Laporan</h4>
+                <Badge variant="secondary" className="text-[10px] px-2 py-0 h-5">
+                  {reportHistory.length}
+                </Badge>
+              </div>
+              {historyOpen ? (
+                <ChevronDown className="w-4 h-4 text-[#6B7280] transition-transform" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-[#6B7280] transition-transform" />
+              )}
+            </button>
+
+            {historyOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                transition={{ duration: 0.2 }}
+              >
+                <ScrollArea className="max-h-[400px] overflow-y-auto">
+                  <div className="px-4 pb-4 space-y-2">
+                    {reportHistory.map((r) => (
+                      <GrowthReportHistoryItem
+                        key={r.id}
+                        report={r}
+                        isExpanded={expandedHistoryId === r.id}
+                        onToggle={() =>
+                          setExpandedHistoryId(expandedHistoryId === r.id ? null : r.id)
+                        }
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              </motion.div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

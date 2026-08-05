@@ -7,6 +7,7 @@ import {
   Brain,
   BarChart3,
   FileText,
+  Dna,
   Settings,
   PanelLeftClose,
   PanelLeftOpen,
@@ -60,6 +61,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'analytics', label: 'Analytics', icon: BarChart3 },
       { id: 'playbook', label: 'Playbook', icon: FileText },
+      { id: 'trading-dna', label: 'Trading DNA', icon: Dna },
     ],
   },
   {

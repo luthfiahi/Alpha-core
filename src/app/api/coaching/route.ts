@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
+import { buildTraderContext } from '@/lib/ai/memory/context-builder'
+import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
+import { db } from '@/lib/db'
 
 // ========================================
 // Free Chat System Prompt
@@ -224,6 +227,26 @@ Apa komitmenmu?`
 }
 
 // ========================================
+// L0 Event Helper (non-blocking)
+// ========================================
+
+async function fireL0Event(eventType: string, eventData: Record<string, unknown>) {
+  try {
+    const trader = await db.trader.findFirst()
+    if (!trader) return
+    await db.memoryL0Event.create({
+      data: {
+        traderId: trader.id,
+        eventType,
+        eventData: JSON.stringify(eventData),
+      },
+    })
+  } catch {
+    // Silently ignore — L0 events are fire-and-forget
+  }
+}
+
+// ========================================
 // POST Handler
 // ========================================
 
@@ -274,8 +297,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Add trader context
-    if (traderContext) {
+    // Build full memory context from the AI Memory System
+    let memoryContextStr = ''
+    try {
+      const traderId = (traderContext as Record<string, unknown> | undefined)?.traderId as string | undefined
+      const fullContext = await buildTraderContext(traderId)
+      if (fullContext.traderId) {
+        memoryContextStr = '\n\n' + formatMemoryContextForPrompt(fullContext)
+      }
+    } catch (memErr) {
+      console.error('Failed to build memory context (non-blocking):', memErr)
+    }
+
+    // Add legacy trader context (kept for backward compatibility)
+    if (traderContext && !memoryContextStr) {
       const parts: string[] = []
       if (traderContext.traderName) parts.push(`Trader name: ${traderContext.traderName}`)
       if (traderContext.processScore !== null && traderContext.processScore !== undefined)
@@ -283,9 +318,12 @@ export async function POST(request: NextRequest) {
       if (traderContext.totalTrades !== undefined) parts.push(`Total trades: ${traderContext.totalTrades}`)
       if (traderContext.winRate !== undefined) parts.push(`Win rate: ${traderContext.winRate}%`)
       if (parts.length > 0) {
-        contextStr += `\n\n[Current Trader Context: ${parts.join(', ')}]`
+        memoryContextStr = `\n\n[Current Trader Context: ${parts.join(', ')}]`
       }
     }
+
+    // Combine context strings
+    contextStr += memoryContextStr
 
     // Build the full messages array with system prompt
     const fullMessages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }> = [
@@ -358,6 +396,13 @@ export async function POST(request: NextRequest) {
         }
       },
     })
+
+    // Fire L0 event for coaching session (non-blocking)
+    fireL0Event('CoachSessionCompleted', {
+      sessionType: mode || 'FREE_CHAT',
+      step: isReflection ? step : undefined,
+      messageCount: messages.length,
+    }).catch(() => { /* non-blocking */ })
 
     return new Response(stream, {
       headers: {
