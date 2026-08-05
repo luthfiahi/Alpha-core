@@ -1,0 +1,954 @@
+PROJECT ALPHA
+
+UI/UX Redesign Specification
+AI Trading Coach — Design System, Experience & Interaction Blueprint
+
+Referensi visual: Linear · Raycast · Notion · Stripe Dashboard · TradeZella · ChatGPT
+
+Dokumen pendamping Architecture Bible — Frontend Experience Layer
+
+Project Alpha — UI/UX Redesign Specification
+
+1
+
+Daftar Isi
+Bab 1 — Executive Summary & Design Philosophy
+Bab 2 — Design System: Foundation (Color, Typography, Spacing, Radius, Shadow, Icon)
+Bab 3 — Design System: Components (Button & Card)
+Bab 4 — Epic 2: Dashboard Redesign
+Bab 5 — Epic 3: Sidebar & Navigation
+Bab 6 — Epic 4: Journal Experience
+Bab 7 — Epic 5: AI Coach Experience
+Bab 8 — Epic 6: Micro Interaction
+Bab 9 — Epic 7: Responsive Design
+Bab 10 — Definition of Done & Quality Checklist
+Bab 11 — Implementation Roadmap & Phasing
+Bab 12 — Appendix: Design Token Reference
+
+Project Alpha — UI/UX Redesign Specification
+
+2
+
+BAB 1
+
+Executive Summary & Design Philosophy
+Redesign UI/UX Project Alpha bertujuan mengangkat pengalaman visual dan interaksi dari level
+"dashboard admin generik" menjadi produk SaaS premium yang layak disandingkan dengan aplikasi kelas
+dunia. Target bukan sekadar mempercantik tampilan, melainkan membangun sistem desain yang
+konsisten, terukur, dan dapat digunakan berulang di seluruh 7 epic redesign — Design System,
+Dashboard, Sidebar & Navigation, Journal Experience, AI Coach Experience, Micro Interaction, dan
+Responsive.
+
+1.1 Mengapa Redesign Ini Penting
+•
+
+Project Alpha adalah AI Trading Coach, bukan signal provider atau robot trading — UI harus
+mencerminkan posisi sebagai coach yang reflektif, bukan alat eksekusi cepat.
+
+•
+
+Kepercayaan pengguna terhadap insight AI dan Process Score sangat dipengaruhi oleh kualitas
+visual — tampilan yang terasa "murah" menurunkan kredibilitas rekomendasi behavioral.
+
+•
+
+Pengguna trader menghabiskan waktu lama di dashboard dan journal setiap hari — kenyamanan
+visual jangka panjang (readability, kontras, ritme spasial) berdampak langsung pada retensi.
+
+1.2 Target Visual & Alasan Pemilihan Referensi
+Referensi
+
+Karakter
+
+Yang Diadopsi
+
+■ Linear
+
+Clean & modern
+
+Struktur navigasi, kontras tipografi, penggunaan warna aksen tunggal
+secara disiplin.
+
+■ Raycast
+
+Minimalis
+
+Kepadatan informasi tinggi tanpa terasa penuh; command-first interaction
+pada AI Coach.
+
+■ Notion
+
+Nyaman dibaca
+
+Line-height, whitespace, dan hierarki tipografi untuk konten panjang
+(journal, reflection).
+
+■ Stripe
+Dashboard
+
+Premium
+
+Data visualization, card elevation, dan micro-detail (shadow, border) kelas
+enterprise.
+
+■ TradeZella
+
+Trading-specific
+
+Pola tampilan performa trading: equity curve, win-rate, tagging trade,
+review harian.
+
+■ ChatGPT
+
+AI-first
+experience
+
+Pola percakapan AI Coach: bubble chat, typing indicator, markdown
+rendering, riwayat sesi.
+
+1.3 Prinsip Desain Utama
+•
+
+Calm, bukan ramai — satu warna aksen (Indigo) dipakai konsisten; warna semantik
+(success/warning/error) hanya untuk status, bukan dekorasi.
+
+•
+•
+
+Data-first — Process Score dan insight AI selalu jadi focal point visual di setiap halaman utama.
+Konsisten lintas breakpoint — komponen yang sama di desktop, tablet, dan mobile harus punya
+identitas visual yang sama, hanya berbeda layout.
+
+Project Alpha — UI/UX Redesign Specification
+
+3
+
+•
+
+Reflektif, bukan reaktif — animasi dan micro-interaction dibuat halus (200–300ms), tidak agresif,
+selaras dengan positioning "coach".
+
+Project Alpha — UI/UX Redesign Specification
+
+4
+
+BAB 2
+
+Design System: Foundation
+Bab ini mendefinisikan token dasar (design tokens) yang menjadi sumber kebenaran tunggal (single
+source of truth) untuk seluruh komponen UI. Semua nilai di bawah ini wajib diimplementasikan sebagai
+CSS custom properties / design tokens, tidak boleh di-hardcode di komponen.
+
+2.1 Color Palette
+Tema utama adalah dark mode premium (selaras Linear/Raycast) dengan aksen Indigo sebagai warna
+primer tunggal.
+Token
+
+Hex
+
+Kegunaan
+
+Contoh
+
+Primary / 500
+
+#6366F1
+
+Tombol utama, link aktif, fokus ring
+
+Primary / 600
+
+#4F46E5
+
+Hover state tombol primer
+
+Primary / 700
+
+#4338CA
+
+Active/pressed state
+
+Success / 500
+
+#22C55E
+
+Profit, win-rate positif, konfirmasi
+
+Warning / 500
+
+#F59E0B
+
+Reflection gap, peringatan behavioral
+
+Error / 500
+
+#EF4444
+
+Loss, validasi gagal, risk alert
+
+Background /
+Base
+
+#0B0D17
+
+Latar utama aplikasi (dark)
+
+Surface / Card
+
+#151827
+
+Latar card & panel
+
+Border / Subtle
+
+#232636
+
+Garis pemisah, outline card
+
+Text / Primary
+
+#F3F4F6
+
+Teks utama di atas background gelap
+
+Text / Secondary
+
+#9CA3AF
+
+Teks sekunder, caption, label
+
+Aturan pemakaian: warna semantik (Success/Warning/Error) hanya boleh dipakai untuk status data
+(profit/loss, validasi, alert) — tidak untuk elemen dekoratif seperti ikon acak atau badge non-status.
+
+2.2 Typography Scale
+Level
+
+Size / Line-height
+
+Weight
+
+Penggunaan
+
+Display
+
+32px / 40px
+
+700
+
+Judul halaman utama, Process Score besar
+
+H1
+
+24px / 32px
+
+700
+
+Judul section (Dashboard, Journal)
+
+H2
+
+20px / 28px
+
+600
+
+Sub-section, judul card besar
+
+H3
+
+16px / 24px
+
+600
+
+Judul card kecil, label grup
+
+Body Large
+
+15px / 24px
+
+400
+
+Isi chat AI Coach, paragraf reflection
+
+Body
+
+14px / 20px
+
+400
+
+Teks umum, tabel, deskripsi
+
+Project Alpha — UI/UX Redesign Specification
+
+5
+
+Level
+
+Size / Line-height
+
+Weight
+
+Penggunaan
+
+Caption
+
+12px / 16px
+
+500
+
+Timestamp, label meta, badge
+
+Micro
+
+11px / 14px
+
+500
+
+Tooltip, footnote
+
+Font family: Inter (UI umum) dan JetBrains Mono untuk angka finansial (harga, P/L, persentase) agar
+digit selalu tabular dan mudah dibandingkan — pola yang sama dipakai Stripe dan TradeZella.
+
+2.3 8px Spacing System
+Seluruh margin, padding, dan gap wajib kelipatan 8px (dengan 4px sebagai unit mikro untuk kasus padat
+seperti badge). Skala: 4, 8, 12, 16, 24, 32, 48, 64, 96px. Konsistensi ini memastikan ritme visual yang
+sama di semua breakpoint, sesuai prinsip Notion dan Linear.
+Token
+
+Nilai
+
+Contoh Pemakaian
+
+space-1
+
+4px
+
+Gap ikon-teks, padding badge
+
+space-2
+
+8px
+
+Gap elemen dalam komponen kecil
+
+space-3
+
+12px
+
+Padding dalam card kecil
+
+space-4
+
+16px
+
+Padding standar card, gap grid
+
+space-6
+
+24px
+
+Jarak antar card dalam grid
+
+space-8
+
+32px
+
+Jarak antar section
+
+space-12
+
+48px
+
+Jarak besar antar blok halaman
+
+space-16
+
+64px
+
+Padding halaman (desktop)
+
+2.4 Border Radius
+Token
+
+Nilai
+
+Penggunaan
+
+radius-sm
+
+6px
+
+Badge, input kecil, chip
+
+radius-md
+
+10px
+
+Button, input field
+
+radius-lg
+
+14px
+
+Card standar
+
+radius-xl
+
+20px
+
+Modal, panel besar, chat bubble AI
+
+radius-full
+
+9999px
+
+Avatar, pill badge, toggle
+
+2.5 Shadow System
+Token
+
+Nilai
+
+Penggunaan
+
+shadow-xs
+
+0 1px 2px rgba(0,0,0,.24)
+
+Border halus pada card di dark mode
+
+shadow-sm
+
+0 2px 8px rgba(0,0,0,.28)
+
+Card default (resting state)
+
+shadow-md
+
+0 8px 24px rgba(0,0,0,.32)
+
+Card hover, dropdown
+
+shadow-lg
+
+0 16px 40px rgba(0,0,0,.40)
+
+Modal, popover AI Coach
+
+Project Alpha — UI/UX Redesign Specification
+
+6
+
+Token
+
+Nilai
+
+Penggunaan
+
+shadow-glow-primar
+y
+
+0 0 0 3px rgba(99,102,241,.35)
+
+Focus ring elemen interaktif
+
+2.6 Icon Library
+•
+
+Gunakan satu library konsisten: Lucide Icons (outline, stroke 1.75px) — selaras gaya minimal
+Raycast/Linear.
+
+•
+•
+
+Ukuran standar: 16px (inline teks), 20px (default UI), 24px (navigasi utama).
+Ikon status (success/warning/error) selalu memakai warna semantik yang sama dengan token di
+2.1, tidak boleh custom color per halaman.
+
+Project Alpha — UI/UX Redesign Specification
+
+7
+
+BAB 3
+
+Design System: Components
+3.1 Button Variants
+Variant
+
+Style
+
+Kapan Dipakai
+
+Primary
+
+Background Indigo 500, teks putih
+
+Aksi utama: Kirim, Simpan, Analisis Trade
+
+Secondary
+
+Border subtle, background
+transparan
+
+Aksi sekunder: Batal, Lihat Detail
+
+Ghost
+
+Tanpa border/background, hover
+surface
+
+Aksi ringan dalam tabel/list
+
+Destructive
+
+Background Error 500
+
+Hapus trade, hapus sesi AI Coach
+
+Icon Button
+
+Persegi 36x36px, radius-md
+
+Aksi ikon tunggal (sidebar collapse, close)
+
+Setiap tombol memiliki 4 state wajib: default, hover (+8% brightness / shadow-md), active/pressed (scale
+0.98 + shadow-xs), dan disabled (opacity 40%, cursor not-allowed). Ukuran: sm (32px), md (40px,
+default), lg (48px, CTA utama).
+
+3.2 Card Components
+•
+
+Stat Card — untuk metrik tunggal (Process Score, Win Rate); angka besar (Display/H1) di atas,
+label kecil di bawah, opsional trend indicator (panah + persen).
+
+•
+
+Content Card — container umum (Recent Trades, AI Insight) dengan header (judul + aksi opsional)
+dan body scrollable jika perlu.
+
+•
+
+Interactive Card — card yang bisa diklik (trade item di journal) — wajib punya hover state (border
+berubah ke Primary 500 opacity 40%, shadow-md).
+
+•
+
+Semua card: background Surface/Card, border 1px Border/Subtle, radius-lg, padding space-4
+sampai space-6 tergantung ukuran.
+
+Project Alpha — UI/UX Redesign Specification
+
+8
+
+BAB 4
+
+Dashboard Redesign
+Dashboard adalah halaman yang paling sering dibuka trader setiap hari — susunan informasi mengikuti
+urutan prioritas kognitif: sapaan singkat → skor proses → insight AI → aksi cepat → data pendukung.
+
+Welcome Hero
+Sapaan personal (nama, waktu) + ringkasan satu baris kondisi hari ini. Tinggi ringkas (±80px), bukan hero
+besar bergambar — menjaga fokus ke data, bukan dekorasi.
+
+Process Score (besar di atas)
+Elemen paling dominan secara visual di dashboard: skor besar (Display 32px+, radial progress ring warna
+Primary/Success/Warning sesuai rentang skor) diletakkan di baris pertama grid, full-width atau 2/3 lebar
+pada desktop.
+
+AI Insight of the Day
+Card dengan aksen border-left Primary 500, avatar AI kecil, dan satu insight ringkas (maks 2-3 kalimat) —
+mengikuti gaya "card highlight" ChatGPT/Notion callout.
+
+Quick Actions
+Baris tombol/icon-button horizontal (Log Trade, Buka Journal, Tanya AI Coach) — maksimal 4 aksi agar
+tidak ramai.
+
+Recent Trades
+List/table ringkas 5 trade terakhir, tiap baris menampilkan pair, arah (long/short via badge warna
+semantik), P/L, dan waktu — klik untuk ke detail.
+
+Reflection Gap Summary
+Card kecil menyoroti berapa trade yang belum direfleksikan minggu ini, dengan CTA "Isi Reflection" —
+memakai warna Warning agar terlihat sebagai reminder, bukan error.
+
+Weekly Progress
+Chart garis/area sederhana (7 hari terakhir) untuk Process Score atau equity, gaya minimal ala TradeZella
+tanpa gridline berlebihan.
+
+Behavioral Trend
+Visualisasi pola perilaku (misal: overtrading, revenge trading) dalam bentuk tag/badge trend naik-turun,
+dilengkapi mini sparkline.
+
+4.1 Grid Layout (Desktop)
+•
+
+12-kolom grid, gap space-6 (24px), max-width konten 1280px, padding halaman space-16 (64px)
+kiri-kanan.
+
+•
+
+Baris 1: Welcome Hero (full width). Baris 2: Process Score (7 kol) + AI Insight of the Day (5 kol).
+Baris 3: Quick Actions (full width). Baris 4: Recent Trades (6 kol) + Weekly Progress (6 kol). Baris 5:
+Reflection Gap Summary (5 kol) + Behavioral Trend (7 kol).
+
+Project Alpha — UI/UX Redesign Specification
+
+9
+
+BAB 5
+
+Sidebar & Navigation
+Modern sidebar
+Lebar 260px (expanded), background sedikit lebih gelap dari base (Surface/Card), border-right subtle.
+Grouping menu: Utama (Dashboard, Journal, AI Coach), Analitik (Reports, Trends), Pengaturan.
+
+Active state yang jelas
+Item aktif: background Primary 500 opacity 12%, teks & ikon Primary 500, indikator garis vertikal 3px di
+sisi kiri — pola yang sama dengan Linear.
+
+Collapse mode
+Sidebar bisa diciutkan menjadi 72px (hanya ikon + tooltip on-hover), transisi width 220ms ease-in-out,
+state collapse disimpan sebagai preferensi user.
+
+User profile di bawah
+Ditempatkan sticky di bagian bawah sidebar: avatar + nama + status akun, klik membuka menu (Profil,
+Pengaturan, Logout) — konsisten dengan pola Notion.
+
+Notification badge
+Dot merah (Error 500) untuk notifikasi belum dibaca pada item menu terkait (misal AI Coach ada insight
+baru); jika >9 tampil angka dalam pill kecil.
+
+Smooth animation
+Semua transisi state (hover, active, collapse) memakai easing
+cubic-bezier(0.4,0,0.2,1) — tidak ada animasi bounce/elastic agar terasa tenang.
+
+Project Alpha — UI/UX Redesign Specification
+
+standar
+
+200-250ms
+
+10
+
+BAB 6
+
+Journal Experience
+Modern table/card
+Dua mode tampilan yang bisa ditoggle: Table (padat, untuk review cepat banyak trade) dan Card (visual,
+menonjolkan chart mini per trade) — toggle disimpan sebagai preferensi.
+
+Advanced filters
+Filter bar sticky di atas list: rentang tanggal, pair, arah (long/short), hasil (profit/loss), status reflection
+(sudah/belum). Filter aktif ditampilkan sebagai chip yang bisa dihapus satu per satu.
+
+Empty state
+Ketika belum ada trade/filter tidak menghasilkan apa pun: ilustrasi minimal (bukan generik stok gambar),
+pesan singkat, dan CTA jelas ("Log trade pertamamu") — mengikuti nada suportif seorang coach.
+
+Better trade detail
+Panel detail (drawer dari kanan atau halaman terpisah) menampilkan: data eksekusi, chart entry/exit,
+catatan trader, dan bagian Reflection dengan pertanyaan terpandu dari AI Coach.
+
+Timeline view
+Mode alternatif menampilkan trade secara kronologis per hari dengan garis waktu vertikal, memudahkan
+melihat pola sesi trading (pagi/siang/malam) — terinspirasi timeline Notion.
+
+Project Alpha — UI/UX Redesign Specification
+
+11
+
+BAB 7
+
+AI Coach Experience
+Chat seperti ChatGPT
+Layout bubble chat: pesan user rata kanan (background Primary 500 opacity 15%), pesan AI rata kiri
+(background Surface/Card) — input bar sticky di bawah dengan tombol kirim & attach.
+
+Typing animation
+Indikator 3 dot animasi (fade in-out bergantian, 400ms per siklus) muncul di posisi bubble AI selagi
+respons diproses — tidak memakai skeleton penuh agar terasa "hidup" seperti percakapan.
+
+AI avatar
+Avatar kecil (28px) konsisten di setiap bubble AI — bentuk lingkaran dengan gradient Primary halus,
+membedakan visual dari avatar user (foto profil/inisial).
+
+Markdown support
+Render penuh: heading, bold/italic, list, code block, dan tabel — penting karena AI Coach sering
+menyajikan breakdown data trading dalam bentuk terstruktur.
+
+Better prompt suggestions
+Chip saran pertanyaan di atas input bar (mis. "Kenapa Process Score-ku turun minggu ini?"), muncul
+kontekstual berdasarkan data terbaru user, hilang otomatis setelah user mulai mengetik.
+
+Session history
+Sidebar kecil/drawer berisi daftar sesi chat sebelumnya (judul otomatis dari topik awal, timestamp relatif)
+— pola identik dengan riwayat chat ChatGPT, memudahkan user kembali ke insight lama.
+
+Project Alpha — UI/UX Redesign Specification
+
+12
+
+BAB 8
+
+Micro Interaction
+Skeleton loading
+Setiap card/list yang memuat data async menampilkan skeleton placeholder (bentuk mengikuti layout
+final) dengan shimmer animasi halus — tidak memakai spinner generik kecuali untuk aksi singkat (submit
+form).
+
+Toast notification
+Muncul di pojok kanan-atas, auto-dismiss 4 detik, 4 varian warna sesuai token semantik
+(success/warning/error/info), maksimal 3 toast bertumpuk bersamaan.
+
+Hover animation
+Card & item interaktif: transform translateY(-2px) + shadow-md saat hover, transisi 150ms — konsisten di
+seluruh aplikasi, tidak berbeda antar halaman.
+
+Page transition
+Transisi fade + slight slide (8px) antar halaman saat navigasi, durasi 220ms, memastikan perpindahan
+terasa mulus tanpa flash konten kosong.
+
+Button ripple
+Efek ripple halus (opacity radial dari titik klik) khusus pada tombol Primary dan Destructive — durasi
+400ms, tidak dipakai pada Ghost/Icon Button agar tidak berlebihan.
+
+Success animation
+Setelah aksi penting selesai (trade tersimpan, reflection terisi) tampilkan checkmark animasi singkat
+(draw-in path, 500ms) di dalam toast atau modal konfirmasi.
+
+Project Alpha — UI/UX Redesign Specification
+
+13
+
+BAB 9
+
+Responsive Design
+9.1 Breakpoint
+Breakpoint
+
+Rentang
+
+Perilaku Layout
+
+Mobile
+
+< 640px
+
+1 kolom, sidebar jadi drawer, Quick Actions jadi scroll horizontal
+
+Tablet
+
+640px – 1024px
+
+2 kolom untuk card grid, sidebar collapse default
+
+Desktop
+
+> 1024px
+
+12-kolom grid penuh, sidebar expanded default
+
+Mobile
+Semua card dashboard ditumpuk vertikal sesuai prioritas (Process Score tetap paling atas); tabel journal
+berubah jadi card list agar tidak perlu scroll horizontal.
+
+Tablet
+Layout hybrid 2 kolom untuk card, sidebar default dalam mode collapse (ikon saja) untuk menghemat
+ruang tanpa menghilangkan akses navigasi.
+
+Desktop
+Layout penuh sesuai spesifikasi Bab 4-7, dengan max-width konten 1280px agar tidak melebar berlebihan
+di layar sangat besar.
+
+Sidebar drawer
+Pada mobile, sidebar disembunyikan sepenuhnya dan dipanggil sebagai overlay drawer dari kiri (animasi
+slide-in 250ms) dengan backdrop semi-transparan.
+
+Touch optimization
+Target sentuh minimum 44x44px untuk semua elemen interaktif di mobile/tablet; jarak antar elemen tap
+diperbesar (space-3 minimum) untuk menghindari mis-tap.
+
+Project Alpha — UI/UX Redesign Specification
+
+14
+
+BAB 10
+
+Definition of Done & Quality Checklist
+Sebuah halaman atau komponen dianggap selesai (Done) hanya jika seluruh kriteria berikut terpenuhi.
+Checklist ini dipakai sebagai gate sebelum sebuah fitur UI dianggap release-ready.
+#
+
+Kriteria
+
+Cara Verifikasi
+
+1
+
+Semua halaman memakai design system
+yang sama
+
+Tidak ada nilai warna/spacing/radius hardcode di luar token
+Bab 2
+
+2
+
+Tidak ada komponen dengan style
+berbeda-beda
+
+Audit visual: setiap Button/Card di seluruh app memakai
+varian resmi dari Bab 3
+
+3
+
+Dashboard terasa seperti aplikasi SaaS
+premium
+
+Review subjektif dibandingkan referensi Stripe/Linear pada
+checklist desain
+
+4
+
+Mobile dan desktop sama-sama nyaman
+digunakan
+
+Uji manual pada 3 breakpoint (Bab 9) tanpa elemen
+terpotong/overflow
+
+5
+
+UI konsisten di seluruh aplikasi
+
+Cross-check spacing, tipografi, dan warna antar Epic 2-7
+tidak menyimpang dari Bab 2-3
+
+10.1 Checklist Tambahan (QA Visual)
+•
+•
+
+Kontras teks terhadap background minimal memenuhi WCAG AA (4.5:1 untuk teks body).
+
+•
+
+Tidak ada animasi yang menyebabkan layout shift (CLS) — skeleton loading harus match ukuran
+konten final.
+
+•
+
+Ikon dan warna semantik dipakai konsisten sesuai aturan Bab 2.1 dan 2.6 di semua Epic.
+
+Seluruh state interaktif (hover/active/focus/disabled) sudah diimplementasikan, bukan hanya default
+state.
+
+Project Alpha — UI/UX Redesign Specification
+
+15
+
+BAB 11
+
+Implementation Roadmap & Phasing
+Mengingat cakupan 7 epic saling bergantung (Design System jadi fondasi semua epic lain), implementasi
+disarankan bertahap agar setiap fase bisa diverifikasi terhadap Definition of Done sebelum lanjut.
+Fase
+
+Epic
+
+Fokus Utama
+
+Fase 1
+
+Design System (Epic 1)
+
+Token warna/tipografi/spacing/radius/shadow + komponen
+Button & Card dasar
+
+Fase 2
+
+Sidebar & Navigation (Epic 3)
+
+Kerangka navigasi jadi wadah untuk semua halaman berikutnya
+
+Fase 3
+
+Dashboard Redesign (Epic 2)
+
+Halaman paling sering diakses, memvalidasi Design System di
+skala nyata
+
+Fase 4
+
+Journal Experience (Epic 4)
+
+Halaman dengan kompleksitas data & interaksi tertinggi
+
+Fase 5
+
+AI Coach Experience (Epic 5)
+
+Pola chat & AI-first interaction, independen dari
+Journal/Dashboard
+
+Fase 6
+
+Micro Interaction (Epic 6)
+
+Lapisan polish di atas semua halaman yang sudah ada
+
+Fase 7
+
+Responsive Design (Epic 7)
+
+Adaptasi seluruh halaman ke tablet & mobile, QA lintas
+breakpoint
+
+Setiap fase ditutup dengan review terhadap Definition of Done (Bab 10) sebelum fase berikutnya dimulai
+— mengikuti pola kerja lock-per-bab yang sudah dipakai pada Architecture Bible.
+
+Project Alpha — UI/UX Redesign Specification
+
+16
+
+BAB 12
+
+Design Token Reference (Ringkasan)
+Ringkasan seluruh token untuk referensi cepat tim implementasi (dev & AI coding assistant).
+
+Warna Inti
+
+•
+•
+
+Primary 500 #6366F1 · Success 500 #22C55E · Warning 500 #F59E0B · Error 500 #EF4444
+Background Base #0B0D17 · Surface Card #151827 · Border Subtle #232636
+
+Tipografi
+
+•
+•
+
+Font UI: Inter — Font angka finansial: JetBrains Mono
+Skala: Display 32 / H1 24 / H2 20 / H3 16 / Body 14 / Caption 12
+
+Spacing & Radius
+
+•
+•
+
+Spacing: 4, 8, 12, 16, 24, 32, 48, 64, 96px (kelipatan 8, dengan 4px unit mikro)
+Radius: sm 6px · md 10px · lg 14px · xl 20px · full 9999px
+
+Motion
+
+•
+•
+
+Durasi standar 150-250ms, easing cubic-bezier(0.4,0,0.2,1)
+Tidak memakai easing bounce/elastic di seluruh aplikasi
+
+Dokumen ini adalah spesifikasi desain pendamping Architecture Bible Project Alpha — dipakai sebagai acuan implementasi
+frontend baik oleh developer manusia maupun AI coding assistant.
+
+Project Alpha — UI/UX Redesign Specification
+
+17
+
+

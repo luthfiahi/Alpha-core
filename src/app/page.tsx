@@ -1,31 +1,106 @@
 'use client'
 
+import React, { Suspense } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useNavigationStore } from '@/stores'
+import { AppLayout } from '@/components/alpha/AppLayout'
+import { DashboardPage } from '@/components/alpha/dashboard'
+import { JournalPage, JournalNewPage, JournalDetailPage } from '@/components/alpha/journal'
+import { CoachingPage } from '@/components/alpha/coaching'
+
+// ========================================
+// Lazy-loaded placeholder pages
+// ========================================
+const PlaceholderPage = ({ title, icon, description }: { title: string; icon: string; description: string }) => (
+  <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <div className="size-16 rounded-2xl bg-[#151827] border border-[#232636] flex items-center justify-center">
+      <span className="text-2xl">{icon}</span>
+    </div>
+    <h2 className="text-xl font-semibold text-[#F3F4F6]">{title}</h2>
+    <p className="text-sm text-[#9CA3AF] max-w-md text-center">{description}</p>
+    <span className="inline-flex items-center gap-1.5 text-xs text-[#6B7280] bg-[#151827] border border-[#232636] px-3 py-1.5 rounded-full">
+      🚧 Coming Soon
+    </span>
+  </div>
+)
+
+const AnalyticsPage = () => (
+  <PlaceholderPage
+    title="Analytics"
+    icon="📊"
+    description="Process Score dashboard, emotion tracking, growth timeline, dan performance analytics."
+  />
+)
+
+const PlaybookPage = () => (
+  <PlaceholderPage
+    title="Playbook"
+    icon="📖"
+    description="Setup library, trading rules, checklist, dan pre-trade preparation guide."
+  />
+)
+
+const SettingsPage = () => (
+  <PlaceholderPage
+    title="Settings"
+    icon="⚙️"
+    description="Profile, preferences, akun, dan pengaturan platform."
+  />
+)
+
+// ========================================
+// Page map for client-side routing
+// ========================================
+function PageContent() {
+  const currentPage = useNavigationStore((s) => s.currentPage)
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={currentPage}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+      >
+        {currentPage === 'dashboard' && <DashboardPage />}
+        {currentPage === 'journal' && <JournalPage />}
+        {currentPage === 'journal-new' && <JournalNewPage />}
+        {currentPage === 'journal-detail' && <JournalDetailPage />}
+        {currentPage === 'coaching' && <CoachingPage />}
+        {currentPage === 'analytics' && <AnalyticsPage />}
+        {currentPage === 'playbook' && <PlaybookPage />}
+        {currentPage === 'settings' && <SettingsPage />}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+// ========================================
+// Loading skeleton
+// ========================================
+function PageSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="h-10 w-48 bg-[#151827] rounded-lg" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="h-32 bg-[#151827] rounded-[14px]" />
+        <div className="h-32 bg-[#151827] rounded-[14px]" />
+      </div>
+      <div className="h-64 bg-[#151827] rounded-[14px]" />
+    </div>
+  )
+}
+
+// ========================================
+// Root page (single route)
+// ========================================
 export default function Home() {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      gap: '2rem',
-      padding: '1rem'
-    }}>
-      <div style={{
-        position: 'relative',
-        width: '6rem',
-        height: '6rem'
-      }}>
-        <img
-          src="/logo.svg"
-          alt="Z.ai Logo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
-          }}
-        />
-      </div>
-    </div>
+    <AppLayout>
+      <Suspense fallback={<PageSkeleton />}>
+        <PageContent />
+      </Suspense>
+    </AppLayout>
   )
 }

@@ -1,0 +1,869 @@
+A
+
+W
+
+A
+
+M
+
+A
+
+M
+
+W
+
+ER
+
+R
+
+AT
+
+ER
+
+R
+
+AT
+
+R yang melanggar
+K sistem—ia T
+K Alpha Promise
+BAB 9 —K
+AI Evaluation WhyAI
+tidak akan crash
+E
+R
+T
+R
+R
+A kita
+A tradisional (unitAtest) tidak cukup;
+A trader. Evaluasi
+hanya
+A Tmerusak disiplin
+A akan diam-diam
+W
+M
+W
+M
+W
+M
+R
+K
+AI. K
+Rperlu mengukur kualitas "kecoaching-an"
+ER
+R
+
+K
+
+E
+T
+A
+
+A
+What —
+MMetrik EvaluasiWAI
+
+R
+E
+T
+
+ER
+
+M
+
+A
+
+W
+
+ER
+
+M
+
+A
+
+M
+
+W
+
+K
+
+W
+
+K
+K
+R
+T di konteks?A(misal:
+R
+T
+R
+A
+Hallucination Rate:
+Apakah
+AI
+mengklaim
+tahu
+sesuatu
+yang
+tidak
+ada
+A
+A
+A
+A
+W
+M
+Wpattern, memory,
+M
+W AI tidak boleh
+M yang tidak ada).
+R
+merujuk trade
+mengarang
+trade,
+maupun
+R
+K
+R
+K
+E
+Kdari ContextTBuilder
+E (Bab 4). Reflection
+R
+E
+T
+R
+insight
+yang
+tidak
+berasal
+Quality
+Score:
+Diukur
+R
+A
+T
+A
+A
+A
+A
+A
+M
+W
+M
+menggunakan kombinasi
+indikator
+respons, completion rate, follow-up
+Wkuantitatif (panjang
+M
+R
+W
+R
+R
+K boleh menjadi
+E
+K
+E
+engagement)Edan samplingR
+evaluasi manual.
+Panjang
+respons
+tidak
+T satu- A R
+R
+T
+T
+A
+A
+A
+M
+satunya A
+indikator kualitasArefleksi. Coaching
+M AI bertanya,Wbukan memberi
+W Quality: Apakah
+M
+R
+W
+R
+R
+Ksering OutputTGuardrail
+E
+perintah?
+Guardrail
+Violation
+Rate: (Golden
+Signal - Bab
+K
+E 24) Seberapa
+K
+E
+R
+T
+R
+Rterpicu? How A
+A
+A
+A
+—T
+Success Metrics
+A & Evaluation Loop
+M
+W
+M
+W
+M
+R
+W
+R
+K
+E
+K di CI/CD. Semi-Automated:
+E
+K GuardrailTTest
+E RSuite dijalankan
+T
+R
+Automated:
+Logging
+menunjukkan
+T
+R
+R
+A
+A
+A
+A(Yes/No). Manual
+A
+AAI memberi pertanyaan
+W
+M
+jika
+tertutup
+(Human-in-the-loop):
+Sampel
+W
+M
+W
+M
+R
+R
+Ktone dan
+E
+R percakapan K
+K
+E
+direview oleh timEpsikolog/trader
+expert setiap sprint
+untuk menilai
+T
+R
+T
+R
+R
+A
+A "AI menjawab A
+A bukan sebagai
+AT
+empathy.
+"Success"
+benar", tapi "User
+A Best PracticeDefinisikan
+W
+M
+W
+M
+W sesi chat".
+M lebih aware setelah
+R
+R
+K
+menjadi
+Metrik proksi:
+rasio user yang
+mengubah perilaku
+R
+K
+E
+K
+E
+R
+E
+T
+R
+T Reflection
+R
+A
+T tradingnya setelah
+tentang
+A
+A Gap.
+A diberitahu A
+W
+M
+W
+M
+W
+M
+R
+R
+K
+R
+Kdan tidak skalabel.
+E Evaluasi R
+K (human review)
+E sangat lambat
+Trade-offEvaluasi
+manual
+E
+T
+R
+T
+R
+A
+A Guardrail Violation
+A MVP, fokus pada
+A bisa bias. Untuk
+A
+otomatis
+mahal dan
+A T (LLM-as-a-judge)
+M
+W
+M
+W
+M
+R
+WRate (otomatis,
+Rsesi chat. K
+R
+E
+kritis) dan sampling
+manual 1%
+K
+E
+E
+T
+R
+T
+R
+T
+A
+A
+A
+A
+A
+W
+Mmenampilkan: Hallucination
+RecommendationBuat
+indicator,
+W khusus yang
+Mdashboard internal
+W
+R
+R
+K
+K
+E
+K
+E dan AverageRReflection Quality
+R ini menjadi salah satu
+T per hari. Dashboard
+T
+R Guardrail Violation,
+A
+A
+A
+A operasional dan
+Golden Signal
+M bersama Prompt Registry. Ini
+W akhir setiap Rsprint
+M direview pada
+W
+menjadi
+TemplateE(Bab 4).
+K
+K masukan utama
+E Runtuk iterasiRPrompt
+T
+T
+R
+A
+A
+A
+A
+W di awal akan gagal diimplementasi. Kita
+M terlalu ambisius
+WhyAI yang
+W
+MBAB 10 — AI Roadmap
+R
+K
+K
+Edan Guardrail R
+harus membangun
+Memory
+dulu sebelum Coaching yang canggih bisa
+T
+R
+A seluruh milestone AI wajib mengikuti urutan
+A AI RoadmapAtidak berdiri sendiri;
+dilakukan.
+M
+W
+M
+RBab 26) sehingga tidak ada kemampuan AI yang dibangun
+R
+Development
+Roadmap
+(Arch Bible
+K
+E
+E
+T
+R
+di atas fondasi
+A platform yangAbelum stabil.
+W
+M
+R
+E— Fase AI R K
+What
+T
+A
+A
+M
+W MVP (Fase 1-2):
+R L0 & L1 Memory. Socratic Coaching statis (8 template). Guardrail dual-layer.
+E
+GPT-4o-mini
+A T untuk summary. Fast Follow (Fase 3): L2 Trader Digest aktif. Reflection Gap
+W (CF-04) berjalan. Pattern Engine promote ke STABLE. Future AI: Multi-model
+Analyzer
+Korchestration (bila diperlukan), dengan pemilihan model berdasarkan karakteristik tugas,
+bukan vendor tertentu. RAG (Retrieval-Augmented Generation) menggunakan CP-04 Vector
+
+A
+
+A
+
+A
+
+W
+
+M
+M dari L0 tanpa W
+Store untuk W
+fetch spesifik trade
+membanjiri context
+R window. Fine Tuning: FineR
+
+K
+
+K
+
+E
+
+ER
+
+M
+
+K
+E
+R eval) untuk A T
+tune model
+berdasarkan
+percakapan
+terbaik T
+(yang lolos human
+R
+T
+R proprietary
+A
+A
+A
+A
+A
+W
+M— Urutan EvolusiUrutan
+menurunkan
+biaya
+konsistensi
+tone. How
+W
+M
+Winferensi danRmeningkatkan
+M
+R
+K
+Rini tidak bisa dibalik:
+K (Safety) →TCoaching
+E
+Memory (Context)
+→ Guardrail
+(Value)
+K
+E
+T
+R → FineR
+T
+R
+A
+A
+A
+A
+A bisa melatih coach jika belum punya data M
+Tuning (Efficiency).
+Anda tidak
+memory. Anda tidak
+A
+W
+M
+
+W
+
+M
+
+R
+bisaRdeploy coach jika
+K belum punyaEguardrail.
+
+TE
+
+R
+
+K
+
+W
+
+R
+E
+T
+
+R
+
+K
+
+R
+A
+A
+A
+AT
+A
+A Best PracticeJangan
+M
+W
+M
+tergoda
+untuk
+menambah
+jumlah
+Pattern
+(CP-02)
+terlalu
+cepat.
+4 pattern W
+W
+M
+R
+R
+K
+R
+Kcukup. Lebih T
+E 4 pattern yang
+KTime-based,TOvertrading)
+E
+R
+MVP (Revenge,
+Deviation,
+sudah
+baik
+E
+R
+R
+A
+A
+A
+A
+A daripada 20 pattern
+AT
+confidence-nya
+akurat
+yang noisy.
+M
+W
+M
+W
+M
+R
+W
+R
+R
+K
+E
+K
+E
+E
+T sistem A R
+R
+T konsisten dan
+R
+Trade-offFine-tuning
+memberikan
+hasil paling
+murah,
+tapi membuat
+T
+A
+A
+A
+A
+A
+M
+M EngineeringW(template) lebih
+W psikologi. RPrompt
+kurang
+Mperubahan market
+R
+Wadaptif terhadap
+R
+K
+E
+K
+Edetik tanpa retrain.
+K per request
+E
+T
+mahal
+tapi bisa diubah
+dalam hitungan
+Tunda fine-tuning
+R
+T
+R
+T
+R
+A
+A
+A yang final. A
+A menemukan
+M
+sampai produk
+voice
+W
+M
+W
+M
+R
+W
+R
+R
+K
+E
+K
+E
+K
+E
+T
+R
+T
+R
+T
+R
+A AI
+RecommendationAI
+harusAtunduk pada Development
+Roadmap
+A (Bab 26). Tim
+A
+ARoadmap
+A
+W
+M
+W
+tidak boleh mengembangkan
+fiturML2 Digest jika backend
+Fase 1R
+belum stabil menangani L0.
+W
+M
+R
+K
+E
+R SinkronisasiKdilakukan di akhir
+K
+E
+E
+T
+R
+setiap
+sprint.
+T
+R
+R
+A
+A
+A
+A
+AT
+A
+W
+M
+W
+M
+W
+M revisi ini, AI Specification
+R vendor-agnostic,
+R
+K
+Dengan
+Bible
+10 Bab sekarang
+benar-benar
+rapi,
+R
+K
+E
+K
+E
+R
+E
+T
+R
+R
+A LOCKED
+T dan terikat erat
+A Builder & Dev ARoadmap). Status:
+A Tof truth (Context
+A ke single source
+W
+M
+W
+M
+W
+M
+R
+v1.0
+R
+K
+R
+K
+E
+K
+E
+R
+E
+T
+R
+T
+R
+A
+T
+A
+A
+A
+A
+A
+M
+W
+M
+W
+M
+R
+W
+R
+R
+K
+E
+K
+E
+E
+T
+R
+T
+R
+A
+A
+A
+A
+AT
+W
+M
+W
+M
+W
+R
+R
+K
+K
+E
+K
+E
+R
+T
+R
+R
+A
+A
+A
+AT
+M
+W
+M
+W
+R
+K
+ER
+K
+E
+T
+R
+R
+A
+A
+AT
+A
+W
+M
+W
+M
+R
+K
+K
+E
+R
+T
+R
+A
+A
+A
+M
+W
+M
+R
+R
+K
+E
+E
+R
+AT
+A
+W
+M
+R
+K
+E
+R
+T
+A
+A
+M
+W
+R
+E
+AT
+W
+K
+
+🔥
+
+

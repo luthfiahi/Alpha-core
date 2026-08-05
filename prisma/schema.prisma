@@ -1,8 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// ========================================
+// PROJECT ALPHA — Database Schema
+// AI Trading Coach | Supabase-Compatible
+// Ref: Architecture Bible BAB 17
+// ========================================
+// Note: SQLite for development, migrate to
+// Supabase PostgreSQL for production.
+// All tables use UUID (cuid) for IDs.
+// ========================================
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +17,287 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+// ========================================
+// IDENTITY DOMAIN
+// ========================================
+
+model Trader {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  avatar    String?
+  timezone  String   @default("Asia/Makassar")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  readinessScores  TraderReadinessScore[]
+  tradeEntries      TradeEntry[]
+  coachingSessions  CoachingSession[]
+  memoryL0Events    MemoryL0Event[]
+  memoryL1Summary   MemoryL1Summary?
+  memoryL2Digest    MemoryL2Digest?
+  processScoreSnaps ProcessScoreSnapshot[]
+  weeklyReviews     WeeklyReviewRecord[]
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+model TraderReadinessScore {
+  id          String   @id @default(cuid())
+  traderId    String
+  hasStrategy      Boolean @default(false)
+  consistentTrading Boolean @default(false)
+  willingToReflect  Boolean @default(false)
+  willingToLearn    Boolean @default(false)
+  willingToRecord   Boolean @default(false)
+  totalScore        Int     @default(0)
+  createdAt  DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// TRADING DOMAIN
+// ========================================
+
+model TradeEntry {
+  id          String   @id @default(cuid())
+  traderId    String
+
+  // Trade Data
+  pair        String   // e.g., "EURUSD", "GBPJPY"
+  direction   String   // "LONG" or "SHORT"
+  timeframe   String?  // e.g., "H1", "H4", "D1"
+  strategy    String?
+
+  // Price Data
+  entryPrice  Float
+  exitPrice   Float?
+  stopLoss    Float?
+  takeProfit  Float?
+
+  // Position
+  lotSize     Float?
+  pipResult   Float?
+
+  // P/L
+  profitLoss  Float    @default(0)
+  currency    String   @default("USD")
+
+  // Status
+  status      String   @default("OPEN") // OPEN, CLOSED, PARTIAL
+
+  // Timing
+  entryTime   DateTime?
+  exitTime    DateTime?
+
+  // Screenshot
+  screenshotUrl String?
+
+  // Process Score
+  processScore Int?     @default(0) // 0-100
+
+  // Reflection
+  planNotes       String? // What was the plan before entry
+  reflectionNotes String? // Post-trade reflection
+  emotionBefore   String? // Felt emotion before trade
+  emotionAfter    String? // Felt emotion after trade
+  lessonLearned   String?
+  hasReflected    Boolean @default(false)
+
+  // Tags
+  tags String? // JSON array of tags: ["revenge", "planned", "impulsive"]
+
+  // Metadata
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  // Relations
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// COACHING DOMAIN
+// ========================================
+
+model CoachingSession {
+  id            String   @id @default(cuid())
+  traderId      String
+  sessionType   String   @default("REFLECTION") // REFLECTION, WEEKLY_REVIEW, FREE_CHAT
+  status        String   @default("ACTIVE") // ACTIVE, COMPLETED, INTERRUPTED
+  title         String?
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  traderRating  Int?     // 1-5 optional rating
+
+  trader Trader @relation(fields: [traderId], references: [id])
+
+  // Relations
+  conversationTurns ConversationTurn[]
+}
+
+model ConversationTurn {
+  id              String   @id @default(cuid())
+  coachingSessionId String
+  role            String   // "USER" or "AI_COACH"
+  content         String
+  templateUsed    String? // Which prompt template was used
+
+  coachingSession CoachingSession @relation(fields: [coachingSessionId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+}
+
+// ========================================
+// MEMORY DOMAIN (CP-01)
+// ========================================
+
+model MemoryL0Event {
+  id          String   @id @default(cuid())
+  traderId    String
+  eventType   String   // "TradeSaved", "CoachSessionCompleted", "PatternDetected"
+  eventData   String   // JSON payload
+  createdAt   DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+model MemoryL1Summary {
+  id          String   @id @default(cuid())
+  traderId    String   @unique
+  summary     String   // Rolling summary of recent activity
+  periodStart DateTime
+  periodEnd   DateTime?
+  updatedAt   DateTime @updatedAt
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+model MemoryL2Digest {
+  id          String   @id @default(cuid())
+  traderId    String   @unique
+  personaType     String?  // "DIMAS_TYPE", "RANI_TYPE", "SPECTRUM"
+  dominantPatterns String? // JSON array of dominant patterns
+  readinessTrend  String? // "IMPROVING", "STABLE", "DECLINING"
+  psychologicalNotes String? // AI-generated psychological notes
+  updatedAt   DateTime @updatedAt
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// PATTERN & INSIGHT DOMAIN (CP-02)
+// ========================================
+
+model PatternRegistry {
+  id              String   @id @default(cuid())
+  patternType     String   @unique // "REVENGE_TRADING", "PLAN_DEVIATION", etc
+  detectionRule   String   // JSON description of detection logic
+  minimumData     Int      // Minimum trades needed
+  priority        Int      @default(1)
+  reflectionTemplate String?
+  notificationRule String?
+  status          String   @default("EXPERIMENTAL") // EXPERIMENTAL, STABLE, DEPRECATED
+  createdAt       DateTime @default(now())
+
+  // Relations
+  findings        PatternFinding[]
+}
+
+model PatternFinding {
+  id          String   @id @default(cuid())
+  traderId    String
+  patternId   String
+  confidenceScore Float   @default(0) // 0.0 - 1.0
+  evidence    String   // JSON evidence data
+  description String
+  status      String   @default("ACTIVE")
+  detectedAt  DateTime @default(now())
+
+  pattern PatternRegistry @relation(fields: [patternId], references: [id])
+}
+
+model ReflectionGapRecord {
+  id          String   @id @default(cuid())
+  traderId    String
+  patternFindingId String?
+  gapType     String   // "PLAN_VS_EXECUTION", "NO_REFLECTION", etc
+  description String
+  severity    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model InsightCard {
+  id          String   @id @default(cuid())
+  traderId    String
+  title       String
+  content     String
+  category    String   // "BEHAVIORAL", "PROCESS", "PERFORMANCE"
+  sourceType  String   // "PATTERN_ENGINE", "AI_COACH", "SYSTEM"
+  sourceRef   String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// ========================================
+// ANALYTICS DOMAIN
+// ========================================
+
+model ProcessScoreSnapshot {
+  id          String   @id @default(cuid())
+  traderId    String
+  score       Int      // 0-100
+  components  String   // JSON: { discipline, consistency, reflection, riskManagement, emotionalControl }
+  period      String   // "DAILY", "WEEKLY", "MONTHLY"
+  periodDate  String   // "2024-01-15", "2024-W03", "2024-01"
+  createdAt   DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+model WeeklyReviewRecord {
+  id          String   @id @default(cuid())
+  traderId    String
+  weekStart   String   // "2024-01-15"
+  weekEnd     String   // "2024-01-21"
+  summary     String   // AI-generated weekly summary
+  highlights  String?  // JSON array of highlights
+  areasToImprove String? // JSON array
+  processScoreChange Float?
+  totalTrades Int      @default(0)
+  winRate     Float?
+  totalPnL    Float?
+  createdAt   DateTime @default(now())
+
+  trader Trader @relation(fields: [traderId], references: [id])
+}
+
+// ========================================
+// PLATFORM / INFRA DOMAIN
+// ========================================
+
+model PromptTemplateRegistry {
+  id          String   @id @default(cuid())
+  templateKey String   @unique // "REFLECTION_OPENING", "SOCRATIC_QUESTION", etc
+  templateName String
+  description  String?
+  systemPrompt String   // L1 content
+  templateBody String   // Template with placeholders
+  category    String   // "COACHING", "ANALYSIS", "SUMMARY"
+  modelPreference String @default("gpt-4o-mini") // "gpt-4o", "gpt-4o-mini"
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model EventLog {
+  id            String   @id @default(cuid())
+  eventType     String
+  correlationId String?
+  traderId      String?
+  ownerId       String? // Domain that owns this event
+  payload       String? // JSON
+  status        String   @default("PUBLISHED") // PUBLISHED, PROCESSED, FAILED, DLQ
+  retryCount    Int      @default(0)
+  createdAt     DateTime @default(now())
+  processedAt   DateTime?
 }

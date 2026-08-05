@@ -1,0 +1,330 @@
+Review & Revisi
+API Specification Bible — Perbaikan Menuju v2.0
+
+Dokumen Terkait
+
+API Specification Bible
+
+Jenis
+
+Review & Revision Log
+
+Target Versi
+
+v2.0 (LOCKED, diusulkan)
+
+Author
+
+Luthfi Afri Hidayat
+
+Dokumen API Specification Bible telah direview, dan 5 celah teridentifikasi berikut disetujui untuk
+ditambal sebelum dokumen dinyatakan LOCKED v2.0.
+
+Ringkasan 5 Celah
+#
+
+Celah
+
+Dampak
+
+Prioritas
+
+1
+
+API Lifecycle
+
+Tidak jelas endpoint mana yang stabil, mana yang masih
+coba-coba
+
+■■■■■
+
+2
+
+Performance
+Standard
+
+Backend tidak punya target performa yang jelas
+
+■■■■■
+
+3
+
+API Observability
+
+Sulit monitor dan debug API di production
+
+■■■■
+
+4
+
+SLA
+
+Tidak ada jaminan ketersediaan dan keandalan
+
+■■■■
+
+5
+
+Deprecation Policy
+
+Migrasi v1 → v2 tidak terdefinisi
+
+■■■■■
+
+Yang Ditambahkan
+1. API Lifecycle — Bab 28A (Baru)
+Setiap API endpoint wajib memiliki status lifecycle:
+Status
+
+Deskripsi
+
+Action
+
+DRAFT
+
+Endpoint baru, belum siap untuk external
+
+Hanya di dev/staging, bisa berubah
+kapan saja
+
+EXPERIMENTAL
+
+Endpoint siap diuji oleh pengguna terbatas
+
+Bisa berubah tanpa notice, tapi siap
+pakai
+
+STABLE
+
+Endpoint mature, siap production
+
+Breaking change hanya di versi baru
+
+DEPRECATED
+
+Endpoint masih jalan tapi akan dihapus
+
+Minimum 12 bulan masa transisi
+
+REMOVED
+
+Endpoint sudah dihapus
+
+HTTP 410 Gone
+
+Header tambahan:
+X-API-Lifecycle: STABLE
+X-API-Lifecycle: DEPRECATED (Sunset: 2027-08-03)
+
+2. Performance Standard — Bab 30A (Baru)
+Target performa yang wajib dicatat di setiap endpoint:
+Endpoint
+
+P95
+
+P99
+
+Notes
+
+GET /api/v1/dashboard/home
+
+< 300 ms
+
+< 500 ms
+
+Read cache
+
+GET /api/v1/trades
+
+< 500 ms
+
+< 800 ms
+
+Pagination wajib
+
+GET /api/v1/trades/:id
+
+< 200 ms
+
+< 400 ms
+
+Direct PK lookup
+
+POST /api/v1/trades
+
+< 500 ms
+
+< 1000 ms
+
+Include event publish
+
+POST /api/v1/coach/sessions/:id/turns
+
+<3s
+
+<8s
+
+LLM call di dalamnya
+
+POST /api/v1/screenshots/upload
+
+<2s
+
+<5s
+
+Upload + storage
+
+POST /api/v1/reflection-gaps/analyze
+
+<5s
+
+< 12 s
+
+Compute-heavy
+
+Startup wajib mengukur dan melaporkan:
+
+•
+•
+•
+•
+
+P50, P95, P99 latency
+Request count per endpoint
+Error rate per endpoint
+Timeout rate per endpoint
+
+3. API Observability — Bab 30B (Baru)
+Setiap endpoint wajib mencatat di log struktur:
+{
+"timestamp": "2026-08-03T14:30:00Z",
+"service": "trades-api",
+"endpoint": "/api/v1/trades",
+"method": "GET",
+"version": "v1",
+"correlationId": "550e8400-...",
+"traderId": "550e8400-...",
+"latencyMs": 245,
+"status": 200,
+"errorCode": null,
+"requestSize": 1024,
+"responseSize": 4096
+}
+
+Observability metrics yang wajib:
+
+•
+•
+•
+•
+
+RED metrics: Rate, Errors, Duration
+SLO: 99.5% request < 1s (kecuali Coach API)
+Alert: Error rate > 5% dalam 5 menit
+Alert: Latency P95 > 2x baseline
+
+4. SLA — Bab 30C (Baru)
+Metrik
+
+Target
+
+Notes
+
+Availability
+
+99.9%
+
+≤ 43 minutes downtime / month
+
+Error Rate
+
+< 0.5%
+
+HTTP 5xx only (not 4xx)
+
+Latency P95
+
+Sesuai tabel di atas
+
+—
+
+Timeout
+
+30s
+
+Coach API, 10s untuk lainnya
+
+Retry Policy
+
+Max 3 retry, exponential backoff
+
+—
+
+Maintenance Mode
+
+Diumumkan 24 jam sebelumnya
+
+Endpoint return 503 dengan Retry-After
+
+5. Deprecation Policy — Bab 28B (Perbaikan Bab 28)
+Fase
+
+Durasi
+
+Action
+
+STABLE → DEPRECATED
+
+t=0
+
+Tambahkan header Deprecation: true
+
+Deprecation Period
+
+12 months
+
+v1 dan v2 jalan bersamaan
+
+Sunset
+
+t + 12 months
+
+v1 dihapus (HTTP 404/410)
+
+Header wajib di DEPRECATED endpoint:
+Deprecation: true
+Sunset: Wed, 01 Jan 2027 00:00:00 GMT
+Link: </api/v2/trades>; rel="successor-version"
+
+Migration guide wajib dibuat saat v2 dirilis.
+
+Nilai Akhir (Setelah Revisi)
+Dokumen
+
+Nilai Sebelum
+
+Nilai Sesudah
+
+Architecture Bible
+
+9.9/10
+
+9.9/10
+
+Database Specification Bible
+
+9.8/10
+
+9.8/10
+
+API Specification Bible
+
+9.5–9.7/10
+
+9.9/10 ■
+
+Status
+Dengan 5 revisi di atas, API Specification Bible diusulkan berstatus LOCKED v2.0 dan siap dijadikan
+acuan resmi, sebelum melanjutkan ke AI Specification Bible (Prompt, Guardrail, Memory, dll.).
+
+

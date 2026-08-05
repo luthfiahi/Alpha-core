@@ -1,0 +1,1417 @@
+Project Alpha — Architecture Bible
+Product Requirement Document & System Architecture (Bab 1–26)
+
+3 Agustus 2026
+
+Daftar Isi
+Copyright
+
+2
+
+PART I — PRODUCT FOUNDATION
+BAB 1 — Executive Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 2 — Vision . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 3 — Mission . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 4 — Problem Statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 5 — Target User . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 6 — User Persona . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 7 — Product Philosophy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 8 — Product Principles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+3
+4
+6
+8
+9
+10
+11
+12
+
+PART II — PRODUCT STRUCTURE & USER EXPERIENCE
+BAB 9 — Core Features . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 10 — MVP Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 11 — Information Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 12 — User Flow . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+13
+13
+14
+15
+16
+
+PART III — SYSTEM & TECHNICAL ARCHITECTURE
+BAB 13 — Alpha Core Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 14 — AI Memory Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 15 — Pattern Engine Architecture (CP-02) . . . . . . . . . . . . . . . . . . . . .
+BAB 16 — Conversation Architecture . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+17
+17
+18
+19
+20
+
+PART IV — DATA & IMPLEMENTATION ARCHITECTURE
+BAB 17 — Database Architecture (High Level) . . . . . . . . . . . . . . . . . . . . .
+BAB 18 — Backend Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 19 — Frontend Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+21
+21
+22
+23
+
+PART V — OPERATIONAL ARCHITECTURE
+BAB 20 — Security & Data Privacy Architecture . . . . . . . . . . . . . . . . . . . .
+BAB 21 — Folder Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 22 — Coding Standards . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 23 — Testing Strategy Architecture . . . . . . . . . . . . . . . . . . . . . . . .
+BAB 24 — Observability & Monitoring Architecture . . . . . . . . . . . . . . . . . . .
+BAB 25 — Deployment & CI/CD Architecture . . . . . . . . . . . . . . . . . . . . . .
+BAB 26 — Development Roadmap . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+24
+24
+26
+27
+28
+29
+30
+31
+
+Penutup
+
+32
+
+1
+
+Copyright
+© 2026 Project Alpha. Seluruh hak cipta dilindungi.
+Dokumen ini merupakan dokumen kerja internal (internal working document) dan bersifat
+rahasia. Dokumen ini disusun sebagai Product Requirement Document (PRD) resmi untuk
+Project Alpha dan ditujukan sebagai rujukan tunggal (single source of truth) bagi tim produk,
+tim engineering, dan AI coding assistant yang terlibat dalam pengembangan produk.
+Dilarang menyalin, mendistribusikan, atau membagikan sebagian maupun seluruh isi dokumen
+ini kepada pihak di luar tim tanpa izin tertulis.
+Document Information
+Field
+
+Detail
+
+Document Title
+Document Type
+Coverage
+Part I
+Part II
+
+Project Alpha — Architecture Bible
+PRD + Architecture Decision Record (ADR)
+BAB 1 — BAB 26
+Product Foundation (BAB 1–8)
+Product Structure & User Experience (BAB
+9–12)
+System & Technical Architecture (BAB 13–16)
+Data & Implementation Architecture (BAB
+17–19)
+Operational Architecture (BAB 20–26)
+LOCKED (seluruh bab)
+Internal — Confidential
+Product Team, Engineering Team, AI Coding
+Assistants (GLM, Claude, GPT, Gemini)
+
+Part III
+Part IV
+Part V
+Status
+Classification
+Intended Audience
+
+2
+
+PART I — PRODUCT FOUNDATION
+BAB 1 — Executive Summary
+Why
+Sebelum menulis satu baris kode pun, sebuah startup butuh satu dokumen yang menjawab
+pertanyaan paling dasar: “Sebenarnya kita sedang membangun apa, dan kenapa itu penting?”
+Banyak startup gagal bukan karena tekniknya buruk, tapi karena tim (termasuk founder sendiri)
+tidak punya pemahaman yang sama tentang apa yang sedang dibangun. Executive Summary
+adalah “kompas” — dokumen pertama yang dibaca siapa pun (investor, developer baru, cofounder) untuk memahami keseluruhan proyek dalam waktu singkat.
+What
+• Nama Produk: Project Alpha
+• Tagline: Trade Better. Think Better. Become Better.
+• Kategori Produk: AI Trading Coach — bukan trading journal biasa, bukan signal provider,
+bukan robot trading.
+Value Proposition Inti: Project Alpha membantu trader yang sudah bisa membaca chart dan
+sudah punya strategi sendiri untuk naik level melalui: pencatatan trading terstruktur (AI
+Journal), analisis screenshot chart oleh AI, review otomatis setiap trade, deteksi pola perilaku
+trading (disiplin, emosi, konsistensi), dan coaching berbasis percakapan yang “mengenal”
+perjalanan trader tersebut dari waktu ke waktu.
+Diferensiasi Utama: Kompetitor kebanyakan menjual “sinyal” atau “otomatisasi”. Project Alpha
+menjual kesadaran diri (self-awareness) trader — produk ini menang bukan karena akurasi
+prediksi pasar, tapi karena kualitas refleksi yang dihasilkan.
+How
+┌─────────────────────────────────────────┐
+│
+TRADER EXPERIENCE
+│
+│ (Journal, Chat, Dashboard, Screenshot)
+│
+└───────────────┬───────────────────────────┘
+│
+┌───────────────▼───────────────────────────┐
+│
+AI COACHING ENGINE
+│
+│ (Memory System + Pattern Engine + LLM)
+│
+└───────────────┬───────────────────────────┘
+│
+┌───────────────▼───────────────────────────┐
+│
+DATA & INFRASTRUCTURE LAYER
+│
+│ (Supabase, PostgreSQL, Storage, Vercel) │
+└─────────────────────────────────────────┘
+BEST PRACTICE — Startup kelas dunia (Notion, Linear, Superhuman di fase awal)
+selalu memulai dengan satu kalimat value proposition yang tajam, bukan daftar fitur.
+Fitur bisa berubah, tapi value proposition harus stabil menjadi “utara” produk.
+TRADE-OFF — Fokus sempit (trader yang sudah mahir) vs pasar luas (semua trader):
+kita mengorbankan total addressable market yang besar (pemula) demi produk yang
+lebih tajam dan defensible. AI Coach vs AI Signal: coaching lebih sulit dimonetisasi
+cepat, tapi jauh lebih defensible jangka panjang karena membangun relationship
+data unik per user.
+RECOMMENDATION — Executive Summary ini menjadi rujukan utama setiap kali
+kita mengambil keputusan arsitektur di bab-bab selanjutnya.
+
+3
+
+BAB 2 — Vision
+Why
+Vision menjawab pertanyaan: “Kalau Project Alpha berhasil sepenuhnya, dunia trader akan
+terlihat seperti apa 5-10 tahun dari sekarang?” Vision adalah bintang utara (north star),
+berbeda dengan Mission yang jangka menengah dan actionable.
+What — Vision Statement
+“Menjadi companion AI nomor satu bagi trader retail di dunia untuk bertumbuh secara
+konsisten — bukan melalui prediksi pasar yang sempurna, tapi melalui kesadaran diri,
+disiplin, dan proses yang dapat diukur.”
+Elemen Makna
+
+Penjelasan
+
+“Companion”, bukan “tool”
+
+AI ini menemani perjalanan jangka panjang,
+bukan dipakai sekali lalu ditinggal
+Sukses diukur dari growth curve trader,
+bukan satu profit besar
+Kita menolak menjadi signal provider — garis
+merah produk
+Tiga output utama yang harus dihasilkan
+sistem AI
+
+“Bertumbuh secara konsisten”
+“Bukan prediksi pasar”
+“Kesadaran diri, disiplin, proses terukur”
+
+How — Vision Mengarahkan Arsitektur
+VISION: "AI yang mengenal trader secara mendalam & jangka panjang"
+│
+├─▶ Butuh MEMORY SYSTEM yang persisten & evolutif
+├─▶ Butuh PATTERN ENGINE yang belajar dari histori
+└─▶ Butuh DATA MODEL yang menangkap "proses", bukan hanya "hasil" (win/loss)
+The Alpha Promise
+Project Alpha tidak akan pernah mengambil keputusan trading untuk pengguna. Kami
+membantu pengguna mengambil keputusan yang lebih baik melalui refleksi, data,
+dan pembelajaran yang berkelanjutan.
+Implikasi teknis: AI Coach Chat tidak boleh menjawab “beli atau jual sekarang?”; Pattern
+Engine menyajikan insight, bukan instruksi; copywriting UI dijaga agar tidak terdengar seperti
+rekomendasi trading.
+Vision Filter
+• Apakah fitur ini membantu trader berkembang?
+• Apakah fitur ini meningkatkan refleksi?
+• Apakah fitur ini membangun disiplin?
+• Apakah fitur ini menjaga pengguna tetap menjadi pengambil keputusan?
+Jika salah satu jawabannya “tidak”, maka fitur tersebut tidak masuk roadmap.
+Ide Fitur
+
+Lolos Filter?
+
+Alasan
+
+Auto-copy trade dari trader
+top
+
+Tidak
+
+AI kasih sinyal entry
+berdasarkan pattern
+
+Tidak
+
+Menghilangkan peran user
+sebagai pengambil
+keputusan
+Melanggar Alpha Promise
+
+4
+
+Ide Fitur
+
+Lolos Filter?
+
+Alasan
+
+Weekly AI Report rangkum
+kesalahan berulang
+AI tanya “apa yang kamu
+rasakan saat entry ini?”
+
+Ya
+
+Meningkatkan refleksi &
+disiplin
+Membangun kesadaran diri,
+user tetap pegang kendali
+
+Ya
+
+Success Definition: Trader lebih rutin refleksi, memahami pola kesalahan, menjadi lebih
+disiplin, dan AI menjadi partner belajar bukan tempat bergantung.
+BEST PRACTICE — Vision statement yang baik:
+keputusan, cukup ambisius namun spesifik.
+
+tahan lama, bisa jadi filter
+
+TRADE-OFF — Vision “companion jangka panjang” vs “quick win tool”: investasi
+lebih dulu di Memory System & Pattern Engine sebelum menunjukkan value penuh.
+Fokus proses vs fokus hasil (profit): marketing lebih sulit di awal, tapi ini pilihan
+filosofis yang membedakan Project Alpha dari trading journal generik.
+RECOMMENDATION — Vision ini sebaiknya tidak diubah-ubah kecuali ada
+perubahan strategis besar. Setiap fitur baru harus lulus uji Vision Filter.
+
+5
+
+BAB 3 — Mission
+Why — Mission Berbeda dari Vision
+Vision
+
+Mission
+
+Sifat
+Pertanyaan
+
+Jangka panjang (5-10 tahun),
+idealis
+Aspirational
+“Mau jadi apa kita?”
+
+Terukur?
+
+Tidak langsung
+
+Jangka menengah (1-2
+tahun), actionable
+Operasional
+“Bagaimana caranya, secara
+konkret?”
+Ya, dalam jangka waktu
+tertentu
+
+Rentang waktu
+
+What — Mission Statement
+“Membangun AI Trading Coach yang mampu mengingat perjalanan setiap trader,
+mengenali pola perilaku mereka dari waktu ke waktu, dan memandu mereka melalui
+refleksi terstruktur — sehingga setiap trade menjadi kesempatan belajar, bukan
+sekadar transaksi.”
+Frasa dalam Mission
+
+Turunan Kemampuan Sistem
+
+“Mampu mengingat perjalanan trader”
+“Mengenali pola perilaku dari waktu ke
+waktu”
+“Memandu melalui refleksi terstruktur”
+
+AI Memory Architecture (Bab 14)
+Pattern Engine (Bab 15)
+AI Journal + AI Trade Review + Conversation
+Architecture (Bab 16)
+Dashboard yang menampilkan insight, bukan
+cuma angka P&L
+
+“Setiap trade jadi kesempatan belajar”
+
+How — Mission Menjadi Kompas Prioritas MVP
+Fitur yang ada di MVP:
+├─ Wajib mendukung minimal satu frasa dalam Mission
+│
+├─ Screenshot Analysis ──────▶ mendukung "refleksi terstruktur"
+├─ AI Trade Review ──────────▶ mendukung "setiap trade jadi pembelajaran"
+├─ Memory System ────────────▶ mendukung "mengingat perjalanan trader"
+├─ Pattern Engine ───────────▶ mendukung "mengenali pola perilaku"
+│
+└─ Fitur seperti "Community" atau "MT5 Integration" sengaja DITUNDA ke Future Roadmap
+Mission Success Criteria
+Kriteria
+
+Cara Uji
+
+AI mengingat riwayat konsisten
+
+Tanya AI tentang trade user 2 minggu lalu —
+akurat & konsisten?
+Setelah 10+ trade dengan kesalahan sama,
+apakah ditandai?
+Apakah ringkasan AI menangkap detail
+penting, bukan generic?
+User testing kualitatif — apakah user merasa
+terbantu?
+
+AI mengenali pola berulang
+Jurnal otomatis relevan
+Refleksi jadi lebih mudah
+
+6
+
+The Alpha Growth Loop
+TRADER MELAKUKAN TRADE
+│ ▼
+AI MEMBUAT JURNAL
+│ ▼
+AI MENGAJAK REFLEKSI
+│ ▼
+AI MENEMUKAN POLA
+│ ▼
+AI MEMBERI INSIGHT
+│ ▼
+TRADER MEMPERBAIKI KEPUTUSAN
+│ ▼
+TRADE BERIKUTNYA
+│
+(loop kembali ke atas, versi lebih baik)
+Kompetitor (trading journal biasa) berhenti di: “Journal selesai, tersimpan.” Project Alpha
+tidak berhenti di situ — loop baru dianggap lengkap ketika sampai ke “Trader memperbaiki
+keputusan”, dan bernilai ketika ia berulang.
+BEST PRACTICE — Mission yang baik: bisa dijawab dalam 1-2 tahun, setiap kata
+kerja bisa dipetakan ke sistem/fitur, bisa dipakai untuk bilang “belum sekarang” pada
+fitur bagus tapi prematur.
+TRADE-OFF — Mission sempit (3 kemampuan inti) vs Mission luas: kita tidak
+memasukkan “membantu trader profit lebih besar” agar konsisten dengan Alpha
+Promise.
+RECOMMENDATION — Mission sebaiknya direview ulang setiap 12-18 bulan. Alpha
+Growth Loop dijadikan diagram utama yang terus dirujuk di Bab 13, 14, dan 15.
+(Catatan: Mission juga merujuk Development Roadmap di Bab 26.)
+
+7
+
+BAB 4 — Problem Statement
+Why
+Problem Statement menjelaskan rasa sakit (pain) nyata yang membuat Vision dan Mission layak
+dibangun.
+What — Lima Masalah Inti
+1. Trader mencatat trade, tapi tidak pernah benar-benar belajar darinya.
+2. Trader mengulang kesalahan yang sama tanpa sadar.
+3. Refleksi trading itu berat dan gampang ditinggalkan.
+4. Tidak ada yang “mengenal” perjalanan trader secara personal.
+5. Alternatif yang ada justru memperburuk, bukan membantu (signal provider, robot
+trading).
+How — Pemetaan ke Alpha Growth Loop
+Problem
+
+Titik di Alpha Growth Loop yang Menjawab
+
+1. Jurnal jadi arsip, bukan pembelajaran
+2. Pola kesalahan tidak disadari
+3. Refleksi berat & gampang ditinggalkan
+4. Tidak ada yang “mengenal” trader
+5. Alternatif memperburuk kemandirian
+
+AI Membuat Jurnal
+AI Menemukan Pola (Pattern Engine)
+AI Mengajak Refleksi
+AI Memberi Insight (Memory System)
+Trader Memperbaiki Keputusan (Alpha
+Promise)
+
+Root Cause Analysis: Trader gagal berkembang bukan karena tidak memiliki data, tapi karena
+(1) data tidak diubah jadi insight, (2) insight tidak diubah jadi refleksi, (3) refleksi tidak diubah
+jadi perubahan perilaku.
+Current Alternatives (Competitive Landscape)
+Solusi Saat Ini
+
+Kekurangan
+
+Excel Journal
+Notion
+Myfxbook
+TradeZella
+Signal Provider
+
+Tidak memberi insight
+Manual dan melelahkan
+Fokus statistik, bukan perilaku
+Insight terbatas pada data yang tersedia
+Membuat trader bergantung
+
+Reflection Gap (Istilah Resmi Project Alpha)
+Jarak antara pengalaman trading dan pembelajaran yang benar-benar terjadi.
+Trader mengalami loss
+│ ▼
+Tidak melakukan refleksi ◄── INI ADALAH REFLECTION GAP
+│ ▼
+Mengulang kesalahan yang sama
+│ ▼
+Loss lagi
+│
+└──────► (siklus berulang, tanpa pertumbuhan)
+RECOMMENDATION — Kelima problem sebaiknya divalidasi dengan wawancara
+trader target. Reflection Gap dipakai sebagai lensa utama di User Persona, Pattern
+Engine, dan Success Criteria.
+8
+
+BAB 5 — Target User
+Why
+Bab ini mempertajam definisi target user menjadi kriteria konkret.
+What — Kriteria Target User
+Target user Project Alpha adalah trader retail yang sudah melewati fase belajar dasar dan
+sedang berjuang di fase konsistensi.
+Kriteria Inklusi: sudah punya strategi sendiri, sudah bisa membaca chart mandiri, sudah
+trading minimal beberapa bulan–1 tahun+, merasa “profit tidak konsisten” walau strategi oke,
+terbuka terhadap data & self-improvement.
+Kriteria Eksklusi (MVP): trader pemula tanpa strategi, pencari sinyal/auto-trading, trader
+sangat jarang (<5 trade/bulan), institutional trader/fund manager.
+Ideal User Profile (IUP): Trading 3–10x/minggu, sudah punya jurnal sederhana, pernah
+revenge trading, ingin berkembang, nyaman pakai aplikasi digital, bersedia 5–10 menit
+refleksi setelah trading.
+User Readiness Score — bukan gate akses, melainkan input pertama Memory System:
+Kriteria
+
+Skor
+
+Punya strategi
+Konsisten trading
+Mau refleksi
+Mau belajar
+Mau mencatat
+Total
+
+20
+20
+20
+20
+20
+100
+
+Tidak ada blokir akses apa pun — skor dipakai AI Coach Chat & AI Journal untuk menyesuaikan
+nada dan kedalaman sejak awal.
+Growth-Ready Trader (Istilah Resmi): Trader yang sudah memiliki kemampuan teknikal
+dasar dan kini hambatan terbesarnya adalah konsistensi, disiplin, dan psikologi.
+RECOMMENDATION — Readiness Score menjadi initial memory seed setiap trader
+baru (rujukan wajib Bab 14 & 16).
+
+9
+
+BAB 6 — User Persona
+Why
+Persona membuat Reflection Gap dan Growth-Ready Trader benar-benar terasa hidup.
+Persona 0 — Anti-Persona: Budi, “Sang Signal Hunter” — 22 tahun, 2 minggu pengalaman,
+selalu tanya “entry sekarang buy apa sell?”, tidak mau mencatat/refleksi. Status: Not
+Recommended User. Dipakai sebagai uji: kalau permintaan fitur baru datang dari tipe Budi,
+itu konfirmasi positioning sudah benar, bukan sinyal ubah roadmap.
+Persona 1 — Dimas, Sang Trader Emosional: 28 tahun, karyawan swasta, trading paruh
+waktu 1.5 tahun, 5-8x/minggu, sistem breakout sederhana, Readiness ~55 (kuat strategi &
+belajar, lemah refleksi). Reflection Gap: sadar harus jurnal tapi berhenti minggu ketiga; setelah
+loss langsung revenge trade. Dibantu lewat Screenshot Analysis, Coach nada ringan tidak
+menghakimi, Pattern Engine menunjukkan “revenge trading 6/10 setelah loss beruntun”.
+Persona 2 — Rani, Sang Trader Plateau: 34 tahun, full-time trader, 4 tahun pengalaman,
+swing trading, Readiness ~85 (disiplin jurnal Excel 2 tahun). Reflection Gap: disiplin mencatat
+tapi stuck — performa flat 8 bulan, tidak bisa melihat pola dari volume data. Dibantu lewat
+Pattern Engine analitis, Coach langsung ke inti, Dashboard tren jangka panjang.
+How — Adaptive Coaching Engine: Persona (Dimas-type/Rani-type/spektrum) → Readiness
+Score → Memory → Pattern → Adaptive Coaching Engine menentukan tone, kedalaman, jenis
+pertanyaan, cara motivasi → Respons Alpha. Diformalkan sebagai sub-bab di Bab 16.
+RECOMMENDATION — Dimas dan Rani dipakai sebagai rujukan uji di Bab 14 dan
+Bab 16.
+
+10
+
+BAB 7 — Product Philosophy
+Why
+Philosophy yang baik harus bisa diuji — menjelaskan kenapa satu keputusan teknis diambil dan
+keputusan lain ditolak.
+What — Lima Prinsip
+1. Process Over Profit — kualitas proses, bukan besar-kecil profit.
+2. Data Over Emotion — emosi diubah jadi data (pola perilaku), bukan dasar keputusan
+langsung.
+3. Reflection Creates Growth — jantung Reflection Gap dan Alpha Growth Loop.
+4. Consistency Over Perfection — Dashboard menonjolkan metrik konsistensi.
+5. AI Assists, Humans Decide — fondasi langsung Alpha Promise, paling non-negotiable.
+Philosophy Hierarchy (urutan prioritas saat dua prinsip bertabrakan):
+1. AI Assists, Humans Decide
+2. Process Over Profit
+3. Reflection Creates Growth
+4. Data Over Emotion
+5. Consistency Over Perfection
+Contoh kasus: trader punya pola “selalu profit kalau entry saat RSI oversold” — AI boleh bilang
+“entry sekarang”? Cek Prinsip #1 → ini instruksi entry langsung → MELANGGAR → Ditolak. AI
+hanya boleh bilang: “Secara historis, kamu lebih sering profit saat entry di kondisi RSI oversold
+— ini pola yang konsisten di data kamu.”
+Alpha Decision Framework — sebelum fitur dibuat, tim menjawab 5 pertanyaan: membantu
+proses? membantu refleksi? berdasarkan data? mendorong konsistensi? tetap membuat
+manusia mengambil keputusan? Kalau ada yang “tidak” → fitur ditolak.
+RECOMMENDATION — Kelima prinsip dijadikan checklist tambahan bersama Vision
+Filter. Alpha Decision Framework didokumentasikan sebagai SOP formal terpisah.
+
+11
+
+BAB 8 — Product Principles
+Why — Principles Berbeda dari Philosophy
+Philosophy
+
+Principles
+
+Level
+Contoh
+
+Nilai/keyakinan
+“Process Over Profit”
+
+Sifat
+
+Relatif tetap/permanen
+
+Aturan kerja/desain
+“Setiap fitur baru harus
+punya metrik keberhasilan”
+Bisa direvisi seiring
+pembelajaran tim
+
+What — Delapan Product Principles
+1. Build for Depth, Not Breadth
+2. Every Feature Must Serve the Loop
+3. Design for Two Extremes, Not the Average (Dimas & Rani)
+4. Insight Must Be Earned by Data, Not Assumed
+5. Memory Must Compound, Not Just Accumulate
+6. Slow Down the Roadmap, Not the Core
+7. Trust Before Intelligence — AI mengakui keterbatasan daripada memberi jawaban
+meyakinkan tapi rapuh. Prinsip payung lintas permukaan produk.
+8. Simplicity Beats Complexity — tie-breaker semua keputusan teknis kalau dua opsi
+menghasilkan nilai sama.
+Kelompok: A (Domain-Specific, #1-6), B (Meta-Principles, #7-8).
+LAPIS 1 — Alpha Decision Framework (Bab 7): sesuai NILAI kita?
+LAPIS 2 — Vision Filter (Bab 2): sesuai TUJUAN pertumbuhan trader?
+LAPIS 3 — Product Principles (Bab 8): dibangun dengan CARA yang benar?
+→ Lolos SEMUA lapis → MASUK ROADMAP DENGAN DESAIN YANG JELAS
+RECOMMENDATION — Kedelapan prinsip ditempel sebagai referensi cepat tim
+engineering. Prinsip #7 dan #8 paling sering dipakai mulai Bab 9 dan seterusnya.
+
+12
+
+PART II — PRODUCT STRUCTURE & USER EXPERIENCE
+BAB 9 — Core Features
+Why — Core Features Berbeda dari MVP Scope
+Bab 9 menjawab “kemampuan apa saja yang harus dimiliki Project Alpha secara konsep
+produk” — daftar penuh. MVP Scope (Bab 10) menjawab mana yang benar-benar dibangun
+di rilis pertama. Core Feature (CF) adalah user-facing; Core Platform (CP) adalah invisible
+infrastructure.
+
+Sifat
+Diuji dengan
+
+Core Features (CF)
+
+Core Platform (CP)
+
+User-facing — terlihat &
+dipakai langsung
+Vision Filter, Alpha Decision
+Framework
+
+Invisible — infrastruktur di
+balik layar
+Kebutuhan teknis
+
+What — Core Features (User-Facing)
+• CF-01 — Trade Reflection Log: menggabungkan AI Journal, Screenshot Analysis, AI
+Trade Review sebagai satu pengalaman. Titik di Loop: AI Membuat Jurnal + AI Mengajak
+Refleksi.
+• CF-02 — Alpha Growth Dashboard: fokus perkembangan proses, bukan profit.
+• CF-03 — AI Coaching Session: Socratic Coaching — bertanya reflektif, bukan signal
+provider.
+• CF-04 — Reflection Gap Analyzer (Hero Feature): menemukan perbedaan niat vs
+perilaku aktual — product thesis.
+• CF-05 — Process Score: North Star Metric, sengaja bukan angka profit.
+• CF-06 — AI Behavioral Insights: lapisan penerjemah temuan Pattern Engine ke kalimat
+awam.
+• CF-07 — Weekly Growth Review: membangun ritme refleksi mingguan.
+What — Core Platform (Invisible)
+• CP-01 — AI Memory: menyimpan & meringkas konteks trader (Prinsip #5).
+• CP-02 — Behavioral Pattern Engine: deteksi pola perilaku (Prinsip #4).
+• CP-03 — AI Context Builder: implementasi teknis Adaptive Coaching Engine.
+• CP-04 — Vector Store: embedding untuk pencarian semantik.
+• CP-05 — Authentication & User Profile.
+• CP-06 — Storage: penyimpanan screenshot chart.
+How — Peta Ketergantungan CF ↔ CP
+CF-01 Trade Reflection Log
+CF-02 Alpha Growth Dashboard
+CF-03 AI Coaching Session
+CF-04 Reflection Gap Analyzer
+CF-05 Process Score
+CF-06 AI Behavioral Insights
+CF-07 Weekly Growth Review
+
+◄── CP-05, CP-06, CP-01
+◄── CP-01, CP-02
+◄── CP-03, CP-01, CP-02
+◄── CP-02, CP-01
+◄── CP-01, CP-02
+◄── CP-02, CP-03
+◄── CP-01, CP-03
+
+CP-01 dan CP-02 menopang hampir semua CF — mengonfirmasi keduanya adalah fondasi
+platform, bukan fitur individual yang bisa ditunda (Principle #6).
+RECOMMENDATION — Struktur CF/CP wajib mulai Bab 10 dan seterusnya. CF-04
+mendapat porsi desain paling dalam sebagai Hero Feature.
+
+13
+
+BAB 10 — MVP Scope
+Why
+Pertanyaan yang benar: versi paling sederhana dari Alpha Growth Loop seperti apa yang tetap
+membuktikan product thesis (Reflection Gap), tanpa memotong loop itu sendiri — disebut
+Minimum Viable Loop, bukan MVP fitur.
+What — Status MVP
+Fitur
+
+Status
+
+Alasan
+
+CF-01 Trade Reflection Log
+CF-03 AI Coaching Session
+CF-04 Reflection Gap
+Analyzer
+CF-06 AI Behavioral Insights
+CF-05 Process Score
+
+MVP
+MVP
+MVP (wajib)
+
+Pintu masuk loop
+Titik “AI Mengajak Refleksi”
+Product thesis
+
+MVP
+MVP (sederhana)
+
+CF-02 Alpha Growth
+Dashboard
+CF-07 Weekly Growth Review
+
+MVP (ringan)
+
+Dibundel bersama CF-04
+Anchor angka sejak hari
+pertama
+Process Score & tren dasar
+
+Fast-Follow
+
+Butuh akumulasi mingguan
+
+Platform
+
+Status
+
+Alasan
+
+CP-05 Auth & User Profile
+CP-06 Storage
+CP-01 AI Memory
+CP-02 Behavioral Pattern Engine
+CP-03 AI Context Builder
+CP-04 Vector Store
+
+MVP
+MVP
+MVP (sederhana)
+MVP
+MVP
+Fast-Follow
+
+Fondasi mutlak
+Wajib screenshot
+Wajib sejak awal (Prinsip #5)
+Bahan baku CF-04, CF-06
+Agar CF-03 adaptif
+Disederhanakan dulu
+
+Di luar MVP: MT5 Integration, Community, Trader Passport, Premium AI Coach.
+How — Minimum Viable Loop: enam titik loop tetap ada (tidak dihilangkan), yang
+disederhanakan hanya kedalamannya.
+RECOMMENDATION — Minimum Viable Loop menjadi acuan utama Development
+Roadmap (Bab 26) — urutan pembangunan mengikuti urutan loop, bukan urutan
+“mudah” secara teknis.
+
+14
+
+BAB 11 — Information Architecture
+Why
+IA menjawab bagaimana informasi diorganisasi mengikuti “structure mirrors mental model” —
+mengikuti Alpha Growth Loop, bukan kategori teknis.
+What — Entitas Konseptual: Trader, TradeEntry, CoachingSession, PatternFinding,
+ReflectionGapRecord, InsightCard, ProcessScoreSnapshot, WeeklyReviewRecord.
+Navigation Layer (LOCKED v1.0)
+Bottom Nav: Home | Trade Journal | Coach | Insights
+Insights ├ Reflection Gap
+| Behavioral Patterns | Process Score
+├ Library
+└ Reviews (Weekly | Monthly | Quarterly)
+Top Nav: Global Search | Notification Center | Profile & Settings
+Cross-cutting: AI Memory | Pattern Engine | Context Builder | Vector Store | Storage
+Home (bukan “Dashboard”) — tempat mendarat pertama, personal & kontekstual. Trade
+Journal (bukan “Journal”) menyisakan namespace untuk jenis jurnal lain. Insights hierarki:
+Reflection Gap paling menonjol → Behavioral Patterns → Process Score → Library → Reviews.
+LOCKED — Bab 11 LOCKED v1.0. Istilah resmi: Library (modul), Timeline (mode
+tampilan di dalam Library).
+
+15
+
+BAB 12 — User Flow
+Why
+Bab 11 memberi peta statis; Bab 12 menjawab bagaimana trader sungguhan bergerak melalui
+peta itu.
+What — Dimensi Percabangan: Persona (Dimas/Rani-type), Kondisi Trade (Pertama/Setelah
+Loss/Setelah Win/Reguler), Skenario Waktu (Harian/Mingguan). Ketiganya tidak mengubah
+struktur IA — hanya konten dan nada.
+State Machine: Session State Machine (IDLE → PREPARING → TRADING → REFLECTING →
+LEARNING → IDLE). Trader Growth State Machine (NO_DATA → EARLY_STAGE → GROWING →
+CONSISTENT → PLATEAU, bisa kembali ke GROWING).
+Event Catalog: TradeSaved, CoachSessionStarted, CoachSessionCompleted, PatternDetected,
+ReflectionGapGenerated, ProcessScoreUpdated, WeekClosed, SessionInterrupted.
+Alternative Flow (Failure Handling): setiap kegagalan komponen AI tidak boleh membuat
+trader benar-benar buntu (dead-end) — screenshot gagal → isi manual; koneksi mati → simpan
+draft lokal; LLM timeout → retry + TradeEntry tetap tersimpan; memory timeout → konteks
+minimal + pemberitahuan; pattern engine gagal → insight cache terakhir ditampilkan.
+Resume Flow: sesi terputus (SessionInterrupted) disimpan sebagai “incomplete session”,
+widget “Continue Yesterday Session” membuka Coach persis di titik terakhir.
+Deep Link: setiap notifikasi membawa payload referensi (reflection_gap_id, weekly_review_id,
+dst).
+LOCKED — Bab 12 LOCKED v1.1 (Engineering Ready). State Machine, Event Catalog,
+Alternative Flow, Resume Flow, Deep Link, Event-Driven User Flow menjadikan bab
+ini siap sebagai acuan implementasi.
+
+16
+
+PART III — SYSTEM & TECHNICAL ARCHITECTURE
+BAB 13 — Alpha Core Architecture
+Why
+Bab 13 menjawab bagaimana CP-01 sampai CP-06 secara teknis saling berkomunikasi —
+jembatan antara “apa yang terjadi” (Bab 12) dan “bagaimana cara membangunnya” (Bab
+14+).
+What — Prinsip Arsitektur Inti: event-driven architecture untuk komunikasi antar Core
+Platform.
+Komponen Inti: API Layer, Command Layer, Event Bus, CP-01 AI Memory Service, CP-02
+Pattern Engine Service, CP-03 Context Builder Service, CP-04 Vector Store, CP-05 Auth Service,
+CP-06 Storage Service, LLM Gateway, Notification Dispatcher.
+Architecture Diagram
+PRESENTATION LAYER — Next.js
+│
+APPLICATION LAYER — API Routes (Command Handlers | Query Handlers)
+│
+DOMAIN LAYER — Trade / Coach / Insight (aturan bisnis murni)
+│
+EVENT BUS (version + correlation id + owner domain)
+├── CP-01 Memory
+├── CP-02 Pattern Engine
+├── Projection Builder
+│
+│
+LLM GATEWAY ──▶ OpenAI API
+Dashboard Read Cache
+│
+INFRASTRUCTURE LAYER — Supabase (DB, Realtime, Storage) | OpenAI Vector Store
+Trader mendapat respons cepat (“200 OK”) segera setelah TradeSaved dipublish ke Event Bus,
+tanpa menunggu seluruh rantai Pattern Engine → Context Builder → LLM Gateway selesai.
+Enterprise-Grade Addendum:
+• Command Layer: API Layer tidak berisi business logic — memanggil TradeCommandHandler,
+baru event dipublish.
+• Read Model/Projection (CQRS Ringan): Projection Builder → Dashboard Read Cache
+→ Home/Dashboard membaca dari sini.
+• Service Boundary: Presentation → Application → Domain (tidak tahu Supabase/OpenAI/HTTP)
+→ Infrastructure. Dependency mengalir satu arah ke bawah.
+• Event Ownership: setiap event punya Owner Domain, Publisher, Subscriber(s) eksplisit.
+• Event Versioning: EventName.v1, bukan EventName. Field baru nullable/default.
+• Correlation ID: dibuat sekali di titik paling awal, diteruskan ke setiap event turunan.
+• Retry & Dead Letter Queue: maksimum 3 retry, exponential backoff (5s→30s→2m), lalu
+DLQ dengan correlation_id, payload asli, jumlah percobaan.
+RECOMMENDATION — Alpha Core Architecture menjadi kerangka wajib untuk Bab
+14–16.
+LOCKED — Bab 13 LOCKED v1.1 (Enterprise-Ready).
+
+17
+
+BAB 14 — AI Memory Architecture
+Why
+Mendefinisikan konkret: disimpan dalam bentuk apa, kapan diperbarui, siapa boleh membaca,
+bagaimana “meringkas” tanpa kehilangan nuansa penting.
+What — Tiga Tingkat Memory (Tiered)
+Tier
+
+Nama
+
+Isi
+
+Sifat
+
+L0
+
+Raw Event Log
+
+L1
+
+Rolling Summary
+
+L2
+
+Trader Digest
+
+Setiap TradeSaved,
+Append-only
+CoachSessionCompleted
+apa adanya
+Ringkasan
+Diperbarui (replace)
+di-compound tiap
+event baru
+Persona-tendency,
+Berubah lambat
+readiness evolution,
+pola dominan
+
+Kontrak Read/Write: MemoryWriteService (satu-satunya penulis) dan MemoryReadService
+(satu-satunya pembaca, method eksplisit: getRollingSummary, getTraderDigest, getRawEventsSince).
+Flow — Proses Compounding: Event → MemoryWriteService → tulis L0 (append) → update
+L1 (replace) → cek ambang signifikansi → update L2 jika perlu → publish MemoryUpdated.v1.
+Data Flow — Deteksi Gap Aktivitas: CP-03 minta rolling summary → cek kapan L1 terakhir
+diperbarui → gap ≥7 hari → flag data_gap_detected: true → Coach mengakui gap secara
+eksplisit (Principle #7).
+RECOMMENDATION — Kontrak MemoryWriteService/MemoryReadService jadi
+antarmuka wajib untuk Bab 15 dan Bab 16.
+
+18
+
+BAB 15 — Pattern Engine Architecture (CP-02)
+Why
+Bagaimana CP-02 mengubah histori mentah jadi temuan pola yang bisa dipercaya, tanpa
+melanggar Principle #4 dan #7.
+What — CP-02 vs CF-04
+
+Sifat
+Input
+Output
+
+CP-02 Behavioral Pattern
+Engine
+
+CF-04 Reflection Gap
+Analyzer
+
+Generik — pola apa pun yang
+berulang
+Seluruh histori trade (L0/L1)
+PatternFinding (banyak jenis)
+
+Spesifik — satu jenis analisis
+Niat vs eksekusi aktual
+ReflectionGapRecord
+
+Jenis Pattern MVP: REVENGE_TRADING, PLAN_DEVIATION, TIME_BASED_PERFORMANCE,
+OVERTRADING — masing-masing punya ambang data minimum.
+Confidence Score: 0.0–1.0. <0.6 tidak dipublish; 0.6–0.8 “pola awal”; >0.8 “temuan solid”.
+Pattern Registry: satu sumber kebenaran metadata (pattern_id, detection_rule_ref,
+minimum_data, priority, reflection_template, notification_rule, status Experimental/Stable/Deprecated).
+How: Pattern Detector Orchestrator baca Registry → jalankan detektor paralel → Confidence
+Scorer terpusat → publish PatternDetected.v1 jika Stable & confidence≥0.6. CF-04 adalah
+pipeline terpisah, bukan sekadar subscriber CP-02.
+RECOMMENDATION — Kontrak PatternDetected.v1 dan pemisahan CP-02/CF-04
+jadi rujukan wajib Bab 16.
+LOCKED — Bab 15 LOCKED v1.1.
+
+19
+
+BAB 16 — Conversation Architecture
+Why
+CF-03 adalah tempat Alpha Promise paling rawan dilanggar.
+What — Anatomi Prompt (Empat Lapis)
+Lapis
+
+Isi
+
+Sumber
+
+L1 — System Guardrail
+
+Alpha Promise, Philosophy
+Hierarchy, larangan instruksi
+entry/exit
+Persona-tendency, Readiness
+Score, Trader Digest
+Kondisi trade +
+PatternFinding + template
+Histori percakapan sesi ini
+
+Statis, hardcoded
+
+L2 — Trader Context
+L3 — Situational Context
+L4 — Conversation State
+
+MemoryReadService.getTraderDigest()
+Rolling Summary + Pattern
+Registry
+CoachingSession record
+
+Guardrail Layer — Dua Lapis: Lapis 1 Prompt-level (preventif, instruksi sistem + few-shot).
+Lapis 2 Response-level (detektif) — response disaring Guardrail Checker; jika terdeteksi
+instruksi langsung → ditolak, diganti fallback template, dicatat sebagai insiden.
+Prompt Template Registry: 8 template awal MVP (Reflection Opening, Socratic Question,
+Validation Response, Encouragement, Weekly Review, Monthly Review, Recovery After Loss,
+Plateau Coaching).
+Data Flow: response yang ditolak Guardrail Checker tetap disimpan untuk audit, bukan
+dibuang.
+RECOMMENDATION — Struktur 4-lapis prompt dan dual-layer guardrail jadi kontrak
+wajib untuk seluruh permukaan percakapan.
+LOCKED — Bab 16 LOCKED v1.1.
+
+20
+
+PART IV — DATA & IMPLEMENTATION ARCHITECTURE
+BAB 17 — Database Architecture (High Level)
+Why
+Menjawab tabel apa saja yang ada, kolom apa isinya, bagaimana relasinya — supaya AI coding
+assistant tidak menebak struktur sendiri-sendiri.
+What — Pengelompokan Skema
+Grup
+
+Tabel Utama
+
+Identity
+Trading
+Coaching
+Memory
+
+traders, trader_readiness_scores
+trade_entries
+coaching_sessions, conversation_turns
+memory_l0_events, memory_l1_summary,
+memory_l2_digest
+pattern_registry, pattern_findings,
+reflection_gap_records, insight_cards,
+process_score_snapshots,
+weekly_review_records
+prompt_template_registry, event_log,
+dead_letter_events, notifications,
+dashboard_read_cache
+
+Pattern & Insight
+
+Platform/Infra
+
+Aturan Relasi: Foreign Key langsung DI DALAM satu domain; TIDAK BOLEH proses penulisan
+lintas domain lewat trigger SQL otomatis — tetap lewat event.
+Technical Decisions kunci: PostgreSQL (Supabase); memory_l0_events dipartisi per bulan;
+L1/L2 sebagai JSONB; Registry kolom eksplisit + JSONB metadata; UUID di semua tabel;
+soft delete untuk trade_entries & traders (regulasi privasi — jeda audit sebelum hapus
+permanen).
+RECOMMENDATION — Skema ini jadi kontrak wajib untuk Bab 18 dan Bab 20 (rowlevel security per trader_id).
+
+21
+
+BAB 18 — Backend Architecture
+Why
+Menerjemahkan Service Boundary (Bab 13) dan skema (Bab 17) menjadi struktur backend yang
+bisa di-scaffold.
+What — Stack Backend Konkret
+Layer
+
+Teknologi
+
+Application Layer
+Command/Query Handlers
+Domain Layer
+Event Bus
+Infrastructure Layer
+Background Jobs
+
+Next.js API Routes
+TypeScript — lib/commands, lib/queries
+TypeScript murni — lib/domain
+Supabase Realtime + tabel event_log
+Supabase Client, OpenAI SDK, Vector Store
+Supabase Edge Functions (cron)
+
+Dependency Injection Sederhana: Domain menerima interface/port, Infrastructure
+menyediakan implementasi konkret — bukan framework DI berat.
+Anatomi Command Handler (5 langkah): (1) terima input tervalidasi bentuk, (2) panggil
+Domain untuk validasi aturan bisnis, (3) panggil Repository untuk persist, (4) publish event
+dengan correlation_id, (5) return response minimal.
+Backend Module Ownership
+Module
+
+Owner
+
+Lokasi Kode
+
+Trade
+Coaching
+Memory
+
+Trade Domain
+Coach Domain
+CP-01
+
+Pattern
+
+CP-02
+
+Reflection Gap
+Context Builder
+
+CF-04 (Hero)
+CP-03
+
+Notification
+
+Notification Dispatcher
+
+lib/domain/Trade.ts
+lib/domain/CoachingSession.ts
+lib/infrastructure/MemoryWriteService.ts,
+MemoryReadService.ts
+lib/domain/PatternEngine.ts,
+lib/registry/PatternRegistry.ts
+lib/domain/ReflectionGapAnalyzer.ts
+lib/infrastructure/ContextBuilder.ts,
+PromptTemplateRegistry.ts
+lib/infrastructure/NotificationDispatcher.ts
+
+ReflectionGapAnalyzer.ts sengaja dipisah dari PatternEngine.ts walau satu folder.
+RECOMMENDATION — Pola Command Handler dan Module Ownership jadi template
+wajib Bab 21 dan Bab 22 (Coding Standards).
+LOCKED — Bab 18 LOCKED.
+
+22
+
+BAB 19 — Frontend Architecture
+Why
+Menjawab bagaimana Navigation Layer (Bab 11), state machine (Bab 12), dan kontrak API (Bab
+18) diterjemahkan jadi struktur komponen React/Next.js nyata.
+What — Prinsip Desain: Next.js App Router, default Server Component, turun ke Client hanya
+saat butuh interaktivitas.
+State Management — Tiga Lapis: Server State (React Query/SWR), Session/UI State (React
+Context terbatas), Local Component State (useState).
+Komponen Kunci: <ContinueSessionWidget/> (Resume Flow), middleware.ts (Deep Link),
+<ScreenshotUploader/> (fallback tidak blokir submit), <CoachChatBubble/> (render apa
+adanya, filtering di Backend).
+Offline Strategy (MVP): Dashboard cache terakhir + indikator waktu; command gagal
+→ tombol Retry eksplisit, tidak auto-retry diam-diam; tidak ada offline queue di MVP
+(keputusan sadar, ditunda Fast-Follow).
+Global Error Boundary: bertingkat per modul (Coach, Journal, Dashboard) — satu crash tidak
+menghapus seluruh UI termasuk Bottom Navigation.
+Technical Decisions kunci: Frontend tidak pernah akses Supabase langsung — selalu lewat
+lib/api-client; Coach Chat pakai Supabase Realtime, bukan polling.
+RECOMMENDATION — Struktur ini jadi kerangka wajib Bab 21 dan Bab 22. Offline
+Strategy dan Error Boundary sejajar dengan Resume Flow (Bab 12) dan Guardrail
+(Bab 16).
+LOCKED — Bab 19 LOCKED.
+
+23
+
+PART V — OPERATIONAL ARCHITECTURE
+BAB 20 — Security & Data Privacy Architecture
+Why
+Project Alpha menyimpan data psikologis dan perilaku trader (Bab 14, 15) — data yang kalau
+bocor dampaknya bukan cuma finansial tapi personal. Alpha Promise (Bab 2) hanya bernilai
+kalau trader percaya datanya aman.
+What
+2.1 Prinsip Inti — Defense-in-Depth: RLS di database tetap dibutuhkan meski Frontend tidak
+pernah panggil Supabase langsung (Bab 19) — RLS adalah lapis otorisasi kedua yang menyala
+kalau lapis pertama (application-level) gagal karena bug atau komponen baru yang lupa
+mengecek trader_id.
+2.2 Empat Domain Keamanan: Authentication (CP-05), Authorization, Data Protection, Input
+Integrity.
+2.3 Authentication (CP-05): Supabase Auth, JWT access token pendek + refresh token
+rotasi (mengikuti mekanisme resmi Supabase Auth SSR/session helper — token tidak pernah
+terekspos ke JavaScript client secara langsung, implementasi detail tidak dikunci di level
+arsitektur).
+2.4 Authorization — Dua Lapis: - Lapis 1 (Application-Level): trader_id tidak pernah
+diterima dari parameter caller — Repository/Command Handler wajib mengambil trader_id
+dari authentication context (session), bukan dari argumen bebas pemanggil. - Lapis 2
+(Database-Level RLS): setiap tabel yang di-scope per trader wajib punya RLS policy
+trader_id = auth.uid().
+2.5 Service Role Key: hanya dipegang MemoryWriteService/MemoryReadService dan
+Repository infra tertentu. LLM Gateway TIDAK memegang service role — kredensialnya
+terpisah (OPENAI_KEY), karena ia tidak berinteraksi dengan Supabase sama sekali.
+2.6 Data Protection: TLS wajib di seluruh koneksi; encryption at rest bawaan Supabase/PostgreSQL;
+screenshot (CP-06) lewat signed URL berumur pendek (15 menit), bukan public bucket; Memory
+L0/L1/L2 diklasifikasikan sensitive behavioral data, akses hanya lewat kontrak Memory.
+2.7 Input Integrity — Untrusted User Content: seluruh konten bebas dari trader (chat, catatan
+trade) diperlakukan sebagai untrusted input, bukan sekadar disaring kalau mencurigakan.
+Konten trader dirakit ke prompt selalu sebagai data yang di-delimit eksplisit, tidak pernah
+disisipkan sebagai instruksi sistem. Deteksi pola mencurigakan tetap ada sebagai lapis
+logging/flagging tambahan, bukan pertahanan utama.
+2.8 Rate Limiting: per-trader, melengkapi rate limit agregat LLM Gateway (Bab 13) —
+pertahanan tambahan terhadap brute-force prompt injection.
+2.9 Data Retention & Right to Erasure: soft-delete 30 hari lalu hard-delete terjadwal
+(melanjutkan Bab 17). Retensi audit log terpisah: event_log 90 hari lalu diarsipkan;
+dead_letter_events 90 hari setelah resolved lalu dihapus.
+2.10 Secret Management: seluruh secret hanya di environment variable; tidak pernah commit
+Git; tidak pernah dikirim ke Client Component; rotasi key tanpa perubahan kode aplikasi; AI
+coding assistant tidak boleh menulis secret secara hardcoded dalam kondisi apa pun.
+Technical Decisions (ringkas): dua lapis otorisasi wajib (defense-in-depth); service role key
+least-privilege, terpisah dari OPENAI_KEY; signed URL untuk aset privat; input sanitizer sebagai
+struktur prompt, bukan filter kata kunci; rate limit per-trader; retensi audit log terpisah dari
+retensi data trader.
+
+24
+
+RECOMMENDATION — Kontrak dua-lapis otorisasi wajib untuk setiap tabel baru.
+Secret Management jadi dasar langsung Bab 21 (struktur .env).
+LOCKED — Bab 20 LOCKED.
+
+25
+
+BAB 21 — Folder Structure
+Why
+Tanpa peta folder eksplisit, tiap AI coding assistant menerjemahkan aturan yang sama jadi
+struktur berbeda-beda, dan Service Boundary (Bab 13) berhenti berarti apa-apa di level kode.
+What — Prinsip: struktur folder mengikuti layer arsitektur, bukan fitur UI.
+Root Structure
+project-alpha/
+├── app/
+├── components/
+├── lib/
+│
+├── domain/
+│
+├── commands/
+│
+├── queries/
+│
+├── infrastructure/
+│
+├── registry/
+│
+├── events/
+│
+└── api-client/
+├── supabase/
+│
+├── migrations/
+│
+└── functions/
+├── middleware.ts
+├── .env.example
+├── .env.local
+└── .gitignore
+
+# Presentation Layer (Bab 19)
+# Presentation Layer (Bab 19)
+# Domain Layer (Bab 13, 18)
+# Application Layer — write side
+# Application Layer — read side
+# Infrastructure Layer (Bab 13, 18)
+# Pattern & Prompt Template Registry (Bab 15, 16)
+# Event Bus contracts (Bab 13)
+# Satu-satunya pintu Frontend→Backend
+# Skema DB (Bab 17) + RLS policy (Bab 20)
+# Edge Functions
+# Deep link routing (Bab 19)
+# NAMA variable saja (Bab 20)
+# Nilai asli, wajib .gitignore
+
+Aturan wajib: tidak ada file di lib/domain/ yang boleh import @supabase/* atau openai.
+lib/registry/ terpisah dari domain — Registry adalah data konfigurasi, bukan logic. Event
+contract 1 file per event per versi (TradeSaved.v1.ts). lib/api-client/ adalah satu-satunya
+pintu Frontend ke Backend.
+Peta Ownership → Folder — identik dengan tabel Bab 18, hanya kolom lokasi jadi path nyata.
+RECOMMENDATION — Struktur ini jadi kontrak wajib untuk Bab 22 — setiap aturan
+penulisan kode merujuk path yang sudah didefinisikan di sini.
+LOCKED — Bab 21 LOCKED.
+
+26
+
+BAB 22 — Coding Standards
+Why
+Peta folder saja tidak mencegah kode melanggar Service Boundary secara isi. Project Alpha
+dikerjakan lintas AI coding assistant tanpa memori bersama — konvensi harus eksplisit dan
+sebisa mungkin ditegakkan tooling.
+What
+• 2.1 Naming Conventions: PascalCase untuk file Domain/Infrastructure/Handler;
+EventName.vN.ts untuk event; kebab-case route; snake_case DB; akhiran Repository
+untuk interface.
+• 2.2 TypeScript Standards: strict: true wajib; any dilarang di domain/commands/queries;
+explicit return type wajib di fungsi export; interface untuk kontrak implementable, type
+untuk bentuk data.
+• 2.3 Import Rules — ditegakkan lewat ESLint boundary rule: lib/domain/** tidak boleh
+import lib/infrastructure/** (kecuali interfaces/**) atau SDK eksternal; app/**
+tidak boleh import infra langsung.
+• 2.4 Error Handling Standard — taksonomi exception: ValidationError (400),
+UnauthorizedError (401), ForbiddenError (403), NotFoundError (404 — sengaja
+disatukan dengan kasus akses ditolak RLS agar tidak membocorkan keberadaan data
+trader lain), InsufficientDataError (422), GuardrailViolationError (internal,
+fallback template), ExternalServiceError (503).
+• 2.5 Event Contract Standard: setiap event wajib field event_type (versi eksplisit),
+correlation_id, trader_id, occurred_at, payload.
+• 2.6 Comment & Documentation Standard: JSDoc fungsi export wajib menyebut
+referensi Bab.
+• 2.7 Secret & Config Usage Standard: akses env hanya lewat lib/infrastructure/config/env.ts;
+ESLint custom rule menolak pola literal mirip API key; build gagal kalau env wajib kosong.
+• 2.8 Code Review Checklist: trader_id dari auth context; file sesuai Ownership; event
+baru versi eksplisit; pattern/template baru mulai status Experimental; tidak ada exception
+generik.
+RECOMMENDATION — Standar ini jadi gerbang wajib sebelum kode di-merge,
+terlepas siapa penulisnya.
+LOCKED — Bab 22 LOCKED.
+
+27
+
+BAB 23 — Testing Strategy Architecture
+Why
+Alpha Promise adalah janji yang bisa dilanggar secara diam-diam — kalau Guardrail Checker
+rusak karena refactor kecil, sistem tidak crash, ia hanya diam-diam mulai memberi instruksi
+entry/exit.
+What
+• 2.1 Empat Lapis Testing: Unit Test (Domain murni), Contract Test (Repository memenuhi
+interface), Integration Test (Command Handler → Supabase test instance), Guardrail Test
+(khusus, non-negotiable).
+• 2.2 Coverage Tidak Merata secara Sengaja — risiko tertinggi (Guardrail, Authorization,
+ambang data Pattern Engine) wajib test sebelum merge; risiko rendah opsional.
+• 2.3 Guardrail Test Suite — Golden Set: Kategori 1 (pelanggaran, harus selalu ditolak),
+Kategori 2 (aman, harus selalu lolos), Kategori 3 (edge case dari insiden nyata — golden set
+hidup dan bertambah, setiap insiden produksi wajib ditambahkan sebagai regression
+test permanen).
+• 2.4 Testing Pattern Engine: wajib ada test kasus negatif (data di bawah ambang →
+tidak boleh publish) dan kasus tepat di ambang.
+• 2.5 Testing RLS: integration test dua trader palsu, verifikasi isolasi baris — berjalan di
+setiap CI run.
+• 2.6 Regression Test Migrasi: migration baru wajib disertai test RLS policy tabel baru
+langsung ditulis bersamaan.
+Data Flow: test data Pattern Engine memakai fixture sintetis, tidak pernah data trader nyata.
+RECOMMENDATION — Golden Set Guardrail jadi living document, wajib diperbarui
+setiap kali Admin Log mencatat insiden baru.
+LOCKED — Bab 23 LOCKED.
+
+28
+
+BAB 24 — Observability & Monitoring Architecture
+Why
+Sistem event-driven asinkron (Bab 13) berarti kegagalan komponen backend bisa terjadi
+berhari-hari tanpa disadari, karena trader tetap menerima “200 OK” tanpa menunggu rantai
+penuh selesai.
+What
+• 2.1 Tiga Pilar: Logging (event_log, Admin Log), Metrics (agregat event), Tracing
+(correlation_id).
+• 2.2 Correlation ID sebagai Trace: query tunggal SELECT * FROM event_log WHERE
+correlation_id = X menghasilkan trace lengkap lintas komponen — tidak perlu tooling
+tracing terpisah di skala MVP.
+• 2.3 Golden Signals: Sinyal Kritis (rate penolakan Guardrail naik tajam, event masuk DLQ,
+pola akses RLS tidak wajar) → alert real-time; Sinyal Penting (distribusi confidence score,
+rate InsufficientDataError, latency LLM Gateway) → dashboard harian; Sinyal Informatif →
+tersedia bila dibutuhkan.
+• 2.4 Guardrail Violation Rate: metrik produk paling penting di seluruh sistem — rate
+naik >3x baseline → alert <15 menit.
+• 2.5 DLQ sebagai Sinyal Kesehatan: alert otomatis saat event pertama masuk DLQ —
+terpisah dari retensi 90 hari (Bab 20), yang hanya soal berapa lama bukti disimpan.
+• 2.6 Dashboard Kalibrasi: alat internal terpisah total dari CF-02 milik trader,
+menampilkan distribusi confidence_score per pattern.
+• 2.7 Privasi dalam Observability: log/metrik tidak boleh memuat isi percakapan mentah
+— hanya event_type, correlation_id, trader_id, timestamp, metadata teknis.
+RECOMMENDATION — Observability ini wajib berjalan sejak MVP (tidak boleh
+ditunda Fast-Follow) karena berhubungan langsung dengan Alpha Promise.
+LOCKED — Bab 24 LOCKED.
+
+29
+
+BAB 25 — Deployment & CI/CD Architecture
+Why
+Belum ada bab yang menjawab bagaimana kode yang lolos Bab 22 (lint) dan Bab 23 (test)
+benar-benar sampai ke lingkungan trader dengan aman, dan bagaimana rollback bekerja kalau
+versi baru rusak.
+What
+• 2.1 Tiga Environment: Development (data sintetis), Staging (satu-satunya tempat
+smoke test LLM sungguhan sebelum production), Production.
+• 2.2 Environment Variable per Environment: melanjutkan env.ts (Bab 22) — rotasi
+key berarti mengganti nilai di secret store platform, kode tidak disentuh.
+• 2.3 Pipeline CI/CD: lint/boundary (Bab 22) → test (Bab 23) → build → deploy sesuai branch
+→ post-deploy smoke test → lolos (live) / gagal (rollback otomatis).
+• 2.4 Branch → Environment: feature/* → preview; main → staging otomatis; release/*
+→ production, manual approval wajib, tidak pernah otomatis.
+• 2.5 Post-Deploy Smoke Test: golden set Guardrail (Bab 23) dijalankan lewat LLM
+Gateway sungguhan setelah setiap deploy ke staging.
+• 2.6 Rollback — Kode vs Registry: rollback kode kembali ke build sebelumnya; rollback
+Registry (Pattern/Template Experimental↔Stable) cukup UPDATE status di database —
+lebih cepat, tanpa deploy ulang.
+• 2.7 Database Migration: dijalankan sebelum deploy kode, wajib backward-compatible.
+• 2.8 Zero-Downtime: sudah “gratis” dari desain event-driven Bab 13, tidak perlu
+mekanisme tambahan.
+RECOMMENDATION — Struktur deployment ini jadi kontrak wajib sebelum Bab 26
+(Roadmap) disusun. Perbedaan rollback kode vs Registry jadi SOP wajib tim ops.
+LOCKED — Bab 25 LOCKED.
+
+30
+
+BAB 26 — Development Roadmap
+Why
+Menjawab dalam urutan apa seluruh keputusan Bab 9–25 dikerjakan, sehingga di setiap titik
+waktu sistem tetap bisa diuji utuh — bukan komponen setengah jadi yang baru bisa dites di
+akhir.
+What — Prinsip Urutan: mengikuti Alpha Growth Loop (Bab 3), bukan kemudahan teknis.
+Lima Fase
+FASE 0 — Fondasi Tak Terlihat (berhenti di staging, TIDAK sampai production)
+CP-05, CP-06, skema DB penuh + RLS (Bab 20) sejak baris pertama,
+folder structure (Bab 21) + lint/CI (Bab 22), pipeline dev/staging (Bab 25)
+FASE 1 — Pintu Masuk Loop
+CF-01 Trade Reflection Log (versi MVP)
+CP-01 AI Memory (L0 + L1 saja, L2 BELUM aktif)
+FASE 2 — Refleksi & Percakapan (Titik Rawan Alpha Promise)
+CF-03 AI Coaching Session, CP-03 Context Builder
+Guardrail dua lapis + Guardrail Test Suite — WAJIB lolos 100%
+sebelum fase dianggap selesai, tidak boleh menyusul
+FASE 3 — Pola & Insight (Hero Feature) [paralel dengan Fase 2]
+CP-02 Pattern Engine (4 pattern, status Experimental)
+CF-04 Reflection Gap Analyzer, CF-06, CF-05
+L2 Trader Digest diaktifkan di fase ini
+FASE 4 — Penutup Loop & Observability Produksi
+CF-02 Alpha Growth Dashboard (ringan)
+Observability sinyal kritis (Bab 24) WAJIB aktif sebelum
+approval manual ke production (Bab 25)
+CF-07 dan CP-04 tetap Fast-Follow (sejak Bab 10), tidak masuk lima fase ini.
+Definisi “Selesai” per Fase: lolos lint+boundary (Bab 22), test risiko tertinggi hijau (Fase 2
+wajib Guardrail Test 100%), stabil di staging minimal satu siklus smoke test (Bab 25).
+Dependency Antar Fase: Fase 2 dan Fase 3 boleh paralel setelah Fase 1 (sama-sama
+bergantung CP-01, tidak saling bergantung — Peta Ketergantungan Bab 9); Fase 4 menunggu
+keduanya selesai penuh.
+RECOMMENDATION — Roadmap lima fase ini jadi rujukan wajib perencanaan
+sprint/timeline konkret. Definisi “selesai per fase” adalah gerbang yang harus
+terverifikasi lewat pipeline Bab 22, 23, 25 secara nyata, bukan kesepakatan lisan.
+LOCKED — Bab 26 LOCKED.
+
+31
+
+Penutup
+Dengan Bab 26, seluruh lapisan Architecture Bible Project Alpha genap: Product Foundation
+(Bab 1–8), Product Structure & UX (Bab 9–12), System & Technical Architecture (Bab
+13–16), Data & Implementation Architecture (Bab 17–19), dan Operational Architecture
+(Bab 20–26).
+Seluruh bab berstatus LOCKED dan menjadi rujukan tunggal (single source of truth) bagi tim
+produk, tim engineering, dan AI coding assistant (Claude, GPT, Gemini, GLM) yang mengerjakan
+Project Alpha.
+
+32
+
+
