@@ -569,3 +569,25 @@ Stage Summary:
 - All APIs verified with 200 status codes
 - Navigation updated: trading-dna page added to sidebar, stores, and page.tsx routing
 - Full app now has 10 navigable sections: Dashboard, Journal, Journal New, Journal Detail, AI Coach, Analytics, Playbook, Trading DNA, Settings
+
+---
+Task ID: prep-1-through-6
+Agent: Main Orchestrator
+Task: Prepare codebase for Supabase (PostgreSQL) + Vercel migration
+
+Work Log:
+- Updated `prisma/schema.prisma`: provider changed from "sqlite" to "postgresql", added `relationMode = "prisma"` for Supabase pooler compatibility
+- Updated `src/lib/db.ts`: Production-safe logging (error+warn only), removed verbose query logging
+- Updated `package.json`: Added `postinstall: prisma generate` for Vercel auto-install, updated `db:push` (removed --accept-data-loss), added `db:seed` convenience script, updated `build` to include `prisma generate`
+- Created `.env.example`: Template with DATABASE_URL, Supabase keys, ZAI_API_KEY, NextAuth vars
+- Updated `.gitignore`: Added `/db/`, `*.db`, `*.db-journal`, `.env.local`, `.env.production.local`
+- Fixed `prisma/seed-analytics.ts`: Changed from `new PrismaClient()` to shared `db` import
+- Fixed `prisma/seed-behavioral.ts`: Changed from `new PrismaClient()` to shared `db` import, fixed extra closing brace
+- Updated `.env`: Set Supabase connection URL template, added SUPABASE keys
+- Ran `prisma generate`: Successfully generated client for PostgreSQL (v6.19.2)
+- Ran `eslint .`: 0 errors, 1 pre-existing warning
+
+Stage Summary:
+- Codebase is ready for Supabase PostgreSQL
+- BLOCKED: Waiting for Luthfi to provide database password to complete connection test and schema push
+- Once password received: run `db:push` → `db:seed` → start dev server → verify

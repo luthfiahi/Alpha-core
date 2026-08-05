@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { db } from '../src/lib/db.js'
 
-const db = new PrismaClient()
 
 async function seedBehavioralEvents() {
   // Find or create default trader

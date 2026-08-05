@@ -3,9 +3,8 @@
 // AI Trading Coach | Supabase-Compatible
 // Ref: Architecture Bible BAB 17
 // ========================================
-// Note: SQLite for development, migrate to
-// Supabase PostgreSQL for production.
-// All tables use UUID (cuid) for IDs.
+// Note: PostgreSQL via Supabase for all environments.
+// All tables use CUID for IDs.
 // ========================================
 
 generator client {
@@ -13,8 +12,10 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Relation mode for serverless (Supabase pooler)
+  relationMode = "prisma"
 }
 
 // ========================================

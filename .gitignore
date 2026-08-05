@@ -50,5 +50,15 @@ test
 prompt
 
 server.log
+
+# Database files
+/db/
+*.db
+*.db-journal
+
 # Skills directory
 /skills/
+
+# Environment (keep .env.example tracked)
+.env.local
+.env.production.local

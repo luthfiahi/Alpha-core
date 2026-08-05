@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { db } from '../src/lib/db.js'
 
-const db = new PrismaClient()
 
 async function seedAnalytics() {
   // Get or create trader
@@ -238,4 +237,4 @@ async function seedAnalytics() {
 
 seedAnalytics()
   .catch(console.error)
-  .finally(() => db.$disconnect())
+  .finally(async () => { await db.$disconnect() })
