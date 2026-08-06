@@ -108,14 +108,14 @@ VALUES
  '2025-06-23 19:00:00+00', '2025-06-24 10:00:00+00'),
 
 -- Trade 11: Open trade
-('trade-011', 'trader-luthfi-001', 'EURUSD', 'LONG', 'H1', 'ICT London', 1.0850, NULL, 1.0830, 1.0900, 0.02, NULL, NULL, 'USD', 'OPEN',
+('trade-011', 'trader-luthfi-001', 'EURUSD', 'LONG', 'H1', 'ICT London', 1.0850, NULL, 1.0830, 1.0900, 0.02, NULL, 0, 'USD', 'OPEN',
  '2025-07-03 08:00:00+00', NULL, 75,
  'Buy di FVG bullish setelah HH structure', NULL, 'Calm', NULL, NULL, false,
  '["planned"]', NULL, NULL, 0.8,
  '2025-07-03 08:00:00+00', '2025-07-03 08:00:00+00'),
 
 -- Trade 12: Open trade
-('trade-012', 'trader-luthfi-001', 'GBPJPY', 'SHORT', 'H4', 'Breakout', 194.50, NULL, 195.00, 193.50, 0.01, NULL, NULL, 'USD', 'OPEN',
+('trade-012', 'trader-luthfi-001', 'GBPJPY', 'SHORT', 'H4', 'Breakout', 194.50, NULL, 195.00, 193.50, 0.01, NULL, 0, 'USD', 'OPEN',
  '2025-07-03 14:00:00+00', NULL, 60,
  'Short setelah breakdown support 194.50', NULL, 'Neutral', NULL, NULL, false,
  '["planned", "breakout"]', NULL, NULL, 0.7,
