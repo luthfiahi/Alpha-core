@@ -727,3 +727,29 @@ Stage Summary:
 - Profile name + timezone persisted to DB; preferences stored in localStorage
 - Reset deletes 22 data tables, preserves Trader identity
 - Lint clean
+
+---
+Task ID: settings-feature
+Agent: Main Orchestrator
+Task: Build complete Settings Page with frontend + backend API
+
+Work Log:
+- Created SettingsPage.tsx with 5 sections: Profil, Preferensi Trading, Notifikasi, Zona Berbahaya, App Info
+- Created Settings API (PUT /api/settings) with profile update, preferences, notifications types
+- Created Reset API (DELETE /api/settings/reset) that deletes all 22 tables in dependency order
+- Wired Save buttons to real API calls with loading states and toast feedback
+- Profile save updates both DB (Prisma) and Zustand store
+- Trading prefs stored in localStorage (client-side)
+- Replaced Settings placeholder in page.tsx with real component import
+- Pushed to GitHub, Vercel auto-deployed
+- Verified via agent-browser: all 5 sections render correctly
+- Bonus: Dashboard greeting now shows "Selamat sore, Luthfi" (name fix from previous commit also deployed)
+
+Stage Summary:
+- ✅ Settings Page live on Vercel with full functionality
+- ✅ Profile editing: name + timezone, persisted to Supabase via API
+- ✅ Trading Preferences: timeframe, currency, lot size, style — localStorage
+- ✅ Notifications: 3 toggles (weekly review, behavioral alert, growth report)
+- ✅ Danger Zone: Reset all data with confirmation dialog
+- Files created: 4 (SettingsPage.tsx, index.ts, settings/route.ts, settings/reset/route.ts)
+- Files modified: 1 (page.tsx — replaced placeholder with real import)
