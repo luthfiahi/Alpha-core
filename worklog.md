@@ -635,3 +635,34 @@ Stage Summary:
 - ✅ GitHub: Code pushed to luthfiahi/Alpha-core (main branch)
 - ✅ Vercel: Production deployment live at alpha-core-ten.vercel.app
 - ✅ Full migration: SQLite → Supabase PostgreSQL + Vercel deployment COMPLETE
+---
+Task ID: verify-production
+Agent: Main Orchestrator
+Task: Verify Vercel production app connects to Supabase and all pages render data
+
+Work Log:
+- Opened alpha-core-ten.vercel.app via agent-browser
+- Found /api/dashboard returning 500 error: "Can't reach database server at db.xxx.supabase.co:5432"
+- Root cause: DATABASE_URL in Vercel was using direct connection (port 5432) instead of Supabase connection pooler
+- User updated DATABASE_URL to Transaction pooler URL in Vercel
+- New error: "prepared statement s0 already exists" (Postgres error 42P05) — PgBouncer compatibility issue
+- Fixed by adding automatic pgbouncer=true injection in src/lib/db.ts via getDatabaseUrl()
+- Pushed fix, Vercel redeployed
+- Verified all pages:
+  - Dashboard ✅ — loads data from Supabase (greeting, behavioral trend, reflection gap, recent trades)
+  - Journal ✅ — 12 trades with full data (pair, direction, entry/exit, P/L, score)
+  - Playbook ✅ — 3 playbooks (ICT London 4 checklists, ICT New York 3, Breakout & Retest 3)
+  - Analytics ✅ — Growth Timeline, Review Mingguan, Insight Perilaku tabs; Growth Report shows Rule Compliance 85%, Playbook Usage 88%
+  - Trading DNA ✅ — Day Trader, Strengths/Weaknesses, Performance Patterns, AI Summary
+  - AI Coach ✅ — Chat Bebas/Refleksi Trade modes, prompt suggestions, screenshot upload
+- Fixed WelcomeHero to accept traderName prop directly from data (not just store)
+- Removed debug error info from dashboard API
+- No JS errors on any page
+- Minor note: Greeting shows "Trader" initially due to Vercel CDN cache; API returns "Luthfi" correctly
+
+Stage Summary:
+- ✅ Supabase PostgreSQL connection working from Vercel (via Transaction pooler + pgbouncer=true)
+- ✅ All 7 pages verified with real data from Supabase
+- ✅ Fix: db.ts auto-injects pgbouncer=true for Supabase pooler URLs
+- ✅ Fix: WelcomeHero accepts traderName prop directly for immediate display
+- Files modified: src/lib/db.ts, src/app/api/dashboard/route.ts, src/components/alpha/dashboard/WelcomeHero.tsx, src/components/alpha/dashboard/DashboardPage.tsx
