@@ -11,7 +11,8 @@ interface AuthContextValue {
   user: { id: string; email: string; name: string } | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (email: string) => Promise<{ success: boolean; error?: string }>
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
 }
 
@@ -60,7 +61,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true
 
     async function setupListener() {
-      // Dynamic import to avoid SSR issues
       const { supabase } = await import('@/lib/supabase/client')
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
@@ -92,18 +92,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [setUser, clearUser])
 
-  // Login with magic link
-  const login = useCallback(async (email: string) => {
+  // Login with email + password
+  const login = useCallback(async (email: string, password: string) => {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, password }),
       })
       const data = await res.json()
 
       if (!res.ok) {
-        return { success: false, error: data.error || 'Gagal mengirim magic link' }
+        return { success: false, error: data.error || 'Gagal login' }
+      }
+
+      // Update user state immediately
+      if (data.user) {
+        setUser(data.user)
+      }
+
+      return { success: true }
+    } catch {
+      return { success: false, error: 'Terjadi kesalahan jaringan' }
+    }
+  }, [setUser])
+
+  // Register with name, email + password
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Gagal mendaftar' }
       }
 
       return { success: true, message: data.message }
@@ -129,6 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         isAuthenticated,
         login,
+        register,
         logout,
       }}
     >

@@ -3,7 +3,7 @@ import { createRouteHandlerClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    const { email, password } = await request.json()
 
     if (!email || typeof email !== 'string') {
       return NextResponse.json(
@@ -12,38 +12,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
+    if (!password || typeof password !== 'string') {
       return NextResponse.json(
-        { error: 'Format email tidak valid' },
+        { error: 'Password wajib diisi' },
         { status: 400 }
       )
     }
 
     const supabase = await createRouteHandlerClient()
-    const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`,
-      },
+      password,
     })
 
     if (error) {
+      // Map common errors to Indonesian
+      const errorMap: Record<string, string> = {
+        'Invalid login credentials': 'Email atau password salah',
+        'Email not confirmed': 'Email belum diverifikasi. Cek inbox atau spam kamu.',
+        'Too many requests': 'Terlalu banyak percobaan. Coba lagi dalam beberapa menit.',
+      }
+      const message = errorMap[error.message] || error.message
+
       return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
+        { error: message },
+        { status: 401 }
       )
     }
 
+    const { user } = data
+
     return NextResponse.json({
       success: true,
-      message: 'Magic link sudah dikirim ke email kamu',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Trader',
+      },
     })
   } catch {
     return NextResponse.json(
-      { error: 'Terjadi kesalahan saat mengirim magic link' },
+      { error: 'Terjadi kesalahan saat login' },
       { status: 500 }
     )
   }
