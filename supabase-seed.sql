@@ -1,8 +1,8 @@
 -- ========================================
--- PROJECT ALPHA — Supabase Seed Data
+-- PROJECT ALPHA -- Supabase Seed Data
 -- AI Trading Coach | Demo Data
 -- ========================================
--- BUKA: Supabase Dashboard → SQL Editor → Paste → Run
+-- BUKA: Supabase Dashboard -> SQL Editor -> Paste -> Run
 -- JALANKAN SETELAH supabase-schema.sql
 -- ========================================
 
@@ -70,7 +70,7 @@ VALUES
 -- Trade 6: Loss - FOMO
 ('trade-006', 'trader-luthfi-001', 'XAUUSD', 'SHORT', 'M5', 'None', 2345.50, 2355.20, 2350.00, 2330.00, 0.01, -97.0, -97.0, 'USD', 'CLOSED',
  '2025-06-17 12:30:00+00', '2025-06-17 12:55:00+00', 10,
- 'Tidak ada plan — masuk karena lihat harga turun cepat', 'FOMO murni. Tidak ada setup, tidak ada checklist, tidak ada plan. Hanya karena harga bergerak tajam saat news NFP.', 'FOMO', 'Panicked',
+ 'Tidak ada plan -- masuk karena lihat harga turun cepat', 'FOMO murni. Tidak ada setup, tidak ada checklist, tidak ada plan. Hanya karena harga bergerak tajam saat news NFP.', 'FOMO', 'Panicked',
  'JANGAN trade saat news. Tunggu setup, bukan gerakan harga.', true,
  '["fomo", "no_plan", "news_trade"]', NULL, '["fomo"]', 0.05,
  '2025-06-17 12:30:00+00', '2025-06-17 12:55:00+00'),
@@ -127,8 +127,8 @@ VALUES
 
 INSERT INTO "Playbook" ("id", "traderId", "name", "description", "sessionType", "isActive", "sortOrder", "createdAt", "updatedAt")
 VALUES
-('pb-001', 'trader-luthfi-001', 'ICT London Session', 'Setup ICT untuk sesi London — fokus pada Order Block, FVG, dan displacement pada timeframe H1-H4.', 'LONDON', true, 0, NOW(), NOW()),
-('pb-002', 'trader-luthfi-001', 'ICT New York Session', 'Setup ICT untuk sesi New York — fokus pada liquidity sweep dan displacement.', 'NEW_YORK', true, 1, NOW(), NOW()),
+('pb-001', 'trader-luthfi-001', 'ICT London Session', 'Setup ICT untuk sesi London -- fokus pada Order Block, FVG, dan displacement pada timeframe H1-H4.', 'LONDON', true, 0, NOW(), NOW()),
+('pb-002', 'trader-luthfi-001', 'ICT New York Session', 'Setup ICT untuk sesi New York -- fokus pada liquidity sweep dan displacement.', 'NEW_YORK', true, 1, NOW(), NOW()),
 ('pb-003', 'trader-luthfi-001', 'Breakout & Retest', 'Setup breakout dan retest untuk level support/resistance kunci.', 'CUSTOM', true, 2, NOW(), NOW());
 
 -- Link trades to playbooks
@@ -212,7 +212,7 @@ VALUES
 ('ci-003-3-1', 'cl-003-3', 'Tunggu retest ke level breakout', 0, NOW()),
 ('ci-003-3-2', 'cl-003-3', 'Candle konfirmasi di level retest (pin bar / engulfing)', 1, NOW()),
 ('ci-003-3-3', 'cl-003-3', 'Stop loss di bawah/atas breakout level dengan buffer', 2, NOW()),
-('ci-003-3-4', 'cl-003-3', 'Target profit = tinggi zona konsolidasi × 2', 3, NOW()),
+('ci-003-3-4', 'cl-003-3', 'Target profit = tinggi zona konsolidasi  2', 3, NOW()),
 ('ci-003-3-5', 'cl-003-3', 'Max wait 3 candle setelah breakout untuk retest', 4, NOW());
 
 -- ========================================
@@ -222,27 +222,27 @@ VALUES
 INSERT INTO "WeeklyReviewRecord" ("id", "traderId", "weekStart", "weekEnd", "summary", "processScore", "ruleCompliance", "totalTrades", "winRate", "totalPnL", "biggestMistake", "recommendation", "topBehavioralIssue", "playbookUsage", "emotionBreakdown", "createdAt")
 VALUES
 ('wr-1', 'trader-luthfi-001', '2025-06-09', '2025-06-15', 'Minggu pertama cukup baik. Proses trading mulai terbentuk meskipun masih ada beberapa deviasi dari rencana. Perlu fokus pada disiplin stop loss.', 52, 60, 8, 37.5, -120.5,
- 'Memindahkan stop loss lebih jauh karena tidak mau loss — ini menyebabkan kerugian 2x lebih besar dari rencana awal.',
+ 'Memindahkan stop loss lebih jauh karena tidak mau loss -- ini menyebabkan kerugian 2x lebih besar dari rencana awal.',
  'Fokus pada disiplin stop loss minggu depan. Tetapkan SL sebelum entry dan JANGAN pernah pindahkan ke arah yang merugikan.',
  'MOVING_STOP_LOSS', 40, '{"calm":35,"anxious":40,"confident":15,"fearful":10}', '2025-06-15 23:59:59+00'),
 
 ('wr-2', 'trader-luthfi-001', '2025-06-16', '2025-06-22', 'Perbaikan signifikan dalam penggunaan playbook. Masih ada 2 kali revenge trading setelah loss beruntun. Emosi mulai lebih terkontrol.', 58, 65, 10, 45.0, -45.2,
- 'Revenge trading setelah 3 loss beruntun di hari Selasa — masuk tanpa checklist dan tanpa konfirmasi setup.',
+ 'Revenge trading setelah 3 loss beruntun di hari Selasa -- masuk tanpa checklist dan tanpa konfirmasi setup.',
  'Buat aturan: setelah 2 loss berturut-turut, WAJIB istirahat minimal 1 jam sebelum trade lagi. Gunakan checklist sebelum setiap entry.',
  'REVENGE_TRADING', 55, '{"calm":40,"anxious":30,"confident":20,"fearful":10}', '2025-06-22 23:59:59+00'),
 
 ('wr-3', 'trader-luthfi-001', '2025-06-23', '2025-06-29', 'Minggu terbaik sejauh ini! Proses score naik signifikan. Berhasil mengikuti playbook di 80% trade. Emosi lebih stabil.', 67, 78, 7, 57.1, 85.3,
- 'Tutup posisi terlalu cepat di trade GBPJPY yang sebenarnya berjalan sesuai rencana — fear of losing profit.',
+ 'Tutup posisi terlalu cepat di trade GBPJPY yang sebenarnya berjalan sesuai rencana -- fear of losing profit.',
  'Pertahankan kedisiplinan! Gunakan trailing stop alih-alih menutup manual. Biarkan trade berjalan sesuai rencana.',
  'EARLY_CLOSE', 75, '{"calm":50,"anxious":20,"confident":22,"fearful":8}', '2025-06-29 23:59:59+00'),
 
 ('wr-4', 'trader-luthfi-001', '2025-06-30', '2025-07-06', 'Sedikit penurunan performa karena overconfidence setelah minggu lalu. Trade size terlalu besar di beberapa posisi.', 61, 68, 12, 41.7, -32.8,
- 'Meningkatkan lot size 2x dari biasanya karena merasa "dalam performa bagus" — melanggar aturan risk management.',
+ 'Meningkatkan lot size 2x dari biasanya karena merasa "dalam performa bagus" -- melanggar aturan risk management.',
  'Ingat: overconfidence adalah jebakan. Tetap pada risk per trade 1-2% dari equity. Size tetap konsisten.',
  'OVERCONFIDENCE', 65, '{"calm":45,"anxious":15,"confident":32,"fearful":8}', '2025-07-06 23:59:59+00'),
 
 ('wr-5', 'trader-luthfi-001', '2025-07-07', '2025-07-13', 'Kembali ke disiplin yang baik. FOMO berkurang drastis. Proses konsisten meskipun win rate sedikit turun.', 72, 82, 9, 44.4, 55.6,
- 'Entry FOMO di NFP release tanpa rencana — masuk karena melihat harga bergerak cepat.',
+ 'Entry FOMO di NFP release tanpa rencana -- masuk karena melihat harga bergerak cepat.',
  'Buat kalender ekonomi dan TIDAK trade 30 menit sebelum/sesudah major news. Proses > Hasil.',
  'FOMO', 82, '{"calm":55,"anxious":18,"confident":20,"fearful":7}', '2025-07-13 23:59:59+00'),
 
@@ -252,12 +252,12 @@ VALUES
  'EARLY_CLOSE', 90, '{"calm":62,"anxious":12,"confident":20,"fearful":6}', '2025-07-20 23:59:59+00'),
 
 ('wr-7', 'trader-luthfi-001', '2025-07-21', '2025-07-27', 'Minggu challenging dengan volatilitas tinggi. Beberapa trade terpengaruh fear saat drawdown. Perlu memperkuat mental.', 69, 75, 11, 45.5, -18.9,
- 'Fear melanda saat drawdown 3 trade berturut-turut — mulai ragu pada setup dan mengurangi position size terlalu drastis.',
+ 'Fear melanda saat drawdown 3 trade berturut-turut -- mulai ragu pada setup dan mengurangi position size terlalu drastis.',
  'Drawdown adalah bagian normal dari trading. Buat drawdown plan: maksimal 5% per minggu, lalu evaluasi ulang.',
  'FEAR', 78, '{"calm":40,"anxious":28,"confident":18,"fearful":14}', '2025-07-27 23:59:59+00'),
 
 ('wr-8', 'trader-luthfi-001', '2025-07-28', '2025-08-03', 'Pemulihan mental yang baik! Kembali mengikuti proses. Process score mendekati 80. Emosi lebih terkendali.', 76, 85, 7, 57.1, 98.4,
- 'Sedikit kurang sabar menunggu konfirmasi setup sempurna di 2 trade — masuk sedikit terlalu awal.',
+ 'Sedikit kurang sabar menunggu konfirmasi setup sempurna di 2 trade -- masuk sedikit terlalu awal.',
  'Perkuat kesabaran dengan menunggu semua checklist tercentang. Kualitas setup > kuantitas trade.',
  'FOMO', 88, '{"calm":58,"anxious":15,"confident":22,"fearful":5}', '2025-08-03 23:59:59+00');
 
@@ -396,5 +396,5 @@ VALUES (
 );
 
 -- ========================================
--- DONE! ✅ Semua data demo sudah ter-insert
+-- DONE! [OK] Semua data demo sudah ter-insert
 -- ========================================

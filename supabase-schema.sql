@@ -1,8 +1,8 @@
 -- ========================================
--- PROJECT ALPHA — Supabase Schema
+-- PROJECT ALPHA -- Supabase Schema
 -- AI Trading Coach | PostgreSQL
 -- ========================================
--- BUKA: Supabase Dashboard → SQL Editor → Paste → Run
+-- BUKA: Supabase Dashboard -> SQL Editor -> Paste -> Run
 -- ========================================
 
 -- Enable UUID generation
@@ -442,5 +442,5 @@ CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
 );
 
 -- ========================================
--- DONE! ✅
+-- DONE! [OK]
 -- ========================================
