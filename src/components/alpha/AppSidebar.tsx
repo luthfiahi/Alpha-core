@@ -12,10 +12,13 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Menu,
+  LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useNavigationStore, type AppPage } from '@/stores'
+import { useAuthStore } from '@/stores/auth-store'
+import { useAuth } from '@/components/alpha/auth'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -168,6 +171,8 @@ function SidebarContent({
   currentPage: AppPage
   onToggle: () => void
 }) {
+  const user = useAuthStore((s) => s.user)
+  const { logout } = useAuth()
   return (
     <div className="flex h-full flex-col">
       {/* Header with logo + collapse toggle */}
@@ -232,34 +237,52 @@ function SidebarContent({
       {/* User profile (sticky bottom) */}
       <div className="border-t border-[#232636] p-3">
         {!collapsed ? (
-          <div className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)]">
-            <Avatar className="h-8 w-8 shrink-0">
-              <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
-                TR
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-[#F3F4F6]">
-                Trader
-              </p>
-              <p className="truncate text-xs text-[#6B7280]">Pro Plan</p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-3 rounded-lg px-2 py-2">
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
+                  {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-[#F3F4F6]">
+                  {user?.name || 'Trader'}
+                </p>
+                <p className="truncate text-xs text-[#6B7280]">
+                  {user?.email || 'Pro Plan'}
+                </p>
+              </div>
             </div>
+            <button
+              onClick={logout}
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#6B7280] transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#EF4444]"
+            >
+              <LogOut size={16} />
+              <span>Keluar</span>
+            </button>
           </div>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-1">
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <Avatar className="h-8 w-8 cursor-pointer">
                   <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
-                    TR
+                    {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
                   </AvatarFallback>
                 </Avatar>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>
-                <p className="text-xs font-medium">Trader</p>
-                <p className="text-[10px] text-[#9CA3AF]">Pro Plan</p>
+                <p className="text-xs font-medium">{user?.name || 'Trader'}</p>
+                <p className="text-[10px] text-[#9CA3AF]">{user?.email || ''}</p>
               </TooltipContent>
             </Tooltip>
+            <button
+              onClick={logout}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-[#6B7280] transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#EF4444]"
+            >
+              <LogOut size={16} />
+              <span className="sr-only">Keluar</span>
+            </button>
           </div>
         )}
       </div>

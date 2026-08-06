@@ -753,3 +753,50 @@ Stage Summary:
 - ✅ Danger Zone: Reset all data with confirmation dialog
 - Files created: 4 (SettingsPage.tsx, index.ts, settings/route.ts, settings/reset/route.ts)
 - Files modified: 1 (page.tsx — replaced placeholder with real import)
+
+---
+Task ID: 18
+Agent: full-stack-developer
+Task: Build Supabase Authentication system (Magic Link OTP)
+
+Work Log:
+- Created Supabase client library (`src/lib/supabase/client.ts`) using `@supabase/ssr`'s `createBrowserClient` with env vars
+- Created Supabase server client (`src/lib/supabase/server.ts`) with 3 variants:
+  - `createClient()` — for Server Components (uses `next/headers` cookies)
+  - `createMiddlewareClient()` — for middleware (uses request/response objects)
+  - `createRouteHandlerClient()` — for API Route Handlers (uses `next/headers` cookies)
+- Created Supabase middleware (`src/lib/supabase/middleware.ts`) that refreshes session tokens on every request, skips API routes and auth callback
+- Created Next.js middleware entry (`src/middleware.ts`) with matcher excluding static assets and tRPC
+- Created 4 API routes:
+  - `POST /api/auth/login` — sends magic link via `supabase.auth.signInWithOtp()` with email validation
+  - `POST /api/auth/verify` — verifies OTP token_hash via `supabase.auth.verifyOtp()`
+  - `POST /api/auth/logout` — signs out via `supabase.auth.signOut()`
+  - `GET /api/auth/session` — returns current user from `supabase.auth.getUser()`
+- Created auth callback route (`GET /auth/callback`) that exchanges code for session and redirects to home
+- Created auth Zustand store (`src/stores/auth-store.ts`) with `user`, `isAuthenticated`, `isLoading` state and actions
+- Created `AuthProvider` component with React Context providing `user`, `isLoading`, `isAuthenticated`, `login(email)`, `logout()`
+  - Fetches session on mount via `/api/auth/session`
+  - Listens for `SIGNED_IN`/`SIGNED_OUT` events via Supabase `onAuthStateChange`
+  - Dynamic import of Supabase browser client to avoid SSR issues
+- Created `LoginPage` component:
+  - Dark theme centered card with Brain icon branding and "Trade Better. Think Better. Become Better." tagline
+  - Email input with validation, "Kirim Magic Link" button with loading state
+  - After sending: animated "Cek Email Kamu" screen with email confirmation
+  - Error state with red alert, back-to-form button
+  - Subtle gradient background effects, Framer Motion animations
+  - All text in Bahasa Indonesia
+- Created barrel export `src/components/alpha/auth/index.ts`
+- Updated `page.tsx`: wrapped app with `AuthProvider`, added `AuthGuard` component that shows `LoginPage` when not authenticated, `AuthLoadingScreen` when loading
+- Updated `AppSidebar.tsx`: shows user name/email from auth store, added "Keluar" (Logout) button in both expanded and collapsed states
+- Added Supabase env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) to `.env`
+
+Stage Summary:
+- ✅ Complete Supabase Magic Link auth flow: email → magic link → callback → session
+- ✅ Auth state managed via Zustand store + React Context
+- ✅ All API routes use server-side Supabase client with cookie management
+- ✅ Middleware refreshes session tokens automatically
+- ✅ Beautiful dark theme login page matching app design system
+- ✅ Sidebar shows real user info and logout button
+- ✅ Lint passes with 0 errors (1 pre-existing warning in JournalNewPage)
+- Files created: 10 (client.ts, server.ts, middleware.ts, src/middleware.ts, 4 API routes, auth/callback/route.ts, auth-store.ts, AuthProvider.tsx, LoginPage.tsx, auth/index.ts)
+- Files modified: 3 (page.tsx, AppSidebar.tsx, .env)
