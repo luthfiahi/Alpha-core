@@ -53,6 +53,8 @@ server.log
 
 # Database files
 /db/
+tool-results/
+*.png
 *.db
 *.db-journal
 
