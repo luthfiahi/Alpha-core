@@ -28,8 +28,16 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
+      // Map to Indonesian, but still return success to prevent email enumeration
+      // (unless it's a rate limit — user should know to wait)
+      const errorMap: Record<string, string> = {
+        'email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
+        'Email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
+      }
+      const message = errorMap[error.message] || 'Terjadi kesalahan. Coba lagi nanti.'
+
       return NextResponse.json(
-        { error: error.message },
+        { error: message },
         { status: 400 }
       )
     }

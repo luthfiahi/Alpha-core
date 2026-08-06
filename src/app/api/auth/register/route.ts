@@ -50,10 +50,12 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      // Map common errors
+      // Map common errors to Indonesian
       const errorMap: Record<string, string> = {
         'User already registered': 'EMAIL_EXISTS',
         'Password should be at least 6 characters.': 'Password minimal 6 karakter.',
+        'email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
+        'Email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
       }
       const message = errorMap[error.message] || error.message
 
