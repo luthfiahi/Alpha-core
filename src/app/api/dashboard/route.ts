@@ -130,10 +130,8 @@ export async function GET() {
     })
   } catch (error) {
     console.error('[GET /api/dashboard] Error:', error)
-    const message = error instanceof Error ? error.message : String(error)
-    const stack = error instanceof Error ? error.stack?.slice(0, 500) : undefined
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard data', debug: { message, stack } },
+      { error: 'Failed to fetch dashboard data' },
       { status: 500 }
     )
   }

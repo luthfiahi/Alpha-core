@@ -72,6 +72,7 @@ export function DashboardPage() {
         <WelcomeHero
           todayTradesCount={todayCount}
           processScore={score}
+          traderName={data?.trader?.name}
         />
 
         {/* Row 2: Process Score + AI Insight */}

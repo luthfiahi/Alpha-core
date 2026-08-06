@@ -13,11 +13,12 @@ function getGreeting(): string {
 interface WelcomeHeroProps {
   todayTradesCount: number
   processScore: number | null
+  traderName?: string | null
 }
 
-export function WelcomeHero({ todayTradesCount, processScore }: WelcomeHeroProps) {
-  const traderName = useTraderStore((s) => s.traderName)
-  const name = traderName || 'Trader'
+export function WelcomeHero({ todayTradesCount, processScore, traderName }: WelcomeHeroProps) {
+  const storeName = useTraderStore((s) => s.traderName)
+  const name = traderName || storeName || 'Trader'
   const greeting = getGreeting()
 
   const summary = `Ada ${todayTradesCount} trade hari ini.${processScore !== null ? ` Process Score: ${processScore}.` : ''}`
