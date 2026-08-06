@@ -666,3 +666,64 @@ Stage Summary:
 - ✅ Fix: db.ts auto-injects pgbouncer=true for Supabase pooler URLs
 - ✅ Fix: WelcomeHero accepts traderName prop directly for immediate display
 - Files modified: src/lib/db.ts, src/app/api/dashboard/route.ts, src/components/alpha/dashboard/WelcomeHero.tsx, src/components/alpha/dashboard/DashboardPage.tsx
+---
+Task ID: settings-frontend
+Agent: full-stack-developer
+Task: Build Settings Page frontend with Profile, Trading Preferences, Notifications, Danger Zone
+
+Work Log:
+- Analyzed existing code patterns from DashboardPage, AnalyticsPage, JournalNewPage, and multiple dashboard sub-components
+- Reviewed the design system in globals.css (alpha-card, color tokens, font-financial, scrollbar styling)
+- Verified all required shadcn/ui components exist: Card, Input, Select, Switch, Button, Avatar, Separator, AlertDialog, Label, ScrollArea, Badge
+- Read trader store (useTraderStore) to understand traderId, traderName, traderEmail data shape
+- Created SettingsPage.tsx with 5 sections: Profile, Trading Preferences, Notifications, Danger Zone, App Info
+- Profile section: large Avatar with initials fallback, editable name input, read-only email with Verified badge, timezone select dropdown (default Asia/Makassar), save button
+- Trading Preferences section: timeframe select (M1-W1), currency select (USD/EUR/GBP/JPY/IDR), lot size number input (step 0.01), trading style select (Scalper/Day Trader/Swing Trader/Position Trader), save button
+- Notifications section: 3 toggle switches all defaulting ON — Weekly Review Reminder, Behavioral Alert, Growth Report Ready — each with title and description
+- Danger Zone section: red accent border, Reset All Data button with AlertDialog confirmation dialog
+- App Info section: centered text with Project Alpha, v0.2.1, made with ❤️
+- All save buttons show toast 'Pengaturan berhasil disimpan' via sonner
+- Used ScrollArea container, max-w-2xl centered layout, gap-6 between sections
+- Consistent dark theme: bg-[#151827] cards, bg-[#1E2030] inputs, border-[#232636], text-[#F3F4F6]/[#9CA3AF]/[#6B7280]
+- Created barrel export index.ts
+- Ran bun run lint — 0 errors (1 pre-existing warning in JournalNewPage.tsx unrelated to this task)
+- Did NOT modify page.tsx, AppSidebar.tsx, or stores/index.ts
+
+Stage Summary:
+- Created src/components/alpha/settings/SettingsPage.tsx — full settings page with 5 sections
+- Created src/components/alpha/settings/index.ts — barrel export
+- Lint clean, follows existing dark theme design system patterns
+- All text in Bahasa Indonesia
+- Save buttons use toast notifications (API integration deferred)
+
+---
+Task ID: settings-api
+Agent: full-stack-developer
+Task: Build Settings API routes for profile update and data reset
+
+Work Log:
+- Read existing Prisma schema (22 models) and API patterns from trades/route.ts
+- Created src/app/api/settings/route.ts — PUT handler with type discriminator
+  - `profile`: validates name (non-empty, ≤50 chars) and timezone (from allowed list), updates via db.trader.update()
+  - `preferences`: returns success (client-side localStorage)
+  - `notifications`: returns success (client-side localStorage)
+- Created src/app/api/settings/reset/route.ts — DELETE handler
+  - Deletes all 22 tables in dependency order (child tables first)
+  - Does NOT delete the Trader record itself
+  - Returns success with per-table deletion counts
+- Updated src/components/alpha/settings/SettingsPage.tsx
+  - Wired handleSaveProfile to PUT /api/settings with type=profile
+  - Wired handleSaveTradingPrefs to localStorage persistence
+  - Wired handleResetAll to DELETE /api/settings/reset
+  - Added timezone state + controlled Select component
+  - Added loading states (Loader2 spinner) on all three buttons
+  - Added error handling with toast.error for API failures
+  - Profile save updates Zustand store with refreshed trader name
+- Ran bun run lint — 0 errors, 1 pre-existing warning (unrelated)
+
+Stage Summary:
+- 2 new API routes: PUT /api/settings and DELETE /api/settings/reset
+- SettingsPage fully wired to backend with loading/error states
+- Profile name + timezone persisted to DB; preferences stored in localStorage
+- Reset deletes 22 data tables, preserves Trader identity
+- Lint clean

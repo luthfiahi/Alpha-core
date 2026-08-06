@@ -10,30 +10,7 @@ import { CoachingPage } from '@/components/alpha/coaching'
 import { AnalyticsPage } from '@/components/alpha/analytics'
 import { PlaybookPage } from '@/components/alpha/playbook'
 import { TradingDNAPage } from '@/components/alpha/trading-dna'
-
-// ========================================
-// Placeholder pages
-// ========================================
-const PlaceholderPage = ({ title, icon, description }: { title: string; icon: string; description: string }) => (
-  <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-    <div className="size-16 rounded-2xl bg-[#151827] border border-[#232636] flex items-center justify-center">
-      <span className="text-2xl">{icon}</span>
-    </div>
-    <h2 className="text-xl font-semibold text-[#F3F4F6]">{title}</h2>
-    <p className="text-sm text-[#9CA3AF] max-w-md text-center">{description}</p>
-    <span className="inline-flex items-center gap-1.5 text-xs text-[#6B7280] bg-[#151827] border border-[#232636] px-3 py-1.5 rounded-full">
-      🚧 Coming Soon
-    </span>
-  </div>
-)
-
-const SettingsPage = () => (
-  <PlaceholderPage
-    title="Settings"
-    icon="⚙️"
-    description="Profile, preferences, akun, dan pengaturan platform."
-  />
-)
+import { SettingsPage } from '@/components/alpha/settings'
 
 // ========================================
 // Page map for client-side routing
