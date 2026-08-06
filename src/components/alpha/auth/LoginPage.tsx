@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Brain,
@@ -87,6 +87,19 @@ export function LoginPage() {
   const [view, setView] = useState<ViewState>('login')
   const [formState, setFormState] = useState<FormState>('idle')
   const [formError, setFormError] = useState('')
+  const [authCallbackError, setAuthCallbackError] = useState('')
+
+  // Check for auth error from URL params (e.g., expired link)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const error = params.get('auth_error')
+    if (error) {
+      // Use microtask to avoid synchronous setState in effect
+      queueMicrotask(() => setAuthCallbackError(error))
+      // Clean URL
+      window.history.replaceState({}, '', '/')
+    }
+  }, [])
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState('')
@@ -199,6 +212,27 @@ export function LoginPage() {
         className="relative z-10 w-full max-w-[400px]"
       >
         <div className="rounded-2xl border border-[#232636] bg-[#151827] p-8 shadow-2xl shadow-black/40">
+          {/* Auth callback error banner (e.g., expired link) */}
+          <AnimatePresence>
+            {authCallbackError && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-4 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5 text-xs text-amber-400 leading-relaxed"
+              >
+                ⚠️ {authCallbackError}
+                <button
+                  type="button"
+                  onClick={() => setAuthCallbackError('')}
+                  className="float-right text-amber-500/60 hover:text-amber-400 ml-2"
+                >
+                  ✕
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <AnimatePresence mode="wait">
             {/* ═══════ LOGIN VIEW ═══════ */}
             {view === 'login' && (
