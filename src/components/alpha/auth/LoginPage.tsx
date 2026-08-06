@@ -145,6 +145,10 @@ export function LoginPage() {
 
     if (result.success) {
       setView('register-success')
+    } else if (result.error === 'EMAIL_EXISTS') {
+      // Email already registered → redirect to forgot password to set password
+      setForgotEmail(regEmail.trim())
+      switchView('forgot')
     } else {
       setFormState('error')
       setFormError(result.error || 'Gagal mendaftar')
@@ -504,10 +508,12 @@ export function LoginPage() {
                     <KeyRound className="h-7 w-7 text-amber-400" />
                   </motion.div>
                   <h2 className="text-lg font-semibold text-[#F3F4F6]">
-                    Lupa Password?
+                    {regEmail.trim() ? 'Buat Password untuk Akun Kamu' : 'Lupa Password?'}
                   </h2>
                   <p className="mt-1 text-xs text-[#6B7280] leading-relaxed">
-                    Masukkan email kamu dan kami akan kirim link untuk reset password.
+                    {regEmail.trim()
+                      ? 'Akun kamu sudah ada. Kirim link untuk membuat password baru.'
+                      : 'Masukkan email kamu dan kami akan kirim link untuk reset password.'}
                   </p>
                 </div>
 

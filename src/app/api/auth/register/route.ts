@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       // Map common errors
       const errorMap: Record<string, string> = {
-        'User already registered': 'Email sudah terdaftar. Silakan login.',
+        'User already registered': 'EMAIL_EXISTS',
         'Password should be at least 6 characters.': 'Password minimal 6 karakter.',
       }
       const message = errorMap[error.message] || error.message
