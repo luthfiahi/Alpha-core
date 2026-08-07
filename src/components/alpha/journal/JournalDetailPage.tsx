@@ -129,10 +129,9 @@ export function JournalDetailPage() {
   const navigate = useNavigationStore((s) => s.navigate);
   const queryClient = useQueryClient();
 
-  const [isEditingReflection, setIsEditingReflection] = useState(false);
-  const [reflectionNotes, setReflectionNotes] = useState('');
-  const [lessonLearned, setLessonLearned] = useState('');
-  const [emotionAfter, setEmotionAfter] = useState('');
+  // Edit form state — null means not editing, object holds draft values
+  const [editForm, setEditForm] = useState<{ notes: string; lesson: string; emotion: string } | null>(null);
+  const isEditingReflection = editForm !== null;
 
   const { data, isLoading } = useQuery<{ trade: TradeItem }>({
     queryKey: ['trade', selectedTradeId],
@@ -145,13 +144,6 @@ export function JournalDetailPage() {
   });
 
   const trade = data?.trade;
-
-  // Initialize reflection edit state when data loads
-  if (trade && !isEditingReflection) {
-    if (reflectionNotes !== trade.reflectionNotes) setReflectionNotes(trade.reflectionNotes || '');
-    if (lessonLearned !== trade.lessonLearned) setLessonLearned(trade.lessonLearned || '');
-    if (emotionAfter !== trade.emotionAfter) setEmotionAfter(trade.emotionAfter || '');
-  }
 
   const updateMutation = useMutation({
     mutationFn: async (updateData: Record<string, unknown>) => {
@@ -176,7 +168,7 @@ export function JournalDetailPage() {
  queryClient.invalidateQueries({ queryKey: ['trades'] });
       queryClient.invalidateQueries({ queryKey: ['trade', selectedTradeId] });
       toast.success('Berhasil disimpan!');
-      setIsEditingReflection(false);
+      setEditForm(null);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -198,11 +190,24 @@ export function JournalDetailPage() {
   });
 
   const handleSaveReflection = () => {
+    if (!editForm) return;
     updateMutation.mutate({
-      reflectionNotes,
-      lessonLearned,
-      emotionAfter: emotionAfter || null,
+      reflectionNotes: editForm.notes,
+      lessonLearned: editForm.lesson,
+      emotionAfter: editForm.emotion || null,
     });
+  };
+
+  const handleStartEdit = () => {
+    setEditForm({
+      notes: trade?.reflectionNotes || '',
+      lesson: trade?.lessonLearned || '',
+      emotion: trade?.emotionAfter || '',
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditForm(null);
   };
 
   const handleClose = () => {
@@ -495,13 +500,13 @@ export function JournalDetailPage() {
 
           <Separator className='bg-[#232636]' />
 
-          {isEditingReflection ? (
+          {isEditingReflection && editForm ? (
             <div className='space-y-4'>
               <div>
                 <label className='text-xs text-[#9CA3AF] block mb-1.5'>Emosi Setelah Trade</label>
                 <input
-                  value={emotionAfter}
-                  onChange={(e) => setEmotionAfter(e.target.value)}
+                  value={editForm.emotion}
+                  onChange={(e) => setEditForm({ ...editForm, emotion: e.target.value })}
                   placeholder='Tenang, Disesalkan, Bangga...'
                   className='w-full bg-[#0B0D17] border border-[#232636] rounded-lg px-3 py-2 text-sm text-[#F3F4F6] placeholder:text-[#6B7280] focus:outline-none focus:border-[#6366F1]/40'
                 />
@@ -509,8 +514,8 @@ export function JournalDetailPage() {
               <div>
                 <label className='text-xs text-[#9CA3AF] block mb-1.5'>Catatan Refleksi</label>
                 <Textarea
-                  value={reflectionNotes}
-                  onChange={(e) => setReflectionNotes(e.target.value)}
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
                   placeholder='Apa yang kamu pelajari dari trade ini?'
                   rows={4}
                   className='bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
@@ -522,8 +527,8 @@ export function JournalDetailPage() {
                   Lesson Learned
                 </label>
                 <Textarea
-                  value={lessonLearned}
-                  onChange={(e) => setLessonLearned(e.target.value)}
+                  value={editForm.lesson}
+                  onChange={(e) => setEditForm({ ...editForm, lesson: e.target.value })}
                   placeholder='Apa pelajaran utama dari trade ini?'
                   rows={3}
                   className='bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
@@ -552,7 +557,7 @@ export function JournalDetailPage() {
                   variant='ghost'
                   size='sm'
                   className='text-[#9CA3AF]'
-                  onClick={() => setIsEditingReflection(false)}
+                  onClick={handleCancelEdit}
                 >
                   Batal
                 </Button>
@@ -594,7 +599,7 @@ export function JournalDetailPage() {
                 variant='outline'
                 size='sm'
                 className='border-[#232636] text-[#9CA3AF] hover:text-[#F3F4F6]'
-                onClick={() => setIsEditingReflection(true)}
+                onClick={handleStartEdit}
               >
                 <Pencil className='size-3.5' />
                 {trade.hasReflected ? 'Edit Reflection' : 'Tulis Reflection'}

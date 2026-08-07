@@ -1,7 +1,6 @@
 'use client'
 
 import React, { Component, Suspense, useSyncExternalStore, useCallback, type ErrorInfo, type ReactNode } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigationStore } from '@/stores'
 import { useAuthStore } from '@/stores/auth-store'
 import { AuthProvider, LoginPage } from '@/components/alpha/auth'
@@ -102,27 +101,19 @@ class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState>
 function PageContent() {
   const currentPage = useNavigationStore((s) => s.currentPage)
 
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={currentPage}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-      >
-        {currentPage === 'dashboard' && <DashboardPage />}
-        {currentPage === 'journal' && <JournalPage />}
-        {currentPage === 'journal-new' && <JournalNewPage />}
-        {currentPage === 'journal-detail' && <JournalDetailPage />}
-        {currentPage === 'coaching' && <CoachingPage />}
-        {currentPage === 'analytics' && <AnalyticsPage />}
-        {currentPage === 'playbook' && <PlaybookPage />}
-        {currentPage === 'trading-dna' && <TradingDNAPage />}
-        {currentPage === 'settings' && <SettingsPage />}
-      </motion.div>
-    </AnimatePresence>
-  )
+  // Simple conditional rendering — no AnimatePresence to avoid React #301 hydration errors
+  switch (currentPage) {
+    case 'dashboard': return <DashboardPage />
+    case 'journal': return <JournalPage />
+    case 'journal-new': return <JournalNewPage />
+    case 'journal-detail': return <JournalDetailPage />
+    case 'coaching': return <CoachingPage />
+    case 'analytics': return <AnalyticsPage />
+    case 'playbook': return <PlaybookPage />
+    case 'trading-dna': return <TradingDNAPage />
+    case 'settings': return <SettingsPage />
+    default: return <DashboardPage />
+  }
 }
 
 // ========================================
