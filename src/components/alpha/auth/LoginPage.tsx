@@ -24,7 +24,7 @@ import { useAuth } from './AuthProvider'
 // With: Login, Register, Forgot Password
 // ========================================
 
-type ViewState = 'login' | 'register' | 'forgot' | 'forgot-success' | 'register-success'
+type ViewState = 'login' | 'register' | 'forgot' | 'forgot-success' | 'register-success' | 'reset-done'
 type FormState = 'idle' | 'loading' | 'error'
 
 const inputClass =
@@ -113,6 +113,9 @@ export function LoginPage() {
 
   // Forgot password field
   const [forgotEmail, setForgotEmail] = useState('')
+  // Reset password fields
+  const [resetNewPassword, setResetNewPassword] = useState('')
+  const [showResetPassword, setShowResetPassword] = useState(false)
 
   function resetFormState() {
     setFormState('idle')
@@ -182,7 +185,7 @@ export function LoginPage() {
     }
   }
 
-  // ─── Handle Forgot Password ───────────────
+  // ─── Handle Forgot Password (email link) ───────────────
   async function handleForgotPassword(e: React.FormEvent) {
     e.preventDefault()
     if (!forgotEmail.trim()) return
@@ -197,6 +200,42 @@ export function LoginPage() {
     } else {
       setFormState('error')
       setFormError(result.error || 'Gagal mengirim link reset')
+    }
+  }
+
+  // ─── Handle Direct Password Reset (no email needed) ─────────
+  async function handleAdminReset(e: React.FormEvent) {
+    e.preventDefault()
+    if (!forgotEmail.trim() || !resetNewPassword) return
+    if (resetNewPassword.length < 6) {
+      setFormState('error')
+      setFormError('Password minimal 6 karakter')
+      return
+    }
+
+    setFormState('loading')
+    setFormError('')
+
+    try {
+      const res = await fetch('/api/auth/admin-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail.trim(), newPassword: resetNewPassword }),
+      })
+      const data = await res.json()
+
+      if (res.ok) {
+        // Password reset success — go to reset-done view
+        setLoginEmail(forgotEmail.trim())
+        setLoginPassword(resetNewPassword)
+        setView('reset-done')
+      } else {
+        setFormState('error')
+        setFormError(data.error || 'Gagal reset password')
+      }
+    } catch {
+      setFormState('error')
+      setFormError('Terjadi kesalahan jaringan')
     }
   }
 
@@ -611,6 +650,95 @@ export function LoginPage() {
                     )}
                   </Button>
                 </form>
+
+                {/* Divider — or direct reset */}
+                <div className="my-4 flex items-center gap-3">
+                  <div className="h-px flex-1 bg-[#232636]" />
+                  <span className="text-[11px] text-[#4B5563]">atau reset langsung</span>
+                  <div className="h-px flex-1 bg-[#232636]" />
+                </div>
+
+                <p className="text-center text-[10px] text-[#4B5563] mb-3 leading-relaxed">
+                  Kalau email tidak masuk, kamu bisa langsung set password baru di bawah:
+                </p>
+
+                {/* Direct password reset form */}
+                <form onSubmit={handleAdminReset} className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-new-password" className={labelClass}>
+                      Password Baru
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="reset-new-password"
+                        type={showResetPassword ? 'text' : 'password'}
+                        placeholder="Minimal 6 karakter"
+                        value={resetNewPassword}
+                        onChange={(e) => {
+                          setResetNewPassword(e.target.value)
+                          if (formState === 'error') resetFormState()
+                        }}
+                        disabled={formState === 'loading'}
+                        className={`${inputClass} pr-10`}
+                        autoComplete="new-password"
+                      />
+                      <PasswordToggle show={showResetPassword} onToggle={() => setShowResetPassword(!showResetPassword)} />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={formState === 'loading' || !forgotEmail.trim() || !resetNewPassword || resetNewPassword.length < 6}
+                    className="h-11 w-full rounded-lg bg-[#6366F1] text-sm font-semibold text-white hover:bg-[#5558E6] active:bg-[#4F46E5] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {formState === 'loading' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Mereset...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="mr-2 h-4 w-4" />
+                        Set Password Baru
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </motion.div>
+            )}
+
+            {/* ═══════ RESET DONE ═══════ */}
+            {view === 'reset-done' && (
+              <motion.div
+                key="reset-done"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: 'spring', stiffness: 200, damping: 15 }}
+                  className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-500/25"
+                >
+                  <Lock className="h-8 w-8 text-emerald-400" />
+                </motion.div>
+
+                <h2 className="mb-2 text-xl font-semibold text-[#F3F4F6]">
+                  Password Berhasil Diubah! ✅
+                </h2>
+                <p className="mb-8 text-xs text-[#6B7280] leading-relaxed">
+                  Password kamu sudah diupdate. Sekarang langsung login.
+                </p>
+
+                <Button
+                  onClick={() => switchView('login')}
+                  className="h-11 w-full rounded-lg bg-[#6366F1] text-sm font-semibold text-white hover:bg-[#5558E6] transition-colors"
+                >
+                  Masuk Sekarang
+                </Button>
               </motion.div>
             )}
 
