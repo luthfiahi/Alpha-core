@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import ZAI from 'z-ai-web-dev-sdk'
 import { buildTraderContext } from '@/lib/ai/memory/context-builder'
 import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
 import { db } from '@/lib/db'
+import { createZAI } from '@/lib/zai'
 
 // ========================================
 // Free Chat System Prompt
@@ -391,7 +391,7 @@ export async function POST(request: NextRequest) {
     )
 
     // Use z-ai-web-dev-sdk for chat completion (non-streaming, with typing effect via ReadableStream)
-    const zai = await ZAI.create()
+    const zai = await createZAI()
 
     let aiText = ''
 
