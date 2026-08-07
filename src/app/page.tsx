@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Component, Suspense, type ErrorInfo, type ReactNode } from 'react'
+import React, { Component, Suspense, useEffect, useState, type ErrorInfo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigationStore } from '@/stores'
 import { useAuthStore } from '@/stores/auth-store'
@@ -15,6 +15,18 @@ import { TradingDNAPage } from '@/components/alpha/trading-dna'
 import { SettingsPage } from '@/components/alpha/settings'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+
+// ========================================
+// Client-only mount guard — prevents hydration mismatch
+// ========================================
+function ClientOnly({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  if (!mounted) return <AuthLoadingScreen />
+  return <>{children}</>
+}
 
 // ========================================
 // Error Boundary — catches React crashes
@@ -69,18 +81,6 @@ class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState>
             >
               <RefreshCw size={16} />
               Muat Ulang Halaman
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                this.setState({ hasError: false, error: null })
-                // Navigate back to dashboard
-                const store = useNavigationStore.getState()
-                store.navigate('dashboard')
-              }}
-              className="gap-2 text-[#9CA3AF] hover:text-[#F3F4F6]"
-            >
-              Kembali ke Dashboard
             </Button>
           </div>
         </div>
@@ -157,17 +157,19 @@ function AuthLoadingScreen() {
 // ========================================
 export default function Home() {
   return (
-    <AuthProvider>
-      <AuthGuard>
-        <AppErrorBoundary>
-          <AppLayout>
-            <Suspense fallback={<PageSkeleton />}>
-              <PageContent />
-            </Suspense>
-          </AppLayout>
-        </AppErrorBoundary>
-      </AuthGuard>
-    </AuthProvider>
+    <ClientOnly>
+      <AuthProvider>
+        <AuthGuard>
+          <AppErrorBoundary>
+            <AppLayout>
+              <Suspense fallback={<PageSkeleton />}>
+                <PageContent />
+              </Suspense>
+            </AppLayout>
+          </AppErrorBoundary>
+        </AuthGuard>
+      </AuthProvider>
+    </ClientOnly>
   )
 }
 
