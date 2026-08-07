@@ -1,77 +1,59 @@
-import fs from 'fs/promises'
-import path from 'path'
-import ZAI from 'z-ai-web-dev-sdk'
-
 /**
- * Ensures the .z-ai-config file exists in the working directory.
+ * Direct Z.ai LLM API helper — no SDK dependency.
  *
- * The z-ai-web-dev-sdk reads its configuration from a .z-ai-config file.
- * On the Z.ai sandbox, this file exists at /etc/.z-ai-config.
- * On Vercel (production), it doesn't exist — so we create it from
- * environment variables or fallback defaults.
+ * The z-ai-web-dev-sdk requires a .z-ai-config file which doesn't exist
+ * on Vercel. This helper calls the API directly via fetch.
  */
-let ensured = false
 
-async function ensureZAIConfig(): Promise<void> {
-  if (ensured) return
+interface ChatCompletionResponse {
+  choices?: Array<{
+    finish_reason?: string
+    message?: { content?: string; role?: string }
+  }>
+  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number }
+}
 
-  const configPath = path.join(process.cwd(), '.z-ai-config')
-
-  try {
-    await fs.access(configPath)
-    ensured = true
-    return
-  } catch {
-    // File doesn't exist — create it
-  }
-
-  // Priority 1: Environment variables
-  const baseUrl = process.env.ZAI_BASE_URL
-  const apiKey = process.env.ZAI_API_KEY
-
-  if (baseUrl && apiKey) {
-    const config: Record<string, string> = { baseUrl, apiKey }
-    if (process.env.ZAI_CHAT_ID) config.chatId = process.env.ZAI_CHAT_ID
-    if (process.env.ZAI_USER_ID) config.userId = process.env.ZAI_USER_ID
-    if (process.env.ZAI_TOKEN) config.token = process.env.ZAI_TOKEN
-
-    try {
-      await fs.writeFile(configPath, JSON.stringify(config, null, 2))
-      ensured = true
-    } catch (writeErr) {
-      console.error('Failed to write .z-ai-config:', writeErr)
-    }
-    return
-  }
-
-  // Priority 2: Fallback defaults (Z.ai platform credentials)
-  // These are platform-level credentials, not user secrets.
-  const defaultConfig = {
-    baseUrl: 'https://internal-api.z.ai/v1',
-    apiKey: 'Z.ai',
-    chatId: process.env.ZAI_CHAT_ID || '',
-    userId: process.env.ZAI_USER_ID || '',
-    token: process.env.ZAI_TOKEN || '',
-  }
-
-  try {
-    await fs.writeFile(configPath, JSON.stringify(defaultConfig, null, 2))
-    ensured = true
-  } catch (writeErr) {
-    console.error('Failed to write .z-ai-config (fallback):', writeErr)
+function getConfig() {
+  return {
+    baseUrl: process.env.ZAI_BASE_URL || 'https://internal-api.z.ai/v1',
+    apiKey: process.env.ZAI_API_KEY || 'Z.ai',
+    chatId: process.env.ZAI_CHAT_ID || undefined,
+    userId: process.env.ZAI_USER_ID || undefined,
+    token: process.env.ZAI_TOKEN || undefined,
   }
 }
 
 /**
- * Creates a ZAI SDK instance with config auto-provisioned.
- *
- * Use this instead of `ZAI.create()` in all API routes.
- * It ensures the .z-ai-config file exists (via env vars on Vercel)
- * before the SDK tries to read it.
+ * Call the Z.ai chat completions API directly.
+ * Uses the same interface as z-ai-web-dev-sdk for easy migration.
  */
-export async function createZAI() {
-  await ensureZAIConfig()
-  return ZAI.create()
-}
+export async function chatCompletion(messages: Array<{ role: string; content: string }>): Promise<string> {
+  const config = getConfig()
+  const url = `${config.baseUrl}/chat/completions`
 
-export { ensureZAIConfig }
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${config.apiKey}`,
+    'X-Z-AI-From': 'Z',
+  }
+  if (config.chatId) headers['X-Chat-Id'] = config.chatId
+  if (config.userId) headers['X-User-Id'] = config.userId
+  if (config.token) headers['X-Token'] = config.token
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      messages,
+      thinking: { type: 'disabled' },
+    }),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '')
+    throw new Error(`AI API error ${response.status}: ${errorText}`)
+  }
+
+  const data: ChatCompletionResponse = await response.json()
+  return data.choices?.[0]?.message?.content || ''
+}

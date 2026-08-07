@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { buildTraderContext } from '@/lib/ai/memory/context-builder'
 import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
 import { db } from '@/lib/db'
-import { createZAI } from '@/lib/zai'
+import { chatCompletion } from '@/lib/zai'
 
 // ========================================
 // Free Chat System Prompt
@@ -390,20 +390,13 @@ export async function POST(request: NextRequest) {
       }))
     )
 
-    // Use z-ai-web-dev-sdk for chat completion (non-streaming, with typing effect via ReadableStream)
-    const zai = await createZAI()
-
+    // Call Z.ai LLM API directly (no SDK dependency)
     let aiText = ''
 
     try {
-      const response = await zai.chat.completions.create({
-        messages: fullMessages,
-        thinking: { type: 'disabled' },
-      })
-
-      aiText = response.choices?.[0]?.message?.content || ''
+      aiText = await chatCompletion(fullMessages)
     } catch (aiErr) {
-      console.error('AI SDK call failed:', aiErr)
+      console.error('AI API call failed:', aiErr)
       return NextResponse.json(
         { error: 'AI Coach sedang tidak tersedia. Coba lagi nanti.' },
         { status: 503 }
