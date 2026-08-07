@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Suspense } from 'react'
+import React, { Component, Suspense, type ErrorInfo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigationStore } from '@/stores'
 import { useAuthStore } from '@/stores/auth-store'
@@ -13,6 +13,83 @@ import { AnalyticsPage } from '@/components/alpha/analytics'
 import { PlaybookPage } from '@/components/alpha/playbook'
 import { TradingDNAPage } from '@/components/alpha/trading-dna'
 import { SettingsPage } from '@/components/alpha/settings'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+// ========================================
+// Error Boundary — catches React crashes
+// ========================================
+interface ErrorBoundaryProps {
+  children: ReactNode
+  fallback?: ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+  error: Error | null
+}
+
+class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('[APP ERROR BOUNDARY]', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#0B0D17] p-6">
+          <div className="flex flex-col items-center gap-4 max-w-md text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/15 ring-1 ring-red-500/25">
+              <AlertTriangle className="h-8 w-8 text-red-400" />
+            </div>
+            <h2 className="text-lg font-semibold text-[#F3F4F6]">Terjadi Kesalahan</h2>
+            <p className="text-sm text-[#9CA3AF] leading-relaxed">
+              {this.state.error?.message || 'Halaman mengalami error yang tidak terduga.'}
+            </p>
+            <div className="w-full rounded-lg bg-[#151827] border border-[#232636] p-3 mt-2">
+              <p className="text-[10px] text-[#4B5563] font-mono break-all">
+                {this.state.error?.stack?.split('\n').slice(0, 3).join('\n') || 'No stack trace'}
+              </p>
+            </div>
+            <Button
+              onClick={() => {
+                this.setState({ hasError: false, error: null })
+                window.location.reload()
+              }}
+              className="gap-2 bg-[#6366F1] hover:bg-[#5558E6]"
+            >
+              <RefreshCw size={16} />
+              Muat Ulang Halaman
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                this.setState({ hasError: false, error: null })
+                // Navigate back to dashboard
+                const store = useNavigationStore.getState()
+                store.navigate('dashboard')
+              }}
+              className="gap-2 text-[#9CA3AF] hover:text-[#F3F4F6]"
+            >
+              Kembali ke Dashboard
+            </Button>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
 
 // ========================================
 // Page map for client-side routing
@@ -82,11 +159,13 @@ export default function Home() {
   return (
     <AuthProvider>
       <AuthGuard>
-        <AppLayout>
-          <Suspense fallback={<PageSkeleton />}>
-            <PageContent />
-          </Suspense>
-        </AppLayout>
+        <AppErrorBoundary>
+          <AppLayout>
+            <Suspense fallback={<PageSkeleton />}>
+              <PageContent />
+            </Suspense>
+          </AppLayout>
+        </AppErrorBoundary>
       </AuthGuard>
     </AuthProvider>
   )
