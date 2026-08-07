@@ -125,6 +125,21 @@ export function LoginPage() {
     resetFormState()
   }
 
+  // ─── Clear all Supabase cookies ───────────
+  function clearAuthCookies() {
+    // Remove all Supabase auth cookies
+    document.cookie.split(';').forEach((c) => {
+      const name = c.trim().split('=')[0]
+      if (name.startsWith('sb-') || name === 'supabase-auth-token') {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`
+      }
+    })
+    // Also clear localStorage
+    try {
+      localStorage.removeItem('supabase.auth.token')
+    } catch { /* ignore */ }
+  }
+
   // ─── Handle Login ────────────────────────
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -293,7 +308,19 @@ export function LoginPage() {
                   {/* Error */}
                   <AnimatePresence>
                     {formState === 'error' && formError && (
-                      <ErrorBox message={formError} />
+                      <div>
+                        <ErrorBox message={formError} />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            clearAuthCookies()
+                            resetFormState()
+                          }}
+                          className="mt-2 block w-full text-center text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                        >
+                          🔄 Bersihkan data login & coba lagi
+                        </button>
+                      </div>
                     )}
                   </AnimatePresence>
 
