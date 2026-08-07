@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { useAuthStore } from '@/stores/auth-store'
+import { supabase } from '@/lib/supabase/client'
 
 // ========================================
 // Auth Context
@@ -11,8 +12,9 @@ interface AuthContextValue {
   user: { id: string; email: string; name: string } | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; debugCode?: string }>
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  forgotPassword: (email: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
 }
 
@@ -27,6 +29,29 @@ export function useAuth() {
 }
 
 // ========================================
+// Error message mapping (Indonesian)
+// ========================================
+
+const loginErrorMap: Record<string, string> = {
+  'Invalid login credentials': 'Email atau password salah',
+  'Email not confirmed': 'Email belum diverifikasi. Cek inbox atau spam kamu.',
+  'Too many requests': 'Terlalu banyak percobaan. Coba lagi dalam beberapa menit.',
+  'Invalid API key': 'Konfigurasi API tidak valid. Hubungi admin.',
+  'user not found': 'Email atau password salah',
+}
+
+const registerErrorMap: Record<string, string> = {
+  'User already registered': 'EMAIL_EXISTS',
+  'email rate limit exceeded': 'Terlalu banyak permintaan. Tunggu 5-10 menit.',
+  'Email rate limit exceeded': 'Terlalu banyak permintaan. Tunggu 5-10 menit.',
+}
+
+const forgotErrorMap: Record<string, string> = {
+  'email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
+  'Email rate limit exceeded': 'Terlalu banyak permintaan email. Tunggu 5-10 menit lalu coba lagi.',
+}
+
+// ========================================
 // AuthProvider Component
 // ========================================
 
@@ -34,115 +59,164 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, isLoading, setUser, clearUser, setLoading } = useAuthStore()
   const initialized = useRef(false)
 
-  // Fetch session on mount
+  // Check existing session on mount
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
 
-    async function fetchSession() {
+    async function checkSession() {
       try {
-        const res = await fetch('/api/auth/session')
-        const data = await res.json()
-        if (data.user) {
-          setUser(data.user)
+        // Use browser client to check existing session
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
+          })
         } else {
           clearUser()
         }
-      } catch {
+      } catch (err) {
+        console.error('[AUTH SESSION CHECK ERROR]', err)
         clearUser()
       }
     }
 
-    fetchSession()
+    checkSession()
   }, [setUser, clearUser])
 
   // Listen for auth state changes via Supabase browser client
   useEffect(() => {
-    let mounted = true
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[AUTH STATE CHANGE]', event)
 
-    async function setupListener() {
-      const { supabase } = await import('@/lib/supabase/client')
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
-        if (!mounted) return
-
-        if (event === 'SIGNED_IN') {
-          const { data: { user: authUser } } = await supabase.auth.getUser()
-          if (authUser) {
-            setUser({
-              id: authUser.id,
-              email: authUser.email || '',
-              name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Trader',
-            })
-          }
-        } else if (event === 'SIGNED_OUT') {
-          clearUser()
-        }
-      })
-
-      return () => {
-        subscription.unsubscribe()
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
+        })
+      } else if (event === 'SIGNED_OUT') {
+        clearUser()
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        // Update user data on token refresh
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
+        })
       }
-    }
-
-    setupListener()
+    })
 
     return () => {
-      mounted = false
+      subscription.unsubscribe()
     }
   }, [setUser, clearUser])
 
-  // Login with email + password
+  // Login with email + password (browser client)
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      console.log('[AUTH LOGIN] Attempting login for:', email)
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
       })
-      const data = await res.json()
 
-      if (!res.ok) {
-        return { success: false, error: data.error || 'Gagal login' }
+      if (error) {
+        console.error('[AUTH LOGIN ERROR]', {
+          message: error.message,
+          status: error.status,
+          code: (error as { code?: string }).code || 'unknown',
+        })
+
+        const message = loginErrorMap[error.message] || error.message
+        return {
+          success: false,
+          error: message,
+          debugCode: (error as { code?: string }).code,
+        }
       }
 
-      // Update user state immediately
-      if (data.user) {
-        setUser(data.user)
-      }
-
+      // onAuthStateChange will handle setting the user state
+      console.log('[AUTH LOGIN] Success for:', data.user?.email)
       return { success: true }
-    } catch {
-      return { success: false, error: 'Terjadi kesalahan jaringan' }
-    }
-  }, [setUser])
-
-  // Register with name, email + password
-  const register = useCallback(async (name: string, email: string, password: string) => {
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        return { success: false, error: data.error || 'Gagal mendaftar' }
-      }
-
-      return { success: true, message: data.message }
-    } catch {
-      return { success: false, error: 'Terjadi kesalahan jaringan' }
+    } catch (err) {
+      console.error('[AUTH LOGIN EXCEPTION]', err)
+      return { success: false, error: 'Terjadi kesalahan saat login' }
     }
   }, [])
 
-  // Logout
+  // Register with name, email + password (browser client)
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    try {
+      console.log('[AUTH REGISTER] Attempting registration for:', email)
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: name.trim(),
+          },
+        },
+      })
+
+      if (error) {
+        console.error('[AUTH REGISTER ERROR]', {
+          message: error.message,
+          status: error.status,
+        })
+
+        const message = registerErrorMap[error.message] || error.message
+        return { success: false, error: message }
+      }
+
+      console.log('[AUTH REGISTER] Success for:', email, data.user?.confirmed_at ? '(auto-confirmed)' : '(pending confirmation)')
+      return { success: true }
+    } catch (err) {
+      console.error('[AUTH REGISTER EXCEPTION]', err)
+      return { success: false, error: 'Terjadi kesalahan saat mendaftar' }
+    }
+  }, [])
+
+  // Forgot password (browser client)
+  const forgotPassword = useCallback(async (email: string) => {
+    try {
+      console.log('[AUTH FORGOT] Sending reset email to:', email)
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth/callback?next=settings`,
+      })
+
+      if (error) {
+        console.error('[AUTH FORGOT ERROR]', {
+          message: error.message,
+          status: error.status,
+        })
+
+        // Don't reveal if email exists or not (anti-enumeration)
+        // But DO show rate limit errors so user knows to wait
+        const message = forgotErrorMap[error.message] || 'Terjadi kesalahan. Coba lagi nanti.'
+        return { success: false, error: message }
+      }
+
+      console.log('[AUTH FORGOT] Reset email sent to:', email)
+      return { success: true }
+    } catch (err) {
+      console.error('[AUTH FORGOT EXCEPTION]', err)
+      return { success: false, error: 'Terjadi kesalahan saat mengirim link reset' }
+    }
+  }, [])
+
+  // Logout (browser client)
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-    } catch {
-      // Ignore network errors on logout
+      await supabase.auth.signOut()
+    } catch (err) {
+      console.error('[AUTH LOGOUT ERROR]', err)
     }
     clearUser()
   }, [clearUser])
@@ -155,6 +229,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated,
         login,
         register,
+        forgotPassword,
         logout,
       }}
     >

@@ -51,7 +51,6 @@ function ErrorBox({ message }: { message: string }) {
     <motion.div
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
       className="rounded-lg bg-red-500/10 border border-red-500/20 px-3.5 py-2.5 text-xs text-red-400 leading-relaxed"
     >
       {message}
@@ -83,7 +82,7 @@ function BrandHeader() {
 }
 
 export function LoginPage() {
-  const { login, register } = useAuth()
+  const { login, register, forgotPassword } = useAuth()
   const [view, setView] = useState<ViewState>('login')
   const [formState, setFormState] = useState<FormState>('idle')
   const [formError, setFormError] = useState('')
@@ -191,23 +190,13 @@ export function LoginPage() {
     setFormState('loading')
     setFormError('')
 
-    try {
-      const res = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: forgotEmail.trim() }),
-      })
-      const data = await res.json()
+    const result = await forgotPassword(forgotEmail.trim())
 
-      if (res.ok) {
-        setView('forgot-success')
-      } else {
-        setFormState('error')
-        setFormError(data.error || 'Gagal mengirim link reset')
-      }
-    } catch {
+    if (result.success) {
+      setView('forgot-success')
+    } else {
       setFormState('error')
-      setFormError('Terjadi kesalahan jaringan')
+      setFormError(result.error || 'Gagal mengirim link reset')
     }
   }
 
@@ -569,12 +558,10 @@ export function LoginPage() {
                     <KeyRound className="h-7 w-7 text-amber-400" />
                   </motion.div>
                   <h2 className="text-lg font-semibold text-[#F3F4F6]">
-                    {regEmail.trim() ? 'Buat Password untuk Akun Kamu' : 'Lupa Password?'}
+                    Lupa Password?
                   </h2>
                   <p className="mt-1 text-xs text-[#6B7280] leading-relaxed">
-                    {regEmail.trim()
-                      ? 'Akun kamu sudah ada. Kirim link untuk membuat password baru.'
-                      : 'Masukkan email kamu dan kami akan kirim link untuk reset password.'}
+                    Masukkan email kamu dan kami akan kirim link untuk reset password.
                   </p>
                 </div>
 
