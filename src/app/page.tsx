@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Component, Suspense, useEffect, useState, type ErrorInfo, type ReactNode } from 'react'
+import React, { Component, Suspense, useSyncExternalStore, useCallback, type ErrorInfo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigationStore } from '@/stores'
 import { useAuthStore } from '@/stores/auth-store'
@@ -20,10 +20,15 @@ import { Button } from '@/components/ui/button'
 // Client-only mount guard — prevents hydration mismatch
 // ========================================
 function ClientOnly({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // useSyncExternalStore to detect client mount without triggering React Compiler warnings
+  const mounted = useSyncExternalStore(
+    // subscribe: no-op (mounted never changes after subscribing)
+    useCallback(() => () => {}, []),
+    // getSnapshot (client): always true
+    () => true,
+    // getServerSnapshot (server): always false
+    () => false,
+  )
   if (!mounted) return <AuthLoadingScreen />
   return <>{children}</>
 }
