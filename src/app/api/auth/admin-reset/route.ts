@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 // Admin route: reset user password directly (bypasses email rate limit)
-// Requires SUPABASE_SERVICE_ROLE_KEY env var (server-only, NOT exposed to client)
+// Uses Supabase Admin API (service_role key) — NOT exposed to client
+// Will create user if they don't exist, or update password if they do
 export async function POST(request: NextRequest) {
   try {
     const { email, newPassword } = await request.json()
@@ -25,8 +26,9 @@ export async function POST(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
     if (!serviceKey || !supabaseUrl) {
+      console.error('[ADMIN RESET] Missing env vars')
       return NextResponse.json(
-        { error: 'Server Supabase config tidak ditemukan' },
+        { error: 'Server config tidak ditemukan. Hubungi admin.' },
         { status: 500 }
       )
     }
@@ -39,44 +41,77 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // First, find the user by email
-    const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers()
+    const normalizedEmail = email.trim().toLowerCase()
 
-    if (listError) {
-      console.error('[ADMIN RESET] List users error:', listError)
-      return NextResponse.json(
-        { error: 'Gagal mencari user' },
-        { status: 500 }
-      )
-    }
-
-    const user = users.find(u => u.email === email)
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Email tidak ditemukan' },
-        { status: 404 }
-      )
-    }
-
-    // Update user password directly via Admin API
-    const { error: updateError } = await adminClient.auth.admin.updateUserById(user.id, {
+    // Step 1: Try to create user with new password
+    const { data: createUser, error: createError } = await adminClient.auth.admin.createUser({
+      email: normalizedEmail,
       password: newPassword,
+      email_confirm: true,
     })
 
-    if (updateError) {
-      console.error('[ADMIN RESET] Update error:', updateError)
+    if (createError) {
+      const errorMsg = createError.message.toLowerCase()
+
+      // User already exists → find them and update password
+      if (errorMsg.includes('already registered') || errorMsg.includes('already exists') || errorMsg.includes('user already')) {
+        console.log('[ADMIN RESET] User exists, finding and updating...')
+
+        const { data: { users }, error: listError } = await adminClient.auth.admin.listUsers()
+
+        if (listError) {
+          console.error('[ADMIN RESET] List users error:', listError)
+          return NextResponse.json(
+            { error: 'Gagal mencari user di database' },
+            { status: 500 }
+          )
+        }
+
+        // Find user by email (case-insensitive)
+        const user = users.find(u => u.email?.toLowerCase() === normalizedEmail)
+
+        if (!user) {
+          console.error('[ADMIN RESET] User not in list but create said exists:', normalizedEmail)
+          console.error('[ADMIN RESET] User emails in DB:', users.map(u => u.email))
+          return NextResponse.json(
+            { error: 'Email tidak ditemukan di database. Coba daftar akun baru.' },
+            { status: 404 }
+          )
+        }
+
+        // Update password via Admin API
+        const { error: updateError } = await adminClient.auth.admin.updateUserById(user.id, {
+          password: newPassword,
+        })
+
+        if (updateError) {
+          console.error('[ADMIN RESET] Update error:', updateError)
+          return NextResponse.json(
+            { error: `Gagal update password: ${updateError.message}` },
+            { status: 500 }
+          )
+        }
+
+        console.log('[ADMIN RESET] Password updated for existing user:', normalizedEmail)
+        return NextResponse.json({
+          success: true,
+          message: 'Password berhasil direset. Silakan coba login.',
+        })
+      }
+
+      // Some other creation error
+      console.error('[ADMIN RESET] Create user error:', createError)
       return NextResponse.json(
-        { error: `Gagal update password: ${updateError.message}` },
+        { error: `Gagal membuat user: ${createError.message}` },
         { status: 500 }
       )
     }
 
-    console.log('[ADMIN RESET] Password updated for:', email)
-
+    // User was created successfully
+    console.log('[ADMIN RESET] New user created:', normalizedEmail, 'ID:', createUser.user?.id)
     return NextResponse.json({
       success: true,
-      message: 'Password berhasil direset. Silakan coba login.',
+      message: 'Akun berhasil dibuat dengan password baru. Silakan coba login.',
     })
   } catch (err) {
     console.error('[ADMIN RESET] Exception:', err)
