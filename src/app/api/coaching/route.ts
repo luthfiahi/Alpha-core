@@ -170,8 +170,8 @@ function getStepPrompt(
 ): string {
   const pair = (tradeData?.pair as string) || 'N/A'
   const direction = (tradeData?.direction as string) || 'N/A'
-  const profitLoss = tradeData?.profitLoss as number | undefined
-  const plStr = profitLoss !== undefined
+  const profitLoss = Number(tradeData?.profitLoss) || 0
+  const plStr = tradeData?.profitLoss !== undefined && tradeData?.profitLoss !== null
     ? (profitLoss >= 0 ? `+${profitLoss.toFixed(2)}` : profitLoss.toFixed(2))
     : 'N/A'
 
@@ -242,7 +242,8 @@ async function fireL0Event(eventType: string, eventData: Record<string, unknown>
       },
     })
   } catch {
-    // Silently ignore — L0 events are fire-and-forget
+    // Silently ignore — L0 events are fire-and-forget.
+    // Table might not exist in early deployment.
   }
 }
 

@@ -73,9 +73,10 @@ export function getScoreBgColor(score: number | null | undefined): string {
   return "bg-[#EF4444]/15 text-[#EF4444]";
 }
 
-export function formatPnL(value: number): string {
-  const prefix = value >= 0 ? "+" : "";
-  return `${prefix}${value.toFixed(2)}`;
+export function formatPnL(value: number | string): string {
+  const num = Number(value) || 0;
+  const prefix = num >= 0 ? "+" : "";
+  return `${prefix}${num.toFixed(2)}`;
 }
 
 export function parseTags(tagsStr: string | null): string[] {

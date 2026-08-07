@@ -182,12 +182,12 @@ function TradeSelector({
                 <span
                   className={cn(
                     'ml-auto font-financial',
-                    selectedTrade.profitLoss >= 0
+                    Number(selectedTrade.profitLoss) >= 0
                       ? 'text-green-400'
                       : 'text-red-400'
                   )}
                 >
-                  {selectedTrade.profitLoss >= 0 ? '+' : ''}
+                  {Number(selectedTrade.profitLoss) >= 0 ? '+' : ''}
                   {Number(selectedTrade.profitLoss).toFixed(2)}
                 </span>
               </>
@@ -239,12 +239,12 @@ function TradeSelector({
                   <span
                     className={cn(
                       'font-financial ml-auto',
-                      trade.profitLoss >= 0
+                      Number(trade.profitLoss) >= 0
                         ? 'text-green-400'
                         : 'text-red-400'
                     )}
                   >
-                    {trade.profitLoss >= 0 ? '+' : ''}
+                    {Number(trade.profitLoss) >= 0 ? '+' : ''}
                     {Number(trade.profitLoss).toFixed(2)}
                   </span>
                   {trade.id === selectedTradeId && (
@@ -375,8 +375,14 @@ export function CoachingPage() {
       const res = await fetch('/api/trades?limit=20&hasReflected=false')
       if (!res.ok) throw new Error('Failed to fetch trades')
       const data = await res.json()
-      setAvailableTrades(data.trades || [])
-      return data.trades || []
+      // Sanitize: DB may return strings for numeric fields
+      const sanitizedTrades = (data.trades || []).map((t: Record<string, unknown>) => ({
+        ...t,
+        entryPrice: Number(t.entryPrice) || 0,
+        profitLoss: Number(t.profitLoss) || 0,
+      })) as TradeOption[]
+      setAvailableTrades(sanitizedTrades)
+      return sanitizedTrades
     } catch {
       toast.error('Gagal memuat daftar trade')
       return []

@@ -829,3 +829,66 @@ Stage Summary:
 - Files modified: AuthProvider.tsx (rewritten), LoginPage.tsx (updated), middleware.ts (graceful env handling), client.ts (lazy singleton)
 - Key architectural change: Moved from API-route-based auth to browser-client-based auth
 - Lint clean (0 errors)
+
+---
+Task ID: 2-a
+Agent: full-stack-developer (Reflection Bug Fixes)
+Task: Fix all potential bugs in reflection code paths — toFixed safety, DB resilience, error handling
+
+Work Log:
+- Fixed `src/components/alpha/journal/types.ts`:
+  - `formatPnL()`: Changed signature from `(value: number)` to `(value: number | string)` to accept runtime string data from DB
+  - Wrapped value with `Number(value) || 0` before `.toFixed(2)` to prevent TypeError
+- Fixed `src/app/api/coaching/route.ts`:
+  - `getStepPrompt()`: `profitLoss` was cast as `number | undefined` from `Record<string, unknown>` but could be string at runtime. Added `Number()` wrapping and null/undefined check
+  - `fireL0Event()`: Already had try-catch, added comment clarifying table might not exist in early deployment
+  - `buildTraderContext()` call: Already wrapped in try-catch (verified)
+- Fixed `src/components/alpha/coaching/CoachingPage.tsx`:
+  - `TradeSelector`: Added `Number()` wrapping on `profitLoss` comparisons (lines 185, 190, 242, 247) — toFixed was already safe
+  - `fetchTrades()`: Added sanitization layer that maps API response trades through `Number()` for `entryPrice` and `profitLoss` fields
+- Fixed `src/components/alpha/journal/JournalDetailPage.tsx`:
+  - `pnlPositive`: Changed `trade.profitLoss >= 0` to `Number(trade.profitLoss) >= 0`
+  - `ScoreRing`: Changed `score ?? 0` to `Number(score) || 0` for safety with string values
+  - `updateMutation`: Wrapped `res.json()` in try-catch to handle non-JSON error responses
+- Checked `src/components/alpha/coaching/ReflectionFlow.tsx`: Pure visual component, no data processing, no issues found
+- Fixed `src/app/api/dashboard/route.ts`:
+  - Wrapped `db.insightCard.findFirst()` in individual try-catch — this table might not exist in production, and its failure was causing the entire dashboard API to 500
+- Fixed `src/lib/ai/memory/types.ts`:
+  - `formatMemoryContextForPrompt()`: Added `Number()` wrapping on all `.toFixed()` calls:
+    - `totalWinRate.toFixed(1)` → `Number(ctx.totalWinRate || 0).toFixed(1)`
+    - `recentWinRate.toFixed(1)` → `Number(ctx.recentWinRate || 0).toFixed(1)`
+    - `recentPnL.toFixed(2)` → `Number(ctx.recentPnL || 0).toFixed(2)`
+    - `avgProcessScore.toFixed(0)` → `Number(ctx.avgProcessScore || 0).toFixed(0)`
+    - `playbookUsage.toFixed(0)` → `Number(ctx.playbookUsage || 0).toFixed(0)`
+    - `playbookComplianceAvg` comparisons and multiplication also wrapped
+
+- All lint checks pass (0 errors, 1 pre-existing warning unrelated to changes)
+- Dev server compiles successfully
+
+Stage Summary:
+- Root cause of reflection error: `profitLoss` values from DB arrive as strings/Decimals, causing `.toFixed()` to throw TypeError
+- Files modified: types.ts, route.ts (coaching), CoachingPage.tsx, JournalDetailPage.tsx, route.ts (dashboard), memory/types.ts
+- Key pattern: All `.toFixed()` calls now use `Number(value) || 0` pattern
+- DB resilience: insightCard query isolated so dashboard degrades gracefully if table is missing
+- No UI/UX changes — purely defensive bug fixes
+
+---
+Task ID: 2-a
+Agent: main (with full-stack-developer subagent)
+Task: Fix all potential reflection-related code issues causing user errors
+
+Work Log:
+- Identified root cause: `profitLoss` and other numeric fields from PostgreSQL arrive as strings/Decimals, causing `.toFixed()` to crash with TypeError
+- Fixed `formatPnL()` in `journal/types.ts` to accept `number | string` with `Number(value) || 0` coercion
+- Fixed `getStepPrompt()` in `api/coaching/route.ts` to wrap `profitLoss` with `Number()` + null check
+- Fixed `CoachingPage.tsx` fetchTrades() to sanitize API response numeric fields (entryPrice, profitLoss)
+- Fixed `JournalDetailPage.tsx` pnlPositive to use Number(), ScoreRing to use Number(score) || 0
+- Fixed `api/dashboard/route.ts` to wrap insightCard query in try-catch for graceful degradation
+- Fixed `memory/types.ts` formatMemoryContextForPrompt() all 5 .toFixed() calls with Number() wrapping
+- Verified ReflectionFlow.tsx is safe (pure visual component)
+- Lint passes with 0 errors
+
+Stage Summary:
+- 6 files modified with type safety fixes for numeric fields from database
+- Root cause: PostgreSQL returns numeric fields as strings in some serialization contexts
+- All .toFixed() calls across reflection code now use Number() coercion

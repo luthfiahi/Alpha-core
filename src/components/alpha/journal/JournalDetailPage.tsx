@@ -49,7 +49,7 @@ function ScoreRing({ score, size = 80 }: { score: number | null; size?: number }
   const strokeWidth = 5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const displayScore = score ?? 0;
+  const displayScore = Number(score) || 0;
   const offset = circumference - (displayScore / 100) * circumference;
 
   const color =
@@ -161,8 +161,14 @@ export function JournalDetailPage() {
         body: JSON.stringify(updateData),
       });
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Gagal mengupdate');
+        let errMsg = 'Gagal mengupdate';
+        try {
+          const err = await res.json();
+          errMsg = err.error || errMsg;
+        } catch {
+          // Response body was not valid JSON
+        }
+        throw new Error(errMsg);
       }
       return res.json();
     },
@@ -226,7 +232,7 @@ export function JournalDetailPage() {
     );
   }
 
-  const pnlPositive = trade.profitLoss >= 0;
+  const pnlPositive = Number(trade.profitLoss) >= 0;
   const tags = parseTags(trade.tags);
   const duration =
     trade.entryTime && trade.exitTime

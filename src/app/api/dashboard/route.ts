@@ -43,11 +43,16 @@ export async function GET() {
       },
     })
 
-    // 4. AI insight (latest insight card)
-    const latestInsight = await db.insightCard.findFirst({
-      where: { traderId: trader.id },
-      orderBy: { createdAt: 'desc' },
-    })
+    // 4. AI insight (latest insight card) — may not exist in early deployments
+    let latestInsight = null
+    try {
+      latestInsight = await db.insightCard.findFirst({
+        where: { traderId: trader.id },
+        orderBy: { createdAt: 'desc' },
+      })
+    } catch {
+      // insightCard table might not exist yet — degrade gracefully
+    }
 
     // 5. Weekly process score trend (last 7 days)
     const sevenDaysAgo = new Date()

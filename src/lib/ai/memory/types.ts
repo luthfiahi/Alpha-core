@@ -68,11 +68,11 @@ export function formatMemoryContextForPrompt(ctx: TraderMemoryContext): string {
   lines.push('[ALPHA MEMORY — Trader Deep Context (Last 90 Days):]')
 
   // Line 1: Total stats
-  lines.push(`- Total trades: ${ctx.totalTrades}, Win rate: ${ctx.totalWinRate.toFixed(1)}%`)
+  lines.push(`- Total trades: ${ctx.totalTrades}, Win rate: ${Number(ctx.totalWinRate || 0).toFixed(1)}%`)
 
   // Line 2: Recent 30d
   lines.push(
-    `- Recent (30d): ${ctx.recentTrades.length} trades, Win rate: ${ctx.recentWinRate.toFixed(1)}%, P/L: $${ctx.recentPnL >= 0 ? '+' : ''}${ctx.recentPnL.toFixed(2)}`
+    `- Recent (30d): ${ctx.recentTrades.length} trades, Win rate: ${Number(ctx.recentWinRate || 0).toFixed(1)}%, P/L: $${(ctx.recentPnL || 0) >= 0 ? '+' : ''}${Number(ctx.recentPnL || 0).toFixed(2)}`
   )
 
   // Line 3: Process score trend
@@ -88,7 +88,7 @@ export function formatMemoryContextForPrompt(ctx: TraderMemoryContext): string {
   const psFirst = ctx.processScoreHistory.length > 0
     ? ctx.processScoreHistory[0].score
     : 0
-  lines.push(`- Process Score trend: ${psTrendLabel} (${psFirst} → ${psLatest}), avg: ${ctx.avgProcessScore.toFixed(0)}`)
+  lines.push(`- Process Score trend: ${psTrendLabel} (${psFirst} → ${psLatest}), avg: ${Number(ctx.avgProcessScore || 0).toFixed(0)}`)
 
   // Line 4: Behavioral events
   const behaviorDesc = ctx.topBehaviors
@@ -102,7 +102,7 @@ export function formatMemoryContextForPrompt(ctx: TraderMemoryContext): string {
 
   // Line 6: Playbook
   lines.push(
-    `- Playbook usage: ${ctx.playbookUsage.toFixed(0)}%, most used: ${ctx.mostUsedPlaybook || 'none'}${ctx.playbookComplianceAvg > 0 ? ` (avg compliance ${(ctx.playbookComplianceAvg * 100).toFixed(0)}%)` : ''}`
+    `- Playbook usage: ${Number(ctx.playbookUsage || 0).toFixed(0)}%, most used: ${ctx.mostUsedPlaybook || 'none'}${Number(ctx.playbookComplianceAvg || 0) > 0 ? ` (avg compliance ${(Number(ctx.playbookComplianceAvg || 0) * 100).toFixed(0)}%)` : ''}`
   )
 
   // Line 7: Dominant emotion
