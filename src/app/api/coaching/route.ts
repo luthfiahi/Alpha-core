@@ -353,50 +353,64 @@ export async function POST(request: NextRequest) {
 
     // Use z-ai-web-dev-sdk for chat completion
     const zai = await ZAI.create()
-    const response = await zai.chat.completions.create({
-      messages: fullMessages,
-      stream: true,
-    })
 
-    // Handle streaming response
-    if (!response || typeof response !== 'object') {
-      return NextResponse.json(
-        { error: 'Invalid response from AI service' },
-        { status: 500 }
-      )
+    let aiText = ''
+
+    try {
+      // Try streaming first (word-by-word effect)
+      const response = await zai.chat.completions.create({
+        messages: fullMessages,
+        stream: true,
+      })
+
+      if (!response || typeof response !== 'object') {
+        throw new Error('Empty AI response')
+      }
+
+      // Attempt 1: async iterable (SSE-style stream)
+      if (Symbol.asyncIterator in response) {
+        const chunks: string[] = []
+        for await (const chunk of response as AsyncIterable<{ choices?: Array<{ delta?: { content?: string } }> }>) {
+          const content = chunk?.choices?.[0]?.delta?.content
+          if (content) chunks.push(content)
+        }
+        aiText = chunks.join('')
+      } else {
+        // Attempt 2: non-streaming response object
+        const resp = response as unknown as {
+          content?: string
+          choices?: Array<{ message?: { content?: string } }>
+        }
+        aiText = resp.content || resp.choices?.[0]?.message?.content || ''
+      }
+    } catch (streamErr) {
+      // Streaming failed — fallback to non-streaming
+      console.error('Streaming failed, falling back to non-streaming:', streamErr)
+      try {
+        const response = await zai.chat.completions.create({
+          messages: fullMessages,
+          thinking: { type: 'disabled' },
+        })
+        const resp = response as unknown as {
+          content?: string
+          choices?: Array<{ message?: { content?: string } }>
+        }
+        aiText = resp.content || resp.choices?.[0]?.message?.content || ''
+      } catch (fallbackErr) {
+        console.error('Non-streaming fallback also failed:', fallbackErr)
+        return NextResponse.json(
+          { error: 'AI Coach sedang tidak tersedia. Coba lagi nanti.' },
+          { status: 503 }
+        )
+      }
     }
 
-    // The SDK streaming returns an async iterable
-    const stream = new ReadableStream({
-      async start(controller) {
-        const encoder = new TextEncoder()
-        try {
-          if (Symbol.asyncIterator in response) {
-            for await (const chunk of response as AsyncIterable<{ choices?: Array<{ delta?: { content?: string } }> }>) {
-              const content = chunk?.choices?.[0]?.delta?.content
-              if (content) {
-                controller.enqueue(encoder.encode(content))
-              }
-            }
-          } else if (typeof (response as unknown as { text?: () => Promise<string> }).text === 'function') {
-            // Non-streaming fallback
-            const text = await (response as unknown as { text: () => Promise<string> }).text()
-            controller.enqueue(encoder.encode(text))
-          } else {
-            // Try to extract content directly
-            const resp = response as unknown as { content?: string; choices?: Array<{ message?: { content?: string } }> }
-            const text = resp.content || resp.choices?.[0]?.message?.content || ''
-            if (text) {
-              controller.enqueue(encoder.encode(text))
-            }
-          }
-        } catch (err) {
-          console.error('Streaming error:', err)
-        } finally {
-          controller.close()
-        }
-      },
-    })
+    if (!aiText || aiText.trim().length === 0) {
+      return NextResponse.json(
+        { error: 'AI Coach tidak memberikan respons. Coba lagi.' },
+        { status: 502 }
+      )
+    }
 
     // Fire L0 event for coaching session (non-blocking)
     fireL0Event('CoachSessionCompleted', {
@@ -404,6 +418,27 @@ export async function POST(request: NextRequest) {
       step: isReflection ? step : undefined,
       messageCount: messages.length,
     }).catch(() => { /* non-blocking */ })
+
+    // Return as a simple text stream (client reads chunks)
+    const stream = new ReadableStream({
+      start(controller) {
+        const encoder = new TextEncoder()
+        // Split text into small chunks for a "typing" effect
+        const words = aiText.split(/(\s+)/)
+        let i = 0
+        function sendNext() {
+          if (i < words.length) {
+            controller.enqueue(encoder.encode(words[i]))
+            i++
+            // Small delay between chunks for typing effect
+            setTimeout(sendNext, 8)
+          } else {
+            controller.close()
+          }
+        }
+        sendNext()
+      },
+    })
 
     return new Response(stream, {
       headers: {
