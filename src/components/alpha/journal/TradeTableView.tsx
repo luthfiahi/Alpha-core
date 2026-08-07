@@ -86,7 +86,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                 {/* Entry Price */}
                 <TableCell className="py-3 text-right">
                   <span className="font-financial text-xs text-[#9CA3AF]">
-                    {trade.entryPrice.toFixed(trade.entryPrice >= 100 ? 3 : 5)}
+                    {(trade.entryPrice ?? 0).toFixed(Number(trade.entryPrice) >= 100 ? 3 : 5)}
                   </span>
                 </TableCell>
 
@@ -94,7 +94,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                 <TableCell className="py-3 text-right">
                   <span className="font-financial text-xs text-[#9CA3AF]">
                     {trade.exitPrice !== null
-                      ? trade.exitPrice.toFixed(trade.exitPrice >= 100 ? 3 : 5)
+                      ? (trade.exitPrice ?? 0).toFixed(Number(trade.exitPrice) >= 100 ? 3 : 5)
                       : '—'}
                   </span>
                 </TableCell>

@@ -143,7 +143,7 @@ export function PlaybookTradeCompliance({
                   }`}
                 >
                   {trade.profitLoss >= 0 ? '+' : ''}
-                  {trade.profitLoss.toFixed(2)}
+                  {Number(trade.profitLoss).toFixed(2)}
                 </p>
               </div>
 

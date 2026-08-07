@@ -188,7 +188,7 @@ function TradeSelector({
                   )}
                 >
                   {selectedTrade.profitLoss >= 0 ? '+' : ''}
-                  {selectedTrade.profitLoss.toFixed(2)}
+                  {Number(selectedTrade.profitLoss).toFixed(2)}
                 </span>
               </>
             ) : (
@@ -245,7 +245,7 @@ function TradeSelector({
                     )}
                   >
                     {trade.profitLoss >= 0 ? '+' : ''}
-                    {trade.profitLoss.toFixed(2)}
+                    {Number(trade.profitLoss).toFixed(2)}
                   </span>
                   {trade.id === selectedTradeId && (
                     <X className="w-3 h-3 text-alpha-text-muted" />

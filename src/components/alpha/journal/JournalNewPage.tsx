@@ -629,19 +629,19 @@ export function JournalNewPage() {
                   <div className='flex justify-between items-center'>
                     <span className='text-xs text-[#6B7280]'>Entry Price</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
-                      {formValues.entryPrice ? formValues.entryPrice.toFixed(5) : '—'}
+                      {formValues.entryPrice ? Number(formValues.entryPrice).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>
                     <span className='text-xs text-[#6B7280]'>Stop Loss</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
-                      {formValues.stopLoss ? formValues.stopLoss.toFixed(5) : '—'}
+                      {formValues.stopLoss ? Number(formValues.stopLoss).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>
                     <span className='text-xs text-[#6B7280]'>Take Profit</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
-                      {formValues.takeProfit ? formValues.takeProfit.toFixed(5) : '—'}
+                      {formValues.takeProfit ? Number(formValues.takeProfit).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>

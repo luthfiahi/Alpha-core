@@ -324,25 +324,25 @@ export function JournalDetailPage() {
             <DataItem
               icon={ArrowDownToLine}
               label='Entry'
-              value={trade.entryPrice.toFixed(trade.entryPrice >= 100 ? 3 : 5)}
+              value={(Number(trade.entryPrice) || 0).toFixed((Number(trade.entryPrice) || 0) >= 100 ? 3 : 5)}
               mono
             />
             <DataItem
               icon={TrendingUp}
               label='Exit'
-              value={trade.exitPrice ? trade.exitPrice.toFixed(trade.exitPrice >= 100 ? 3 : 5) : '—'}
+              value={trade.exitPrice ? Number(trade.exitPrice).toFixed(Number(trade.exitPrice) >= 100 ? 3 : 5) : '—'}
               mono
             />
             <DataItem
               icon={ShieldAlert}
               label='Stop Loss'
-              value={trade.stopLoss ? trade.stopLoss.toFixed(trade.stopLoss >= 100 ? 3 : 5) : '—'}
+              value={trade.stopLoss ? Number(trade.stopLoss).toFixed(Number(trade.stopLoss) >= 100 ? 3 : 5) : '—'}
               mono
             />
             <DataItem
               icon={Target}
               label='Take Profit'
-              value={trade.takeProfit ? trade.takeProfit.toFixed(trade.takeProfit >= 100 ? 3 : 5) : '—'}
+              value={trade.takeProfit ? Number(trade.takeProfit).toFixed(Number(trade.takeProfit) >= 100 ? 3 : 5) : '—'}
               mono
             />
             <DataItem label='Lot Size' value={trade.lotSize?.toString() || '—'} mono />
@@ -398,7 +398,7 @@ export function JournalDetailPage() {
                 }`}
               >
                 {trade.pipResult !== null && trade.pipResult !== undefined
-                  ? `${trade.pipResult >= 0 ? '+' : ''}${trade.pipResult.toFixed(1)}`
+                  ? `${trade.pipResult >= 0 ? '+' : ''}${Number(trade.pipResult).toFixed(1)}`
                   : '—'}
               </span>
             </div>

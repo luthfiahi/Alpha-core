@@ -57,14 +57,14 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
               <div>
                 <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-0.5">Entry</p>
                 <p className="font-financial text-sm text-[#9CA3AF]">
-                  {trade.entryPrice.toFixed(trade.entryPrice >= 100 ? 3 : 5)}
+                  {(trade.entryPrice ?? 0).toFixed(Number(trade.entryPrice) >= 100 ? 3 : 5)}
                 </p>
               </div>
               <div>
                 <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-0.5">Exit</p>
                 <p className="font-financial text-sm text-[#9CA3AF]">
                   {trade.exitPrice !== null
-                    ? trade.exitPrice.toFixed(trade.exitPrice >= 100 ? 3 : 5)
+                    ? (trade.exitPrice ?? 0).toFixed(Number(trade.exitPrice) >= 100 ? 3 : 5)
                     : '—'}
                 </p>
               </div>

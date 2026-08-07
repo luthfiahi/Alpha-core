@@ -33,12 +33,12 @@ interface RecentTradesProps {
 }
 
 function formatPrice(price: number): string {
-  return price.toFixed(price >= 100 ? 2 : 4)
+  return Number(price).toFixed(Number(price) >= 100 ? 2 : 4)
 }
 
 function formatPnL(val: number): string {
   const sign = val >= 0 ? '+' : ''
-  return `${sign}$${val.toFixed(2)}`
+  return `${sign}$${Number(val).toFixed(2)}`
 }
 
 function formatTime(dateStr: string | null): string {
