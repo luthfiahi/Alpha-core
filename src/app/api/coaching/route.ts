@@ -273,9 +273,17 @@ export async function POST(request: NextRequest) {
       tradeData?: Record<string, unknown>
     }
 
-    if (!messages || messages.length === 0) {
+    if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
         { error: 'Messages array is required' },
+        { status: 400 }
+      )
+    }
+
+    // Allow empty messages for reflection mode (initial step prompt)
+    if (messages.length === 0 && mode !== 'REFLECTION') {
+      return NextResponse.json(
+        { error: 'At least one message is required for free chat mode' },
         { status: 400 }
       )
     }
@@ -327,82 +335,79 @@ export async function POST(request: NextRequest) {
     contextStr += memoryContextStr
 
     // Build the full messages array with system prompt
-    const fullMessages: Array<{ role: 'system' | 'assistant' | 'user'; content: string }> = [
+    // NOTE: z-ai-web-dev-sdk uses 'assistant' role for system prompts
+    const fullMessages: Array<{ role: 'assistant' | 'user'; content: string }> = [
       {
-        role: 'system',
+        role: 'assistant',
         content: systemPrompt + contextStr,
       },
     ]
 
-    // If reflection mode and no previous messages, send the step prompt as the first AI message
+    // If reflection mode and no previous messages, return the step prompt directly (no LLM call needed)
     if (isReflection && messages.length === 0 && step >= 1 && step <= 5) {
       const stepPrompt = getStepPrompt(step, tradeData)
-      fullMessages.push({
-        role: 'assistant',
-        content: stepPrompt,
+
+      // Fire L0 event (non-blocking)
+      fireL0Event('CoachSessionCompleted', {
+        sessionType: 'REFLECTION',
+        step,
+        messageCount: 0,
+      }).catch(() => { /* non-blocking */ })
+
+      // Return step prompt as a text stream for typing effect
+      const stream = new ReadableStream({
+        start(controller) {
+          const encoder = new TextEncoder()
+          const words = stepPrompt.split(/(\s+)/)
+          let i = 0
+          function sendNext() {
+            if (i < words.length) {
+              controller.enqueue(encoder.encode(words[i]))
+              i++
+              setTimeout(sendNext, 8)
+            } else {
+              controller.close()
+            }
+          }
+          sendNext()
+        },
       })
-    } else {
-      // Include conversation history
-      fullMessages.push(
-        ...messages.map((m) => ({
-          role: (m.role === 'assistant' ? 'assistant' : 'user') as 'assistant' | 'user',
-          content: m.content,
-        }))
-      )
+
+      return new Response(stream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          Connection: 'keep-alive',
+        },
+      })
     }
 
-    // Use z-ai-web-dev-sdk for chat completion
+    // Include conversation history
+    fullMessages.push(
+      ...messages.map((m) => ({
+        role: (m.role === 'assistant' ? 'assistant' : 'user') as 'assistant' | 'user',
+        content: m.content,
+      }))
+    )
+
+    // Use z-ai-web-dev-sdk for chat completion (non-streaming, with typing effect via ReadableStream)
     const zai = await ZAI.create()
 
     let aiText = ''
 
     try {
-      // Try streaming first (word-by-word effect)
       const response = await zai.chat.completions.create({
         messages: fullMessages,
-        stream: true,
+        thinking: { type: 'disabled' },
       })
 
-      if (!response || typeof response !== 'object') {
-        throw new Error('Empty AI response')
-      }
-
-      // Attempt 1: async iterable (SSE-style stream)
-      if (Symbol.asyncIterator in response) {
-        const chunks: string[] = []
-        for await (const chunk of response as AsyncIterable<{ choices?: Array<{ delta?: { content?: string } }> }>) {
-          const content = chunk?.choices?.[0]?.delta?.content
-          if (content) chunks.push(content)
-        }
-        aiText = chunks.join('')
-      } else {
-        // Attempt 2: non-streaming response object
-        const resp = response as unknown as {
-          content?: string
-          choices?: Array<{ message?: { content?: string } }>
-        }
-        aiText = resp.content || resp.choices?.[0]?.message?.content || ''
-      }
-    } catch (streamErr) {
-      // Streaming failed — fallback to non-streaming
-      console.error('Streaming failed, falling back to non-streaming:', streamErr)
-      try {
-        const response = await zai.chat.completions.create({
-          messages: fullMessages,
-          thinking: { type: 'disabled' },
-        })
-        const resp = response as unknown as {
-          content?: string
-          choices?: Array<{ message?: { content?: string } }>
-        }
-        aiText = resp.content || resp.choices?.[0]?.message?.content || ''
-      } catch (fallbackErr) {
-        console.error('Non-streaming fallback also failed:', fallbackErr)
-        return NextResponse.json(
-          { error: 'AI Coach sedang tidak tersedia. Coba lagi nanti.' },
-          { status: 503 }
-        )
-      }
+      aiText = response.choices?.[0]?.message?.content || ''
+    } catch (aiErr) {
+      console.error('AI SDK call failed:', aiErr)
+      return NextResponse.json(
+        { error: 'AI Coach sedang tidak tersedia. Coba lagi nanti.' },
+        { status: 503 }
+      )
     }
 
     if (!aiText || aiText.trim().length === 0) {

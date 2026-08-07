@@ -543,7 +543,14 @@ export function CoachingPage() {
         }),
       })
 
-      if (!response.ok) throw new Error(`API error: ${response.status}`)
+      if (!response.ok) {
+        let errorMsg = 'Gagal memulai sesi refleksi.'
+        try {
+          const errData = await response.json()
+          if (errData.error) errorMsg = errData.error
+        } catch { /* ignore parse error */ }
+        throw new Error(errorMsg)
+      }
       if (!response.body) throw new Error('No response body')
 
       const reader = response.body.getReader()
@@ -648,7 +655,12 @@ export function CoachingPage() {
         })
 
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`)
+          let errorMsg = 'Gagal terhubung ke AI Coach.'
+          try {
+            const errData = await response.json()
+            if (errData.error) errorMsg = errData.error
+          } catch { /* ignore parse error */ }
+          throw new Error(errorMsg)
         }
 
         if (!response.body) {

@@ -892,3 +892,29 @@ Stage Summary:
 - 6 files modified with type safety fixes for numeric fields from database
 - Root cause: PostgreSQL returns numeric fields as strings in some serialization contexts
 - All .toFixed() calls across reflection code now use Number() coercion
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix AI Coach - not connecting/responding
+
+Work Log:
+- Investigated AI Coach implementation: CoachingPage.tsx, route.ts, SDK documentation
+- Found 3 root causes:
+  1. z-ai-web-dev-sdk uses `role: 'assistant'` for system prompts, NOT `role: 'system'`
+  2. SDK does NOT support streaming — must use `thinking: { type: 'disabled' }` for standard completions
+  3. Empty messages validation rejected reflection mode initial requests (messages: [])
+- Fixed src/app/api/coaching/route.ts:
+  - Changed system prompt role from 'system' to 'assistant'
+  - Removed broken streaming attempt, use direct non-streaming call with thinking: disabled
+  - Added early return for reflection initial step (pre-defined prompt, no LLM call needed)
+  - Fixed messages validation to allow empty arrays for REFLECTION mode
+- Fixed src/components/alpha/coaching/CoachingPage.tsx:
+  - Improved error handling to parse and display API error messages from JSON responses
+  - Both sendMessage and handleStartReflection now show specific error messages
+
+Stage Summary:
+- AI Coach API route completely rewritten to use correct z-ai-web-dev-sdk patterns
+- Reflection mode initial step prompts return instantly (no LLM call)
+- Free chat and reflection follow-up messages use non-streaming SDK call with typing effect
+- Better error messages shown to users on failure
+- Lint passes clean (0 errors, 1 pre-existing warning)
