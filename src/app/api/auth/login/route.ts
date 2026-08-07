@@ -27,16 +27,24 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
+      // Log the actual error for debugging
+      console.error('[AUTH LOGIN ERROR]', {
+        message: error.message,
+        status: error.status,
+        code: (error as { code?: string }).code || 'unknown',
+      })
+
       // Map common errors to Indonesian
       const errorMap: Record<string, string> = {
         'Invalid login credentials': 'Email atau password salah',
         'Email not confirmed': 'Email belum diverifikasi. Cek inbox atau spam kamu.',
         'Too many requests': 'Terlalu banyak percobaan. Coba lagi dalam beberapa menit.',
+        'Invalid API key': 'Konfigurasi API tidak valid. Hubungi admin.',
       }
       const message = errorMap[error.message] || error.message
 
       return NextResponse.json(
-        { error: message },
+        { error: message, debugCode: (error as { code?: string }).code },
         { status: 401 }
       )
     }
@@ -51,7 +59,8 @@ export async function POST(request: NextRequest) {
         name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Trader',
       },
     })
-  } catch {
+  } catch (err) {
+    console.error('[AUTH LOGIN EXCEPTION]', err)
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat login' },
       { status: 500 }
