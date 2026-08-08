@@ -984,3 +984,20 @@ Stage Summary:
 - User needs: OPENROUTER_API_KEY from https://openrouter.ai/keys
 - Optional: AI_MODEL env var (defaults to google/gemini-2.0-flash-exp:free)
 - Env vars to remove from Vercel: GEMINI_API_KEY, ZAI_BASE_URL, ZAI_API_KEY, ZAI_CHAT_ID, ZAI_USER_ID, ZAI_TOKEN
+---
+Task ID: fix-model-and-push
+Agent: Main Orchestrator
+Task: Fix AI model to use reliable free model and verify production deployment
+
+Work Log:
+- Production health endpoint confirmed working: OPENROUTER_API_KEY=SET
+- openrouter/free model returned empty responses (unreliable auto-routing)
+- Tested multiple free models on OpenRouter
+- poolside/laguna-s-2.1:free works perfectly with good Indonesian responses
+- Updated default model in zai.ts and all endpoint files
+- Pushed commit e25366b
+
+Stage Summary:
+- AI provider: OpenRouter with poolside/laguna-s-2.1:free (reliable, good quality)
+- Production confirmed: /api/health shows OPENROUTER_API_KEY=SET
+- Pending: Vercel auto-deploy for model change, then test AI Coach
