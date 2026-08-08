@@ -1133,3 +1133,23 @@ Work Log:
 Stage Summary:
 - RecentTrades now has informative empty state with CTA, Date column, and Status badge — all mobile responsive
 - AIInsightCard shows contextual default messages based on trader's current state
+---
+Task ID: p1-ux-polish
+Agent: Main Orchestrator + 3 parallel subagents
+Task: P1 — UX Polish (empty states, dynamic content, hover states)
+
+Work Log:
+- ProcessScoreCard: dashed ring + "—" when no data, contextual description
+- WeeklyProgress: empty state with icon + message
+- AIInsightCard: dynamic messages based on traderContext (todayTrades, processScore)
+- RecentTrades: added Date column, Status badge, better empty state with CTA
+- QuickActions: hover scale + press shrink transitions
+- AppSidebar: hover translate + brand-colored focus ring
+- Table rows: more visible hover across RecentTrades + Journal
+- Added alpha-card-interactive CSS class for card hover glow
+- All 14 files changed, lint clean
+
+Stage Summary:
+- P1 complete: all empty states contextual, dynamic AI insights, better table info
+- Hover/focus states added across sidebar, actions, tables, cards
+- Mobile responsive: Date column and Status badge hidden on small screens
