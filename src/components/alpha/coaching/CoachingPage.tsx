@@ -15,6 +15,10 @@ import {
   TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
+  Activity,
+  Dna,
+  Zap,
+  BarChart3,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -74,7 +78,7 @@ const INITIAL_FREE_CHAT_MESSAGE: ConversationTurn = {
   id: 'welcome-free',
   role: 'AI_COACH',
   content:
-    'Halo! 👋 Aku **Alpha**, coaching partner-mu untuk trading.\n\nAku di sini bukan untuk memberi sinyal atau instruksi trading — aku di sini untuk membantumu **berefleksi** dan memahami proses tradingmu sendiri.\n\n> *"Alpha will never make trading decisions for you."*\n\nCeritakan, apa yang ingin kamu refleksikan hari ini?',
+    'Halo! Aku **Alpha**, coaching partner-mu untuk trading.\n\nAku di sini bukan untuk memberi sinyal atau instruksi trading — aku di sini untuk membantumu **berefleksi** dan memahami proses tradingmu sendiri.\n\n> *"Alpha will never make trading decisions for you."*\n\nCeritakan, apa yang ingin kamu refleksikan hari ini?',
   timestamp: new Date(),
 }
 
@@ -82,7 +86,7 @@ const INITIAL_REFLECTION_MESSAGE: ConversationTurn = {
   id: 'welcome-reflection',
   role: 'AI_COACH',
   content:
-    'Mari kita mulai sesi refleksi trade! 🔍\n\nAku akan memandumu melalui **5 langkah refleksi Socratic** untuk membantumu memahami keputusan tradingmu lebih dalam.\n\nPilih trade yang ingin kamu refleksikan dari daftar di atas, atau aku bisa membantu kamu memilih.',
+    'Mari kita mulai sesi refleksi trade! \n\nAku akan memandumu melalui **5 langkah refleksi Socratic** untuk membantumu memahami keputusan tradingmu lebih dalam.\n\nPilih trade yang ingin kamu refleksikan dari daftar di atas, atau aku bisa membantu kamu memilih.',
   timestamp: new Date(),
 }
 
@@ -325,6 +329,24 @@ export function CoachingPage() {
   const traderName = useTraderStore((s) => s.traderName)
   const selectedTradeIdFromNav = useNavigationStore((s) => s.selectedTradeId)
   const navigate = useNavigationStore((s) => s.navigate)
+
+  // Context chips derived from available data
+  const contextChips = useMemo(() => {
+    const chips: { label: string; icon: typeof Activity }[] = []
+    if (processScore !== null) {
+      chips.push({ label: `Process Score: ${processScore}`, icon: BarChart3 })
+    }
+    if (availableTrades.length > 0) {
+      chips.push({ label: `Recent Trade: ${availableTrades[0].pair}`, icon: Activity })
+    }
+    if (totalTrades > 0) {
+      chips.push({ label: 'Trading DNA', icon: Dna })
+    }
+    if (availableTrades.length > 0) {
+      chips.push({ label: `Reflection Gap: ${availableTrades.length}`, icon: Zap })
+    }
+    return chips
+  }, [processScore, availableTrades, totalTrades])
 
   // Close trade selector dropdown on outside click
   useEffect(() => {
@@ -741,7 +763,7 @@ export function CoachingPage() {
       const userMessage: ConversationTurn = {
         id: `msg-${Date.now()}`,
         role: 'USER',
-        content: '📸 Saya mengirim screenshot chart untuk dianalisis...',
+        content: 'Saya mengirim screenshot chart untuk dianalisis...',
         timestamp: new Date(),
       }
 
@@ -861,159 +883,170 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
 
   return (
     <div className="alpha-animate-in h-full flex flex-col bg-background">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-alpha-border flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
-            }}
-          >
-            <Brain className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold text-alpha-text-primary">
-              AI Coach
-            </h1>
-            <p className="text-[11px] text-alpha-text-muted">
-              Alpha Trading Coach
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Mode Toggle */}
-          <ModeToggle mode={mode} onModeChange={handleModeChange} />
-
-          {/* Alpha Promise badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-alpha-primary/10 border border-alpha-primary/20">
-            <div className="w-1.5 h-1.5 rounded-full bg-alpha-success animate-pulse" />
-            <span className="text-[10px] font-medium text-alpha-primary">
-              Alpha Promise
-            </span>
+      {/* ====== PREMIUM HEADER ====== */}
+      <header className="flex-shrink-0 px-4 sm:px-6 pt-5 pb-3">
+        <div className="flex items-start justify-between">
+          {/* Left: Branding */}
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="alpha-heading-xl">ALPHA</h1>
+              <p className="alpha-caption mt-0.5">AI Trading Coach</p>
+            </div>
+            {/* Status indicator */}
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="alpha-caption text-emerald-400/80">Context ready</span>
+            </div>
           </div>
 
-          {/* Session History */}
-          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-alpha-text-muted hover:text-alpha-text-primary hover:bg-alpha-surface rounded-lg"
-              >
-                <History className="w-4 h-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80 sm:max-w-sm bg-alpha-surface border-alpha-border p-0">
-              <SheetHeader className="p-4 pb-0">
-                <SheetTitle className="text-sm text-alpha-text-primary">
-                  Riwayat Sesi Coaching
-                </SheetTitle>
-                <SheetDescription className="text-xs text-alpha-text-muted">
-                  {sessions.length} sesi coaching
-                </SheetDescription>
-              </SheetHeader>
+          {/* Right: Controls */}
+          <div className="flex items-center gap-2">
+            <ModeToggle mode={mode} onModeChange={handleModeChange} />
 
-              <div className="mt-3 px-4 flex gap-2">
+            {/* Session History */}
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 rounded-lg justify-start gap-1.5 text-xs"
-                  onClick={() => createNewSession('FREE_CHAT')}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-alpha-text-muted hover:text-alpha-text-primary hover:bg-alpha-surface rounded-lg"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  Chat Baru
+                  <History className="w-4 h-4" />
                 </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 rounded-lg justify-start gap-1.5 text-xs"
-                  onClick={() => {
-                    createNewSession('REFLECTION')
-                    handleModeChange('reflection')
-                  }}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Refleksi Baru
-                </Button>
-              </div>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 sm:max-w-sm bg-alpha-surface border-alpha-border p-0">
+                <SheetHeader className="p-4 pb-0">
+                  <SheetTitle className="text-sm text-alpha-text-primary">
+                    Riwayat Sesi Coaching
+                  </SheetTitle>
+                  <SheetDescription className="text-xs text-alpha-text-muted">
+                    {sessions.length} sesi coaching
+                  </SheetDescription>
+                </SheetHeader>
 
-              <ScrollArea className="flex-1 mt-4 px-2">
-                <div className="space-y-1 pb-4">
-                  {sessions.map((session) => (
-                    <button
-                      key={session.id}
-                      onClick={() => selectSession(session.id)}
-                      className={cn(
-                        'w-full text-left px-3 py-3 rounded-lg transition-all duration-150',
-                        session.id === activeSessionId
-                          ? 'bg-alpha-primary/10 border border-alpha-primary/20'
-                          : 'hover:bg-alpha-border/50 border border-transparent'
-                      )}
-                    >
-                      <div className="flex items-start gap-2.5">
-                        {session.sessionType === 'REFLECTION' ? (
-                          <Sparkles
-                            className={cn(
-                              'w-4 h-4 mt-0.5 flex-shrink-0',
-                              session.id === activeSessionId
-                                ? 'text-alpha-primary'
-                                : 'text-alpha-text-muted'
-                            )}
-                          />
-                        ) : (
-                          <MessageSquare
-                            className={cn(
-                              'w-4 h-4 mt-0.5 flex-shrink-0',
-                              session.id === activeSessionId
-                                ? 'text-alpha-primary'
-                                : 'text-alpha-text-muted'
-                            )}
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p
-                            className={cn(
-                              'text-sm truncate',
-                              session.id === activeSessionId
-                                ? 'text-alpha-text-primary font-medium'
-                                : 'text-alpha-text-secondary'
-                            )}
-                          >
-                            {session.title}
-                          </p>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <p className="text-[11px] text-alpha-text-muted">
-                              {formatRelativeTime(session.startedAt)}
-                            </p>
-                            <span className="text-alpha-border">·</span>
-                            <p className="text-[11px] text-alpha-text-muted">
-                              {session.turns.length} pesan
-                            </p>
-                            {session.sessionType === 'REFLECTION' && (
-                              <>
-                                <span className="text-alpha-border">·</span>
-                                <span className="text-[10px] text-alpha-primary">
-                                  {session.status === 'COMPLETED'
-                                    ? '✓ Selesai'
-                                    : `Langkah ${session.reflectionStep || 1}/5`}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        {session.id === activeSessionId && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-alpha-primary mt-2 flex-shrink-0" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
+                <div className="mt-3 px-4 flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 rounded-lg justify-start gap-1.5 text-xs"
+                    onClick={() => createNewSession('FREE_CHAT')}
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    Chat Baru
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 rounded-lg justify-start gap-1.5 text-xs"
+                    onClick={() => {
+                      createNewSession('REFLECTION')
+                      handleModeChange('reflection')
+                    }}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Refleksi Baru
+                  </Button>
                 </div>
-              </ScrollArea>
-            </SheetContent>
-          </Sheet>
+
+                <ScrollArea className="flex-1 mt-4 px-2">
+                  <div className="space-y-1 pb-4">
+                    {sessions.map((session) => (
+                      <button
+                        key={session.id}
+                        onClick={() => selectSession(session.id)}
+                        className={cn(
+                          'w-full text-left px-3 py-3 rounded-lg transition-all duration-150',
+                          session.id === activeSessionId
+                            ? 'bg-alpha-primary/10 border border-alpha-primary/20'
+                            : 'hover:bg-alpha-border/50 border border-transparent'
+                        )}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          {session.sessionType === 'REFLECTION' ? (
+                            <Sparkles
+                              className={cn(
+                                'w-4 h-4 mt-0.5 flex-shrink-0',
+                                session.id === activeSessionId
+                                  ? 'text-alpha-primary'
+                                  : 'text-alpha-text-muted'
+                              )}
+                            />
+                          ) : (
+                            <MessageSquare
+                              className={cn(
+                                'w-4 h-4 mt-0.5 flex-shrink-0',
+                                session.id === activeSessionId
+                                  ? 'text-alpha-primary'
+                                  : 'text-alpha-text-muted'
+                              )}
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p
+                              className={cn(
+                                'text-sm truncate',
+                                session.id === activeSessionId
+                                  ? 'text-alpha-text-primary font-medium'
+                                  : 'text-alpha-text-secondary'
+                              )}
+                            >
+                              {session.title}
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <p className="text-[11px] text-alpha-text-muted">
+                                {formatRelativeTime(session.startedAt)}
+                              </p>
+                              <span className="text-alpha-border">·</span>
+                              <p className="text-[11px] text-alpha-text-muted">
+                                {session.turns.length} pesan
+                              </p>
+                              {session.sessionType === 'REFLECTION' && (
+                                <>
+                                  <span className="text-alpha-border">·</span>
+                                  <span className="text-[10px] text-alpha-primary">
+                                    {session.status === 'COMPLETED'
+                                      ? '✓ Selesai'
+                                      : `Langkah ${session.reflectionStep || 1}/5`}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          {session.id === activeSessionId && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-alpha-primary mt-2 flex-shrink-0" />
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
+
+        {/* Context Chips */}
+        {contextChips.length > 0 && (
+          <div className="mt-3 flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
+            {contextChips.map((chip, idx) => {
+              const Icon = chip.icon
+              return (
+                <div
+                  key={idx}
+                  className="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-alpha-surface/60 border border-[#232636]/60"
+                >
+                  <Icon className="w-3 h-3 text-alpha-text-muted" />
+                  <span className="text-[11px] text-alpha-text-muted font-medium">
+                    {chip.label}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </header>
+
+      {/* Divider */}
+      <div className="flex-shrink-0 h-px bg-alpha-border" />
 
       {/* Reflection Step Progress Bar — shown when in active reflection */}
       {isReflectionActive && (
@@ -1078,7 +1111,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
         </div>
       )}
 
-      {/* Chat Messages Area */}
+      {/* Chat Messages Area — flex-1 takes all remaining space */}
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="alpha-animate-in-fast px-4 sm:px-6 py-6 space-y-6 max-w-3xl mx-auto">
@@ -1113,7 +1146,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
           {isReflectionActive && inputValue.trim().length === 0 && !isStreaming && (
             <div className="mb-2 px-1">
               <p className="text-[11px] text-alpha-text-muted">
-                💡 Jawab pertanyaan refleksi dari Alpha untuk melanjutkan ke langkah berikutnya
+                Jawab pertanyaan refleksi dari Alpha untuk melanjutkan ke langkah berikutnya
               </p>
             </div>
           )}

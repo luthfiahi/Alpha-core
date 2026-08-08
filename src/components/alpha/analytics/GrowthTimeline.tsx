@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
-import { Activity, Target, Brain, ShieldCheck, Grip, ShieldAlert, AlertTriangle, RefreshCw } from 'lucide-react'
+import { Activity, Target, Brain, ShieldCheck, Grip, AlertTriangle, RefreshCw } from 'lucide-react'
 import { ScoreCard } from './ScoreCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -197,13 +197,13 @@ export function GrowthTimeline() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Chart Section */}
-      <div className="alpha-animate-in bg-[#151827] border border-[#232636] rounded-[14px] p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="alpha-card p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div>
-            <h3 className="alpha-heading-sm text-[#F3F4F6]">Timeline Pertumbuhan</h3>
-            <p className="alpha-caption mt-0.5">Pantau perkembangan berbagai dimensi trading</p>
+            <h3 className="alpha-heading-sm text-[#F3F4F6]">Growth Timeline</h3>
+            <p className="alpha-caption mt-0.5">Track dimension scores across time periods</p>
           </div>
           {/* Period selector */}
           <div className="flex items-center bg-[#10121E] rounded-lg p-1 gap-0.5">
@@ -214,8 +214,8 @@ export function GrowthTimeline() {
                 className={cn(
                   'px-3 py-1.5 alpha-label rounded-md transition-all',
                   period === p
-                    ? 'bg-[#1E2030] text-[#F3F4F6]'
-                    : 'text-[#6B7280] hover:text-[#9CA3AF]'
+                    ? 'bg-[#6366F1]/15 text-[#F3F4F6] border border-[#6366F1]/30'
+                    : 'text-[#6B7280] hover:text-[#9CA3AF] border border-transparent'
                 )}
               >
                 {PERIOD_LABELS[p]}
@@ -225,7 +225,7 @@ export function GrowthTimeline() {
         </div>
 
         {/* Dimension toggles */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-5">
           {ALL_DIMENSIONS.map((dim) => (
             <button
               key={dim.key}
@@ -253,7 +253,7 @@ export function GrowthTimeline() {
         </div>
 
         {/* Chart */}
-        <div className="h-[300px]">
+        <div className="h-[280px]">
           {loading ? (
             <div className="h-full flex items-center justify-center">
               <Skeleton className="h-full w-full rounded-lg" />
@@ -312,10 +312,15 @@ export function GrowthTimeline() {
             </div>
           )}
         </div>
+
+        {/* Insight text below chart */}
+        <p className="alpha-caption mt-4 text-[#6B7280]">
+          Your process score over time.
+        </p>
       </div>
 
-      {/* Score Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Score Cards Grid — more compact */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <ScoreCard
           label="Emosi"
           score={data?.currentScores.emotion ?? null}

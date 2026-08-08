@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef } from 'react'
-import { Lightbulb } from 'lucide-react'
+import { Lightbulb, TrendingDown, Brain, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+const SUGGESTION_ICONS = [TrendingDown, Brain, Target]
 
 const DEFAULT_SUGGESTIONS = [
   'Kenapa Process Score-ku turun minggu ini?',
@@ -21,33 +22,30 @@ export function PromptSuggestions({
   onSelect,
   visible = true,
 }: PromptSuggestionsProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-
   if (!visible) return null
 
   return (
-    <div className="alpha-animate-fade flex items-center gap-2 mb-3">
-      <Lightbulb className="w-3.5 h-3.5 text-alpha-text-muted flex-shrink-0" />
-      <div
-        ref={scrollRef}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-none"
-      >
-        {suggestions.map((suggestion, idx) => (
+    <div className="alpha-animate-fade flex flex-wrap gap-2 mb-3">
+      {suggestions.map((suggestion, idx) => {
+        const Icon = SUGGESTION_ICONS[idx % SUGGESTION_ICONS.length]
+        return (
           <button
             key={idx}
             onClick={() => onSelect(suggestion)}
             className={cn(
-              'alpha-link alpha-badge-interactive alpha-press flex-shrink-0 px-3 py-1.5 text-xs rounded-full',
-              'border border-alpha-border text-alpha-text-secondary',
-              'hover:border-alpha-primary/40 hover:text-alpha-text-primary',
-              'hover:bg-alpha-primary/5 transition-all duration-150',
-              'whitespace-nowrap'
+              'alpha-press inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full',
+              'border text-xs whitespace-nowrap',
+              'border-[#232636] text-alpha-text-secondary',
+              'hover:border-alpha-primary/30 hover:text-alpha-text-primary',
+              'hover:bg-alpha-primary/5',
+              'transition-all duration-150'
             )}
           >
+            <Icon className="w-3 h-3 flex-shrink-0 opacity-60" />
             {suggestion}
           </button>
-        ))}
-      </div>
+        )
+      })}
     </div>
   )
 }

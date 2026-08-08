@@ -8,10 +8,11 @@ import {
   Trash2,
   ListChecks,
   TrendingUp,
+  MapPin,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import type { PlaybookListItem } from './types';
 import { SESSION_TYPE_CONFIG } from './types';
 
@@ -34,32 +35,60 @@ export function PlaybookCard({
     ? SESSION_TYPE_CONFIG[playbook.sessionType]
     : null;
 
+  // Setup completeness: visual progress based on available data
+  const hasDescription = !!playbook.description;
+  const hasChecklists = playbook._count.checklists > 0;
+  const hasTrades = playbook._count.trades > 0;
+  const completeness = Math.round(
+    (hasDescription ? 34 : 0) + (hasChecklists ? 33 : 0) + (hasTrades ? 33 : 0)
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="group relative bg-[#151827] border border-[#232636] rounded-[14px] p-5 hover:bg-[#1E2030] hover:border-[#2E3148] transition-all duration-200 cursor-pointer alpha-card-glow"
+      className={cn(
+        'group relative alpha-card p-5 cursor-pointer transition-all duration-200 overflow-hidden',
+        'hover:translate-y-[-2px] alpha-card-glow',
+        playbook.isActive && 'border-[#6366F1]/40'
+      )}
       onClick={() => onOpen(playbook.id)}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-3">
+      {/* Header row */}
+      <div className="flex items-start justify-between gap-3 mb-2.5">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="shrink-0 size-10 rounded-xl bg-[#1E2030] border border-[#232636] flex items-center justify-center group-hover:bg-[#252840] transition-colors">
+          <div className="shrink-0 size-10 rounded-xl bg-[#1E2030] border border-[#232636] flex items-center justify-center group-hover:bg-[#252840] group-hover:border-[#6366F1]/20 transition-colors">
             <BookOpen className="size-5 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors" />
           </div>
           <div className="min-w-0">
             <h3 className="alpha-heading-sm text-[#F3F4F6] truncate">
               {playbook.name}
             </h3>
-            {session && (
-              <Badge
-                variant="outline"
-                className={`alpha-badge-interactive mt-1 text-[10px] px-1.5 py-0 h-4 font-medium ${session.color} ${session.bgColor} ${session.borderColor} border`}
+            {/* Session type + Status badges */}
+            <div className="flex items-center gap-1.5 mt-1">
+              {session && (
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md border',
+                    session.bgColor, session.color, session.borderColor, 'border'
+                  )}
+                >
+                  <MapPin className="size-2.5" />
+                  {session.label}
+                </span>
+              )}
+              <span
+                className={cn(
+                  'inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-md',
+                  playbook.isActive
+                    ? 'bg-emerald-400/10 text-emerald-400'
+                    : 'bg-amber-400/10 text-amber-400'
+                )}
               >
-                {session.label}
-              </Badge>
-            )}
+                {playbook.isActive ? 'Active' : 'Draft'}
+              </span>
+            </div>
           </div>
         </div>
         <ChevronRight className="size-4 text-[#6B7280] shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -72,7 +101,7 @@ export function PlaybookCard({
         </p>
       )}
 
-      {/* Stats */}
+      {/* Stats row */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-1.5 alpha-caption text-[#9CA3AF]">
           <ListChecks className="size-3.5" />
@@ -98,7 +127,7 @@ export function PlaybookCard({
             className="data-[state=checked]:bg-emerald-500"
           />
           <span className="alpha-caption">
-            {playbook.isActive ? 'Aktif' : 'Nonaktif'}
+            {playbook.isActive ? 'Active' : 'Draft'}
           </span>
         </div>
         <div className="flex items-center gap-1">
@@ -119,6 +148,18 @@ export function PlaybookCard({
             <Trash2 className="size-3.5" />
           </Button>
         </div>
+      </div>
+
+      {/* Progress bar — setup completeness */}
+      <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#232636]/50">
+        <div
+          className="h-full transition-all duration-500 ease-out"
+          style={{
+            width: `${completeness}%`,
+            backgroundColor: completeness > 0 ? '#6366F1' : 'transparent',
+            opacity: completeness > 0 ? 0.6 : 0,
+          }}
+        />
       </div>
     </motion.div>
   );

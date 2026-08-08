@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CheckCircle2, AlertTriangle, Shield, ShieldAlert } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface StrengthsWeaknessesProps {
@@ -14,17 +14,22 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
   if (isLoading) {
     return (
       <div className="rounded-[14px] border border-[#232636] bg-[#151827] p-6">
-        <Skeleton className="mb-4 h-5 w-36 bg-[#1E2030]" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-8 w-full bg-[#1E2030]" />
-            ))}
+            <Skeleton className="h-4 w-28 bg-[#1E2030]" />
+            <div className="flex flex-wrap gap-2">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-8 w-28 rounded-full bg-[#1E2030]" />
+              ))}
+            </div>
           </div>
           <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-8 w-full bg-[#1E2030]" />
-            ))}
+            <Skeleton className="h-4 w-32 bg-[#1E2030]" />
+            <div className="flex flex-wrap gap-2">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-8 w-32 rounded-full bg-[#1E2030]" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -38,66 +43,65 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
       transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
       className="alpha-animate-in rounded-[14px] border border-[#232636] bg-[#151827] p-6"
     >
-      <div className="mb-5 flex items-center gap-2">
-        <Shield size={16} className="text-[#6366F1]" />
-        <h3 className="alpha-heading-sm text-[#F3F4F6]">Kekuatan & Kelemahan</h3>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Strengths */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* ── Strengths ── */}
         <div>
-          <div className="mb-3 flex items-center gap-2">
-            <Shield size={14} className="text-emerald-500" />
-            <h4 className="alpha-heading-xs uppercase tracking-wider text-emerald-500">
-              Kekuatan
+          <div className="mb-4 flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10">
+              <TrendingUp size={13} className="text-emerald-500" />
+            </div>
+            <h4 className="alpha-heading-xs text-emerald-500">
+              STRENGTHS
             </h4>
           </div>
-          <div className="space-y-2">
-            {strengths.length > 0
-              ? strengths.map((s, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.15 + i * 0.05 }}
-                    className="alpha-press flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
-                  >
-                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-500" />
-                    <p className="alpha-body">{s}</p>
-                  </motion.div>
-                ))
-              : (
-                <p className="alpha-body text-[#6B7280]">Belum ada data</p>
-              )}
-          </div>
+          {strengths.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {strengths.map((s, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.25, delay: 0.15 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-emerald-500/15 bg-emerald-500/[0.06] px-3 py-1.5 transition-colors hover:border-emerald-500/30 hover:bg-emerald-500/[0.1]"
+                >
+                  <CheckCircle2 size={12} className="text-emerald-500/70" />
+                  <span className="alpha-label text-emerald-400">{s}</span>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="alpha-body text-[#6B7280]">Belum ada data</p>
+          )}
         </div>
 
-        {/* Weaknesses */}
+        {/* ── Weaknesses ── */}
         <div>
-          <div className="mb-3 flex items-center gap-2">
-            <ShieldAlert size={14} className="text-amber-500" />
-            <h4 className="alpha-heading-xs uppercase tracking-wider text-amber-500">
-              Kelemahan
+          <div className="mb-4 flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-red-500/10">
+              <TrendingDown size={13} className="text-red-500" />
+            </div>
+            <h4 className="alpha-heading-xs text-red-400">
+              WEAKNESSES
             </h4>
           </div>
-          <div className="space-y-2">
-            {weaknesses.length > 0
-              ? weaknesses.map((w, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.2 + i * 0.05 }}
-                    className="alpha-press flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
-                  >
-                    <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-500" />
-                    <p className="alpha-body">{w}</p>
-                  </motion.div>
-                ))
-              : (
-                <p className="alpha-body text-[#6B7280]">Belum ada data</p>
-              )}
-          </div>
+          {weaknesses.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {weaknesses.map((w, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.25, delay: 0.2 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-red-500/15 bg-red-500/[0.06] px-3 py-1.5 transition-colors hover:border-red-500/30 hover:bg-red-500/[0.1]"
+                >
+                  <AlertTriangle size={12} className="text-red-500/70" />
+                  <span className="alpha-label text-red-400">{w}</span>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="alpha-body text-[#6B7280]">Belum ada data</p>
+          )}
         </div>
       </div>
     </motion.div>

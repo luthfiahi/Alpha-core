@@ -63,20 +63,16 @@ function DashboardSkeleton() {
 
         {/* Row 4: Recent Trades + Weekly Progress */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-6">
+          <div className="md:col-span-7">
             <SkeletonBlock className="h-80 w-full rounded-xl" />
           </div>
-          <div className="md:col-span-6">
+          <div className="md:col-span-5">
             <SkeletonBlock className="h-80 w-full rounded-xl" />
           </div>
         </div>
 
-        {/* Row 5: Reflection Gap (no BehavioralTrend) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-5">
-            <SkeletonBlock className="h-48 w-full rounded-xl" />
-          </div>
-        </div>
+        {/* Row 5: Reflection Gap */}
+        <SkeletonBlock className="h-28 w-full rounded-xl" />
       </div>
     </main>
   )
@@ -204,18 +200,18 @@ export function DashboardPage() {
 
         {/* Row 4: Recent Trades + Weekly Progress */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-4">
-          <div className="md:col-span-6">
+          <div className="md:col-span-7">
             <RecentTrades
               trades={data?.recentTrades ?? []}
               isLoading={false}
             />
           </div>
-          <div className="md:col-span-6">
+          <div className="md:col-span-5">
             <WeeklyProgress data={data?.weeklyTrend ?? []} />
           </div>
         </div>
 
-        {/* Row 5: Reflection Gap only (BehavioralTrend removed — no fake data) */}
+        {/* Row 5: Reflection Gap */}
         <div className="alpha-animate-in alpha-stagger-5">
           <ReflectionGapSummary
             unreflectedCount={data?.unreflectedCount ?? 0}

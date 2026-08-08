@@ -110,7 +110,7 @@ function SkeletonRows() {
             <Skeleton className="h-4 w-16 bg-[#232636] ml-auto" />
           </TableCell>
           <TableCell className="text-right">
-            <Skeleton className="h-4 w-12 bg-[#232636] ml-auto" />
+            <Skeleton className="h-5 w-12 bg-[#232636] ml-auto" />
           </TableCell>
         </TableRow>
       ))}
@@ -125,14 +125,17 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
     <div className="alpha-card p-0 overflow-hidden flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#232636]">
-        <h3 className="alpha-heading-sm">Recent Trades</h3>
+        <div>
+          <h3 className="alpha-heading-sm">Recent Trades</h3>
+          <p className="alpha-caption mt-0.5">5 transaksi terakhir</p>
+        </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('journal')}
           className="alpha-link text-xs gap-1 h-auto p-0 hover:bg-transparent"
         >
-          View All
+          View all
           <ArrowRight className="h-3 w-3" />
         </Button>
       </div>
@@ -146,22 +149,23 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                 Pair
               </TableHead>
               <TableHead className="alpha-caption font-medium h-9">
-                Dir
+                Direction
               </TableHead>
               <TableHead className="alpha-caption font-medium h-9 text-right">
                 Entry
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 text-right hidden md:table-cell">
-                Date
-              </TableHead>
               <TableHead className="alpha-caption font-medium h-9 text-right">
                 P/L
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 text-right">
-                Time
-              </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 hidden sm:table-cell">
+              <TableHead className="alpha-caption font-medium h-9">
                 Status
+              </TableHead>
+              {/* Hidden columns: Date and Time (kept for data but hidden) */}
+              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell">
+                Date
+              </TableHead>
+              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell">
+                Time
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -192,7 +196,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                       className="mt-1 border-[#2A2D3E] text-[#9CA3AF] hover:bg-[#1E2030] hover:text-white text-xs h-8 gap-1.5"
                     >
                       <ArrowRight className="h-3 w-3" />
-                      Log Trade Pertama
+                      + Log Trade
                     </Button>
                   </div>
                 </TableCell>
@@ -201,7 +205,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               trades.map((trade) => (
                 <TableRow
                   key={trade.id}
-                  className="alpha-row-hover border-b border-[#232636]/50 cursor-pointer"
+                  className="border-b border-[#232636]/50 cursor-pointer transition-colors duration-150 hover:bg-[rgba(255,255,255,0.02)]"
                   onClick={() => {
                     useNavigationStore.getState().selectTrade(trade.id)
                     navigate('journal-detail')
@@ -227,11 +231,6 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                       {formatPrice(trade.entryPrice)}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right py-3 hidden md:table-cell">
-                    <span className="alpha-caption">
-                      {formatDate(trade.entryTime ?? trade.createdAt)}
-                    </span>
-                  </TableCell>
                   <TableCell className="text-right py-3">
                     <span
                       className={`font-financial text-sm font-medium ${
@@ -243,13 +242,19 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                       {formatPnL(trade.profitLoss)}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right py-3">
+                  <TableCell className="py-3">
+                    {getStatusBadge(trade.status)}
+                  </TableCell>
+                  {/* Hidden on smaller screens */}
+                  <TableCell className="text-right py-3 hidden lg:table-cell">
+                    <span className="alpha-caption">
+                      {formatDate(trade.entryTime ?? trade.createdAt)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right py-3 hidden lg:table-cell">
                     <span className="alpha-caption">
                       {formatTime(trade.entryTime ?? trade.createdAt)}
                     </span>
-                  </TableCell>
-                  <TableCell className="py-3 hidden sm:table-cell">
-                    {getStatusBadge(trade.status)}
                   </TableCell>
                 </TableRow>
               ))

@@ -1,7 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { AlertTriangle, PenLine } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, PenLine } from 'lucide-react'
+import { useNavigationStore } from '@/stores'
 
 interface ReflectionGapSummaryProps {
   unreflectedCount: number
@@ -9,27 +10,35 @@ interface ReflectionGapSummaryProps {
 
 export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryProps) {
   const hasGaps = unreflectedCount > 0
+  const navigate = useNavigationStore((s) => s.navigate)
 
   return (
-    <div className="alpha-card p-5 h-full flex flex-col justify-between">
+    <div className="alpha-card p-5 flex flex-col justify-between">
       <div>
         <div className="flex items-center gap-2.5 mb-3">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center"
             style={{
               backgroundColor: hasGaps
-                ? 'rgba(245,158,11,0.15)'
-                : 'rgba(34,197,94,0.15)',
+                ? 'rgba(245,158,11,0.12)'
+                : 'rgba(34,197,94,0.12)',
             }}
           >
-            <AlertTriangle
-              className="h-4 w-4"
-              style={{ color: hasGaps ? '#F59E0B' : '#22C55E' }}
-            />
+            {hasGaps ? (
+              <AlertTriangle
+                className="h-4 w-4"
+                style={{ color: '#F59E0B' }}
+              />
+            ) : (
+              <CheckCircle2
+                className="h-4 w-4"
+                style={{ color: '#22C55E' }}
+              />
+            )}
           </div>
-          <h3 className="alpha-heading-sm">
-            Reflection Gap
-          </h3>
+          <div>
+            <h3 className="alpha-label tracking-wide">REFLECTION GAP</h3>
+          </div>
         </div>
 
         {hasGaps ? (
@@ -41,10 +50,10 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
               >
                 {unreflectedCount}
               </span>{' '}
-              trade belum di-reflection minggu ini.
+              trade membutuhkan refleksi
             </p>
             <p className="alpha-caption">
-              Refleksi membantu kamu belajar dari setiap keputusan trading.
+              Alpha menemukan area yang layak kamu periksa.
             </p>
           </>
         ) : (
@@ -57,6 +66,7 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
       {hasGaps && (
         <Button
           variant="secondary"
+          onClick={() => navigate('journal')}
           className="alpha-press mt-4 gap-2 w-full h-9 text-sm font-medium"
           style={{
             backgroundColor: 'rgba(245,158,11,0.12)',
@@ -65,7 +75,7 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
           }}
         >
           <PenLine className="h-3.5 w-3.5" />
-          Isi Reflection
+          Review Reflection
         </Button>
       )}
     </div>

@@ -27,16 +27,16 @@ export function ScoreCard({ label, score, diff, trend, color, icon }: ScoreCardP
 
   return (
     <motion.div
-      className="bg-[#151827] border border-[#232636] rounded-[14px] p-4 hover:bg-[#1E2030] transition-colors alpha-press"
+      className="alpha-card p-3.5 hover:bg-[#1E2030] transition-colors alpha-press"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start justify-between mb-1.5">
         <div className="flex items-center gap-2">
           {icon && (
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: bgColor }}
             >
               <span style={{ color }}>{icon}</span>

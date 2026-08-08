@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Plus,
   BookOpen,
@@ -351,7 +351,7 @@ export function PlaybookPage() {
     );
   }
 
-  // Detail error — when selectedId is set but fetch fails
+  // Detail error
   if (selectedId && isDetailError && !isDetailLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -400,9 +400,9 @@ export function PlaybookPage() {
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="alpha-heading-lg text-[#F3F4F6]">Playbook</h1>
-          <p className="alpha-body mt-0.5">
-            Kelola trading setup, checklist, dan aturan entry.
+          <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">PLAYBOOK</h1>
+          <p className="alpha-body mt-1.5">
+            Your trading knowledge system.
           </p>
         </div>
         <Button
@@ -410,7 +410,7 @@ export function PlaybookPage() {
           onClick={() => setCreateDialogOpen(true)}
         >
           <Plus className="size-4 mr-1.5" />
-          Playbook Baru
+          New Playbook
         </Button>
       </div>
 
@@ -421,7 +421,7 @@ export function PlaybookPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari playbook..."
+            placeholder="Search playbooks..."
             className="h-9 pl-9 text-sm bg-[#151827] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
           />
           {search && (
@@ -442,7 +442,7 @@ export function PlaybookPage() {
               value="all"
               className="text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6]"
             >
-              Semua Sesi
+              All Sessions
             </SelectItem>
             {SESSION_TYPE_OPTIONS.map((opt) => (
               <SelectItem
@@ -536,13 +536,13 @@ function EmptyState({
       </div>
       <h3 className="alpha-heading-sm text-[#F3F4F6] mb-1">
         {hasPlaybooks
-          ? 'Tidak ada playbook cocok'
-          : 'Belum ada playbook'}
+          ? 'No matching playbooks'
+          : 'No playbooks yet'}
       </h3>
       <p className="alpha-body text-[#6B7280] max-w-xs mb-4">
         {hasPlaybooks
-          ? 'Coba ubah filter atau kata kunci pencarian.'
-          : 'Buat playbook pertamamu untuk mulai mendokumentasikan trading setup.'}
+          ? 'Try adjusting your filters or search query.'
+          : 'Create your first playbook to start documenting your trading setups.'}
       </p>
       <div className="flex items-center gap-2">
         {hasPlaybooks && (
@@ -561,7 +561,7 @@ function EmptyState({
           onClick={onCreate}
         >
           <Plus className="size-4 mr-1" />
-          Buat Playbook
+          New Playbook
         </Button>
       </div>
     </div>

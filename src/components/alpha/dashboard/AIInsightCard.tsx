@@ -68,15 +68,21 @@ function getDefaultMessage(ctx?: TraderContext): { title: string; content: strin
 }
 
 export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
-  // Default insight when none exists — use contextual message
   const defaultMsg = getDefaultMessage(traderContext)
   const title = insight?.title ?? defaultMsg.title
   const content = insight?.content ?? defaultMsg.content
   const time = insight?.createdAt ? timeAgo(insight.createdAt) : 'Sekarang'
 
   return (
-    <div className="alpha-card p-5 border-l-[3px] border-l-[#6366F1] h-full flex flex-col justify-between">
-      <div>
+    <div className="alpha-card p-5 h-full flex flex-col justify-between relative overflow-hidden">
+      {/* Gradient left border via pseudo-element approach */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1"
+        style={{
+          background: 'linear-gradient(to bottom, #6366F1, #A78BFA)',
+        }}
+      />
+      <div className="pl-3">
         <div className="flex items-center gap-2.5 mb-3">
           {/* AI Avatar with subtle breathing animation */}
           <div
@@ -102,9 +108,14 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
               <path d="M9 18h6" />
             </svg>
           </div>
-          <span className="text-xs font-medium text-[#6366F1]">
-            AI Coach Insight
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold tracking-wide text-[#6366F1]">
+              ✦ ALPHA INSIGHT
+            </span>
+            <span className="text-[10px] text-[#6B7280] -mt-0.5">
+              Based on your recent behavior
+            </span>
+          </div>
         </div>
         <h3 className="alpha-heading-sm mb-1.5">
           {title}
@@ -113,7 +124,7 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
           {content}
         </p>
       </div>
-      <div className="mt-3">
+      <div className="mt-3 pl-3">
         <span className="alpha-caption">{time}</span>
       </div>
     </div>

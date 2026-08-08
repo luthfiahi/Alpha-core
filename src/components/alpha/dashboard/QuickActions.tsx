@@ -9,7 +9,7 @@ interface ActionItem {
   label: string
   page: AppPage
   icon: React.ReactNode
-  variant: 'default' | 'secondary' | 'outline'
+  primary: boolean
 }
 
 const actions: ActionItem[] = [
@@ -17,25 +17,25 @@ const actions: ActionItem[] = [
     label: 'Log Trade',
     page: 'journal-new',
     icon: <Plus className="h-4 w-4" />,
-    variant: 'default',
+    primary: true,
   },
   {
     label: 'Buka Journal',
     page: 'journal',
     icon: <BookOpen className="h-4 w-4" />,
-    variant: 'secondary',
+    primary: false,
   },
   {
     label: 'Tanya AI Coach',
     page: 'coaching',
     icon: <Brain className="h-4 w-4" />,
-    variant: 'secondary',
+    primary: false,
   },
   {
     label: 'Lihat Analitik',
     page: 'analytics',
     icon: <BarChart3 className="h-4 w-4" />,
-    variant: 'outline',
+    primary: false,
   },
 ]
 
@@ -52,9 +52,13 @@ export function QuickActions() {
       {actions.map((action) => (
         <Button
           key={action.page}
-          variant={action.variant}
+          variant={action.primary ? 'default' : 'outline'}
           onClick={() => navigate(action.page)}
-          className="alpha-press flex-shrink-0 gap-2 h-10 px-4 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          className={
+            action.primary
+              ? 'alpha-press flex-shrink-0 gap-2 h-10 px-5 text-sm font-medium whitespace-nowrap bg-[#6366F1] hover:bg-[#5558E6] text-white shadow-[0_0_20px_rgba(99,102,241,0.25)] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_4px_24px_rgba(99,102,241,0.35)] active:translate-y-0 active:shadow-none'
+              : 'alpha-press flex-shrink-0 gap-2 h-10 px-4 text-sm font-medium whitespace-nowrap border-[#2A2D3E] text-[#9CA3AF] hover:bg-[#1E2030] hover:text-[#F3F4F6] hover:border-[#363A50] transition-all duration-150 hover:-translate-y-[1px] hover:shadow-[0_2px_12px_rgba(0,0,0,0.3)] active:translate-y-0 active:shadow-none'
+          }
         >
           {action.icon}
           {action.label}

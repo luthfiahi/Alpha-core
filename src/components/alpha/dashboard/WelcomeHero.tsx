@@ -21,21 +21,20 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
   const name = traderName || storeName || 'Trader'
   const greeting = getGreeting()
 
-  const summary = `Ada ${todayTradesCount} trade hari ini.${processScore !== null ? ` Process Score: ${processScore}.` : ''}`
-
   return (
     <div className="alpha-animate-in-fast flex items-center justify-between h-20 px-1">
       <div className="flex items-center gap-3">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="alpha-heading-xl">
-              {greeting}, {name}
-            </h1>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#6366F1]/10 text-[#818CF8] border border-[#6366F1]/20">
-              Project Alpha
+          <h1 className="alpha-heading-xl">
+            {greeting}, {name}
+          </h1>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="alpha-body">Pantau proses trading-mu hari ini.</p>
+            <span className="inline-flex items-center gap-1.5 text-xs text-[#22C55E]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+              Alpha is ready
             </span>
           </div>
-          <p className="alpha-body mt-1">{summary}</p>
         </div>
       </div>
     </div>

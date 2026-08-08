@@ -18,7 +18,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -198,12 +197,12 @@ export function SettingsPage() {
   return (
     <ScrollArea className="h-full">
       <div className="alpha-animate-in p-6 lg:p-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-8">
           {/* Page Header */}
-          <div>
-            <h1 className="text-xl font-bold text-[#F3F4F6]">Pengaturan</h1>
-            <p className="alpha-caption mt-1">
-              Kelola profil, preferensi trading, dan notifikasi
+          <div className="space-y-1.5">
+            <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">SETTINGS</h1>
+            <p className="alpha-body">
+              Kelola profil dan preferensi trading-mu.
             </p>
           </div>
 
@@ -211,7 +210,7 @@ export function SettingsPage() {
           <section className="alpha-card alpha-animate-in alpha-stagger-1 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <User className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="alpha-heading-sm text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm">
                 Profil
               </h2>
             </div>
@@ -235,7 +234,7 @@ export function SettingsPage() {
                 </div>
               </div>
 
-              <Separator className="bg-[#232636]" />
+              <div className="h-px bg-[var(--alpha-border)]" />
 
               {/* Name */}
               <div className="space-y-2">
@@ -302,11 +301,11 @@ export function SettingsPage() {
               </div>
 
               {/* Save Button */}
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-2">
                 <Button
                   onClick={handleSaveProfile}
                   disabled={savingProfile}
-                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
+                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-5 text-sm font-semibold shadow-lg shadow-[#6366F1]/20"
                 >
                   {savingProfile ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -323,7 +322,7 @@ export function SettingsPage() {
           <section className="alpha-card alpha-animate-in alpha-stagger-2 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <Clock className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="alpha-heading-sm text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm">
                 Preferensi Trading
               </h2>
             </div>
@@ -419,11 +418,11 @@ export function SettingsPage() {
               </div>
 
               {/* Save Button */}
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-2">
                 <Button
                   onClick={handleSaveTradingPrefs}
                   disabled={savingPrefs}
-                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
+                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-5 text-sm font-semibold shadow-lg shadow-[#6366F1]/20"
                 >
                   {savingPrefs ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -440,7 +439,7 @@ export function SettingsPage() {
           <section className="alpha-card alpha-animate-in alpha-stagger-3 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <Bell className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="alpha-heading-sm text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm">
                 Notifikasi
               </h2>
             </div>
@@ -463,7 +462,7 @@ export function SettingsPage() {
                 />
               </div>
 
-              <Separator className="bg-[#232636]" />
+              <div className="h-px bg-[var(--alpha-border)]" />
 
               {/* Behavioral Alert */}
               <div className="flex items-center justify-between py-3">
@@ -482,7 +481,7 @@ export function SettingsPage() {
                 />
               </div>
 
-              <Separator className="bg-[#232636]" />
+              <div className="h-px bg-[var(--alpha-border)]" />
 
               {/* Growth Report Ready */}
               <div className="flex items-center justify-between py-3">

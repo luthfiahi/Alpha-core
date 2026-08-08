@@ -38,18 +38,19 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
 export function WeeklyProgress({ data }: WeeklyProgressProps) {
   if (data.length === 0) {
     return (
-      <div className="alpha-card p-5 flex flex-col">
-        <h3 className="alpha-heading-sm mb-4">
-          Weekly Progress
-        </h3>
+      <div className="alpha-card p-5 flex flex-col h-full">
+        <div>
+          <h3 className="alpha-heading-sm">Weekly Progress</h3>
+          <p className="alpha-caption mt-0.5">Proses mingguan</p>
+        </div>
         <div className="flex-1 min-h-[180px] flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <TrendingUp className="h-8 w-8 text-[#4B5563]" />
             <p className="text-sm font-medium text-[#9CA3AF]">
-              Belum ada data mingguan
+              Belum cukup data untuk membaca perkembangan minggu ini.
             </p>
-            <p className="alpha-caption text-center max-w-[200px]">
-              Process Score akan muncul setelah kamu mencatat trade
+            <p className="alpha-caption text-center max-w-[220px]">
+              Log beberapa trade untuk mulai melihat pola.
             </p>
           </div>
         </div>
@@ -63,11 +64,12 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
   }))
 
   return (
-    <div className="alpha-card p-5 flex flex-col">
-      <h3 className="alpha-heading-sm mb-4">
-        Weekly Progress
-      </h3>
-      <div className="flex-1 min-h-[180px] alpha-animate-scale">
+    <div className="alpha-card p-5 flex flex-col h-full">
+      <div>
+        <h3 className="alpha-heading-sm">Weekly Progress</h3>
+        <p className="alpha-caption mt-0.5">Proses mingguan</p>
+      </div>
+      <div className="flex-1 min-h-[180px] mt-4 alpha-animate-scale">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}

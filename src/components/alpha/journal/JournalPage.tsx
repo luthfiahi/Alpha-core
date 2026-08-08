@@ -35,21 +35,20 @@ const PAGE_SIZE = 15;
 
 function EmptyState({ onNavigate }: { onNavigate: () => void }) {
   return (
-    <div className='flex flex-col items-center justify-center py-20 text-center'>
-      <div className='size-16 rounded-2xl bg-[#1E2030] flex items-center justify-center mb-4'>
-        <BookOpen className='size-7 text-[#6B7280]' />
+    <div className='flex flex-col items-center justify-center py-24 text-center'>
+      <div className='size-16 rounded-2xl bg-[#151827] border border-[#232636] flex items-center justify-center mb-5'>
+        <BookOpen className='size-7 text-[#4B5563]' />
       </div>
-      <h3 className='text-base font-semibold text-[#F3F4F6] mb-1'>Belum ada trade</h3>
-      <p className='text-sm text-[#6B7280] max-w-xs'>
-        Belum ada trade. Mulai catat trade pertamamu!
+      <h3 className='text-base font-semibold text-[#F3F4F6] mb-1.5'>No trades yet</h3>
+      <p className='alpha-caption max-w-xs'>
+        Belum ada trade yang dicatat.
       </p>
       <Button
         onClick={onNavigate}
-        className='mt-5 bg-[#6366F1] hover:bg-[#818CF8] text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] alpha-press'
-        size='sm'
+        className='mt-6 bg-[#6366F1] hover:bg-[#818CF8] text-white font-medium alpha-press'
       >
-        <Plus className='size-4' />
-        Log Trade Pertama
+        <Plus className='size-4 mr-1.5' />
+        Log Trade
       </Button>
     </div>
   );
@@ -59,10 +58,10 @@ function LoadingSkeleton() {
   return (
     <div className='space-y-4'>
       {/* Filter bar skeleton */}
-      <div className='flex gap-3'>
-        <Skeleton className='h-8 w-[130px] alpha-skeleton rounded-md' />
-        <Skeleton className='h-8 w-[130px] alpha-skeleton rounded-md' />
-        <Skeleton className='h-8 w-[200px] alpha-skeleton rounded-md' />
+      <div className='flex gap-2'>
+        <Skeleton className='h-8 w-[120px] bg-[#151827] rounded-lg' />
+        <Skeleton className='h-8 w-[120px] bg-[#151827] rounded-lg' />
+        <Skeleton className='h-8 w-[200px] bg-[#151827] rounded-lg' />
       </div>
       {/* Table skeleton */}
       <div className='alpha-card overflow-hidden'>
@@ -71,13 +70,13 @@ function LoadingSkeleton() {
             key={i}
             className='flex items-center gap-4 px-4 py-3 border-b border-[#232636]/60'
           >
-            <Skeleton className='h-4 w-20 alpha-skeleton' />
-            <Skeleton className='h-4 w-16 alpha-skeleton' />
-            <Skeleton className='h-5 w-12 alpha-skeleton rounded' />
-            <Skeleton className='h-4 w-20 alpha-skeleton ml-auto' />
-            <Skeleton className='h-4 w-20 alpha-skeleton' />
-            <Skeleton className='h-4 w-16 alpha-skeleton' />
-            <Skeleton className='h-4 w-8 alpha-skeleton rounded' />
+            <Skeleton className='h-4 w-20 bg-[#1E2030]' />
+            <Skeleton className='h-5 w-14 bg-[#1E2030] rounded-md' />
+            <Skeleton className='h-4 w-20 bg-[#1E2030]' />
+            <Skeleton className='h-4 w-16 bg-[#1E2030] ml-auto' />
+            <Skeleton className='h-5 w-8 bg-[#1E2030] rounded-md' />
+            <Skeleton className='h-5 w-20 bg-[#1E2030] rounded-md' />
+            <Skeleton className='h-4 w-8 bg-[#1E2030] rounded' />
           </div>
         ))}
       </div>
@@ -138,9 +137,9 @@ export function JournalPage() {
   const { data, isLoading, isError } = useQuery<TradesResponse>({
     queryKey: ['trades', queryParams],
     queryFn: async () => {
-      const res = await fetch(`/api/trades?${queryParams}`)
-      if (!res.ok) throw new Error('Gagal memuat data trade')
-      return res.json()
+      const res = await fetch(`/api/trades?${queryParams}`);
+      if (!res.ok) throw new Error('Gagal memuat data trade');
+      return res.json();
     },
   });
 
@@ -185,14 +184,12 @@ export function JournalPage() {
   return (
     <div className='space-y-5 alpha-animate-in'>
       {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='alpha-heading-sm text-[#F3F4F6]'>Trade Journal</h1>
-          <p className='alpha-caption'>
-            {isLoading
-              ? '...'
-              : `${total} trade tercatat`}
-          </p>
+      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+        <div className='flex items-baseline gap-3'>
+          <h1 className='alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]'>JOURNAL</h1>
+          <span className='alpha-caption text-[#6B7280]'>
+            {isLoading ? '…' : `${total} trades`}
+          </span>
         </div>
         <div className='flex items-center gap-2'>
           {/* View Toggle */}
@@ -200,7 +197,7 @@ export function JournalPage() {
             <button
               type='button'
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-md transition-colors alpha-press ${
+              className={`p-1.5 rounded-md transition-colors duration-150 alpha-press ${
                 viewMode === 'table'
                   ? 'bg-[#6366F1]/15 text-[#818CF8]'
                   : 'text-[#6B7280] hover:text-[#9CA3AF]'
@@ -211,7 +208,7 @@ export function JournalPage() {
             <button
               type='button'
               onClick={() => setViewMode('card')}
-              className={`p-1.5 rounded-md transition-colors alpha-press ${
+              className={`p-1.5 rounded-md transition-colors duration-150 alpha-press ${
                 viewMode === 'card'
                   ? 'bg-[#6366F1]/15 text-[#818CF8]'
                   : 'text-[#6B7280] hover:text-[#9CA3AF]'
@@ -223,18 +220,22 @@ export function JournalPage() {
 
           <Button
             onClick={() => navigate('journal-new')}
-            className='bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press'
-            size='sm'
+            className='bg-[#6366F1] hover:bg-[#818CF8] text-white font-medium alpha-press'
           >
-            <Plus className='size-4' />
-            Log Trade
+            <Plus className='size-4 mr-1.5' />
+            New Entry
           </Button>
         </div>
       </div>
 
+      {/* Subtitle */}
+      <p className='alpha-caption -mt-3'>
+        Catat dan refleksi setiap trade.
+      </p>
+
       {/* Filters — Sticky */}
       {!isLoading && (total > 0 || Object.entries(filters).some(([k, v]) => v !== DEFAULT_FILTERS[k as keyof TradeFiltersType])) && (
-        <div className='alpha-card p-4 sticky top-0 z-10 backdrop-blur-sm'>
+        <div className='alpha-card p-3 sticky top-0 z-10 backdrop-blur-sm'>
           <JournalFilters
             filters={filters}
             onFiltersChange={handleFiltersChange}
@@ -253,7 +254,7 @@ export function JournalPage() {
           <Button
             variant='ghost'
             size='sm'
-            className='mt-2 text-[#9CA3AF] hover:opacity-90 transition-opacity alpha-press'
+            className='mt-2 text-[#9CA3AF] hover:text-[#F3F4F6] transition-colors alpha-press'
             onClick={() => queryClient.invalidateQueries({ queryKey: ['trades'] })}
           >
             Coba Lagi
@@ -317,7 +318,7 @@ export function JournalPage() {
                       key={pageNum}
                       type='button'
                       onClick={() => setPage(pageNum)}
-                      className={`size-8 rounded-md text-xs font-medium transition-colors alpha-press ${
+                      className={`size-8 rounded-md text-xs font-medium transition-colors duration-150 alpha-press ${
                         page === pageNum
                           ? 'bg-[#6366F1]/15 text-[#818CF8]'
                           : 'text-[#9CA3AF] hover:bg-[#1E2030]'

@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
-import { Brain } from 'lucide-react'
 import { format } from 'date-fns'
 import { id as localeId } from 'date-fns/locale'
 
@@ -19,37 +18,46 @@ export function ChatMessage({ role, content, timestamp, isTyping }: ChatMessageP
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className={`alpha-animate-in-fast flex w-full gap-3 ${
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className={`alpha-animate-fade flex w-full ${
         role === 'AI_COACH' ? 'justify-start' : 'justify-end'
       }`}
     >
-      {role === 'AI_COACH' && (
-        <div className="flex-shrink-0 mt-1">
-          <div
-            className="w-7 h-7 rounded-full flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
-            }}
-          >
-            <Brain className="w-3.5 h-3.5 text-white" />
-          </div>
-        </div>
-      )}
-
       <div
         className={`flex flex-col max-w-[80%] sm:max-w-[70%] ${
           role === 'AI_COACH' ? 'items-start' : 'items-end'
         }`}
       >
-        <div
-          className={`px-4 py-3 ${
+        {/* Header: role label + timestamp */}
+        <div className={`flex items-center gap-2 mb-1.5 px-1 ${
+          role === 'AI_COACH' ? '' : 'flex-row-reverse'
+        }`}>
+          <span className={
             role === 'AI_COACH'
-              ? 'alpha-chat-bubble-ai text-alpha-text-primary'
-              : 'alpha-chat-bubble-user text-alpha-text-primary'
-          }`}
+              ? 'text-[11px] font-medium text-alpha-primary'
+              : 'text-[11px] font-medium text-alpha-text-secondary'
+          }>
+            {role === 'AI_COACH' ? 'Alpha' : 'You'}
+          </span>
+          <span className="alpha-caption text-[10px]">
+            {timeStr}
+          </span>
+        </div>
+
+        {/* Bubble */}
+        <div
+          className={
+            role === 'AI_COACH'
+              ? 'alpha-chat-bubble-ai relative border-l-[4px] rounded-xl rounded-l-sm p-4 text-alpha-text-primary'
+              : 'alpha-chat-bubble-user rounded-xl rounded-r-sm p-4 text-alpha-text-primary'
+          }
+          style={
+            role === 'AI_COACH'
+              ? { borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #6366F1, #8B5CF6) 1', borderLeftWidth: '4px' }
+              : undefined
+          }
         >
           {isTyping ? (
             <div className="flex items-center gap-1.5 py-1 px-1">
@@ -65,10 +73,6 @@ export function ChatMessage({ role, content, timestamp, isTyping }: ChatMessageP
             <p className="alpha-body leading-relaxed whitespace-pre-wrap">{content}</p>
           )}
         </div>
-
-        <span className="alpha-caption mt-1.5 px-1">
-          {timeStr}
-        </span>
       </div>
     </motion.div>
   )

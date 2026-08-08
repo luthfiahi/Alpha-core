@@ -76,6 +76,75 @@ const NAV_GROUPS: NavGroup[] = [
 ]
 
 // ========================================
+// Alpha Logo Mark — Diamond with α
+// ========================================
+
+function AlphaLogoMark({ size = 32 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Diamond shape */}
+      <path
+        d="M16 2L29 16L16 30L3 16L16 2Z"
+        fill="url(#alpha-gradient)"
+        stroke="rgba(129,140,248,0.3)"
+        strokeWidth="0.5"
+      />
+      {/* Inner diamond highlight */}
+      <path
+        d="M16 6L26 16L16 26L6 16L16 6Z"
+        fill="url(#alpha-inner)"
+        opacity="0.15"
+      />
+      {/* Alpha symbol α */}
+      <text
+        x="16"
+        y="17.5"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#FFFFFF"
+        fontSize="16"
+        fontWeight="700"
+        fontFamily="'Inter', system-ui, -apple-system, sans-serif"
+        style={{ letterSpacing: '-0.02em' }}
+      >
+        α
+      </text>
+      <defs>
+        <linearGradient
+          id="alpha-gradient"
+          x1="3"
+          y1="2"
+          x2="29"
+          y2="30"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#818CF8" />
+          <stop offset="0.5" stopColor="#6366F1" />
+          <stop offset="1" stopColor="#4F46E5" />
+        </linearGradient>
+        <linearGradient
+          id="alpha-inner"
+          x1="6"
+          y1="6"
+          x2="26"
+          y2="26"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FFFFFF" stopOpacity="0.6" />
+          <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+// ========================================
 // NavItemButton Component
 // ========================================
 
@@ -96,21 +165,40 @@ function NavItemButton({
     <button
       onClick={onClick}
       className={cn(
-        'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
+        'group relative flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
         'outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1] focus-visible:ring-offset-1 focus-visible:ring-offset-transparent',
-        // Active state
-        isActive && 'bg-[rgba(99,102,241,0.12)] text-[#6366F1]',
-        // Inactive state
-        !isActive && 'text-[#9CA3AF] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#F3F4F6] hover:translate-x-0.5',
         // Collapsed: center icon
         collapsed && 'justify-center px-0'
       )}
+      style={
+        isActive
+          ? {
+              background: 'linear-gradient(90deg, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0.06) 100%)',
+              color: '#6366F1',
+            }
+          : undefined
+      }
     >
-      {/* Active indicator */}
+      {/* Active indicator — 4px wide */}
       <div
         className={cn(
-          'absolute left-0 top-1/2 h-6 w-[3px] -translate-x-1 rounded-full bg-[#6366F1] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
+          'absolute left-0 top-1/2 h-6 w-[4px] -translate-x-1 rounded-full bg-[#6366F1] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
           isActive ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'
+        )}
+        style={
+          isActive
+            ? { boxShadow: '0 0 8px rgba(99,102,241,0.4)' }
+            : undefined
+        }
+      />
+
+      {/* Hover indicator — 2px, only visible on hover when not active */}
+      <div
+        className={cn(
+          'absolute left-0 top-1/2 h-5 w-[2px] -translate-x-1 rounded-full bg-[#6B7280] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
+          isActive
+            ? 'opacity-0 scale-y-0'
+            : 'opacity-0 scale-y-0 group-hover:opacity-60 group-hover:scale-y-100'
         )}
       />
 
@@ -119,11 +207,13 @@ function NavItemButton({
           'shrink-0 transition-colors duration-[220ms]',
           isActive ? 'text-[#6366F1]' : 'text-[#6B7280] group-hover:text-[#9CA3AF]'
         )}
-        size={20}
+        size={18}
       />
 
       {!collapsed && (
-        <span className="truncate">{item.label}</span>
+        <span className={cn('truncate', !isActive && 'text-[#9CA3AF] group-hover:text-[#F3F4F6]')}>
+          {item.label}
+        </span>
       )}
 
       {/* Notification dot for AI Coach */}
@@ -179,17 +269,15 @@ function SidebarContent({
       <div className="flex h-14 items-center justify-between border-b border-[#232636] px-3">
         {!collapsed && (
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#6366F1]">
-              <span className="text-sm font-bold text-white">A</span>
-            </div>
+            <AlphaLogoMark size={30} />
             <span className="text-sm font-semibold text-[#F3F4F6] whitespace-nowrap">
               Project Alpha
             </span>
           </div>
         )}
         {collapsed && (
-          <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-[#6366F1]">
-            <span className="text-sm font-bold text-white">A</span>
+          <div className="mx-auto">
+            <AlphaLogoMark size={30} />
           </div>
         )}
         {!collapsed && (
@@ -206,8 +294,8 @@ function SidebarContent({
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-2 py-4">
-        <div className="flex flex-col gap-6">
-          {NAV_GROUPS.map((group) => (
+        <div className="flex flex-col gap-1">
+          {NAV_GROUPS.map((group, groupIndex) => (
             <div key={group.title}>
               {/* Group label - hidden when collapsed */}
               {!collapsed && (
@@ -216,7 +304,7 @@ function SidebarContent({
                 </p>
               )}
               {collapsed && (
-                <div className="mx-auto mb-2 h-px w-6 bg-[#232636]" />
+                <div className="mx-auto mb-2 h-px w-6 bg-[#2D3148]" />
               )}
               <div className="flex flex-col gap-1">
                 {group.items.map((item) => (
@@ -229,6 +317,10 @@ function SidebarContent({
                   />
                 ))}
               </div>
+              {/* Divider between groups — expanded mode */}
+              {!collapsed && groupIndex < NAV_GROUPS.length - 1 && (
+                <div className="mt-4 mb-1 h-px bg-[#232636]" />
+              )}
             </div>
           ))}
         </div>
@@ -238,12 +330,19 @@ function SidebarContent({
       <div className="border-t border-[#232636] p-3">
         {!collapsed ? (
           <div className="space-y-1">
-            <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-              <Avatar className="h-8 w-8 shrink-0">
-                <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
-                  {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
-                </AvatarFallback>
-              </Avatar>
+            <div className="group/item flex items-center gap-3 rounded-[10px] px-2 py-2 transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)]">
+              <div className="relative shrink-0">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
+                    {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
+                  </AvatarFallback>
+                </Avatar>
+                {/* Online status dot */}
+                <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center">
+                  <span className="absolute h-full w-full rounded-full bg-[#10121E]" />
+                  <span className="relative h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                </span>
+              </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-[#F3F4F6]">
                   {user?.name || 'Trader'}
@@ -255,7 +354,7 @@ function SidebarContent({
             </div>
             <button
               onClick={logout}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#6B7280] transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#EF4444]"
+              className="flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2 text-sm font-medium text-[#6B7280] transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#EF4444]"
             >
               <LogOut size={16} />
               <span>Keluar</span>
@@ -265,11 +364,18 @@ function SidebarContent({
           <div className="flex flex-col items-center gap-1">
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
-                    {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative cursor-pointer">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">
+                      {user?.name?.slice(0, 2).toUpperCase() || 'TR'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* Online status dot */}
+                  <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center">
+                    <span className="absolute h-full w-full rounded-full bg-[#10121E]" />
+                    <span className="relative h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                  </span>
+                </div>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>
                 <p className="text-xs font-medium">{user?.name || 'Trader'}</p>
@@ -352,7 +458,7 @@ export function AppSidebar() {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          'flex h-screen flex-col border-r border-[#232636] bg-[#10121E] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
+          'relative flex h-screen flex-col border-r border-[#232636] bg-[#10121E] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
           collapsed ? 'w-[72px]' : 'w-[260px]'
         )}
       >
