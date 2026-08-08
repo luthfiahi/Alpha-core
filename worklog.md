@@ -1067,3 +1067,28 @@ Stage Summary:
 - Mobile header label fix for trading-dna page
 - Lint passes clean (0 errors, 1 pre-existing warning in unrelated file)
 
+---
+Task ID: p0-freeze-bug-fix
+Agent: Main Orchestrator + 3 parallel subagents
+Task: P0 UI Freeze — Bug Fix — Add loading/error states across all pages
+
+Work Log:
+- Full audit of all 7 pages (Dashboard, Journal, Journal-New, Journal-Detail, Coaching, Analytics, Playbook, Trading-DNA, Settings)
+- Found 7 critical P0 issues: no loading skeleton on Dashboard, no error states on 5 pages, fake data in BehavioralTrend, missing mobile header label
+- Fixed Dashboard: loading skeleton (mirrors layout), error card with retry, removed fake BehavioralTrend
+- Fixed Analytics: error states for GrowthTimeline, WeeklyReviewTab, BehavioralInsights
+- Fixed Playbook: error state for list and detail queries
+- Fixed Trading DNA: error state with retry
+- Fixed Journal Detail: explicit error handling
+- Fixed AppLayout: added trading-dna to MobileHeader labels
+- Fixed ScoreCard: shows "—" instead of "0" when null
+- Fixed Supabase client: graceful fallback when env vars missing (prevents crash)
+- All fixes use consistent dark theme error cards (AlertTriangle + retry button)
+- Lint passes clean, pushed to production
+
+Stage Summary:
+- 11 files changed, 400+ insertions
+- All pages now have proper loading, empty, AND error states
+- No more fake/misleading data displayed
+- Supabase client won't crash app if env vars missing
+- Mobile header shows correct page name for Trading DNA
