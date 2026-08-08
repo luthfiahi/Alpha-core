@@ -1,8 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { buildTraderContext } from '@/lib/ai/memory/context-builder'
-import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
-import { db } from '@/lib/db'
-import { chatCompletion } from '@/lib/zai'
 
 // ========================================
 // Free Chat System Prompt
@@ -227,27 +223,6 @@ Apa komitmenmu?`
 }
 
 // ========================================
-// L0 Event Helper (non-blocking)
-// ========================================
-
-async function fireL0Event(eventType: string, eventData: Record<string, unknown>) {
-  try {
-    const trader = await db.trader.findFirst()
-    if (!trader) return
-    await db.memoryL0Event.create({
-      data: {
-        traderId: trader.id,
-        eventType,
-        eventData: JSON.stringify(eventData),
-      },
-    })
-  } catch {
-    // Silently ignore — L0 events are fire-and-forget.
-    // Table might not exist in early deployment.
-  }
-}
-
-// ========================================
 // POST Handler
 // ========================================
 
@@ -306,9 +281,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build full memory context from the AI Memory System
+    // Build memory context (dynamic imports to avoid Turbopack compile crash)
     let memoryContextStr = ''
     try {
+      const { buildTraderContext } = await import('@/lib/ai/memory/context-builder')
+      const { formatMemoryContextForPrompt } = await import('@/lib/ai/memory/types')
       const traderId = (traderContext as Record<string, unknown> | undefined)?.traderId as string | undefined
       const fullContext = await buildTraderContext(traderId)
       if (fullContext.traderId) {
@@ -335,7 +312,6 @@ export async function POST(request: NextRequest) {
     contextStr += memoryContextStr
 
     // Build the full messages array with system prompt
-    // NOTE: z-ai-web-dev-sdk uses 'assistant' role for system prompts
     const fullMessages: Array<{ role: 'assistant' | 'user'; content: string }> = [
       {
         role: 'assistant',
@@ -346,13 +322,6 @@ export async function POST(request: NextRequest) {
     // If reflection mode and no previous messages, return the step prompt directly (no LLM call needed)
     if (isReflection && messages.length === 0 && step >= 1 && step <= 5) {
       const stepPrompt = getStepPrompt(step, tradeData)
-
-      // Fire L0 event (non-blocking)
-      fireL0Event('CoachSessionCompleted', {
-        sessionType: 'REFLECTION',
-        step,
-        messageCount: 0,
-      }).catch(() => { /* non-blocking */ })
 
       // Return step prompt as a text stream for typing effect
       const stream = new ReadableStream({
@@ -390,10 +359,11 @@ export async function POST(request: NextRequest) {
       }))
     )
 
-    // Call Z.ai LLM API directly (no SDK dependency)
+    // Call Z.ai LLM API via SDK (dynamic import)
     let aiText = ''
 
     try {
+      const { chatCompletion } = await import('@/lib/zai')
       aiText = await chatCompletion(fullMessages)
     } catch (aiErr) {
       console.error('AI API call failed:', aiErr)
@@ -410,25 +380,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Fire L0 event for coaching session (non-blocking)
-    fireL0Event('CoachSessionCompleted', {
-      sessionType: mode || 'FREE_CHAT',
-      step: isReflection ? step : undefined,
-      messageCount: messages.length,
-    }).catch(() => { /* non-blocking */ })
-
     // Return as a simple text stream (client reads chunks)
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder()
-        // Split text into small chunks for a "typing" effect
         const words = aiText.split(/(\s+)/)
         let i = 0
         function sendNext() {
           if (i < words.length) {
             controller.enqueue(encoder.encode(words[i]))
             i++
-            // Small delay between chunks for typing effect
             setTimeout(sendNext, 8)
           } else {
             controller.close()

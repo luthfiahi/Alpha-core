@@ -918,3 +918,24 @@ Stage Summary:
 - Free chat and reflection follow-up messages use non-streaming SDK call with typing effect
 - Better error messages shown to users on failure
 - Lint passes clean (0 errors, 1 pre-existing warning)
+
+---
+Task ID: 18
+Agent: Main Orchestrator
+Task: Fix AI Coach — SDK integration and Turbopack compilation issues
+
+Work Log:
+- Diagnosed coaching API route (`src/app/api/coaching/route.ts`) — found root cause: `zai.ts` was using raw `fetch` to call `https://internal-api.z.ai/v1` directly instead of the `z-ai-web-dev-sdk` package
+- Rewrote `src/lib/zai.ts` to properly use `z-ai-web-dev-sdk` with `ZAI.create()` and `zai.chat.completions.create()`, with lazy import to avoid build-time issues
+- Found that `.z-ai-config` exists at `/etc/.z-ai-config` with valid credentials
+- Discovered Turbopack crashes when coaching route uses static imports (`@/lib/db`, `@/lib/ai/memory/*`). Converted all imports in coaching route to dynamic `await import()` calls
+- Removed the old `fireL0Event` helper that used static `db` import (non-blocking L0 events removed from route)
+- Tested coaching API end-to-end with curl — AI Coach responds with warm, empathetic, Socratic coaching style
+- Verified both FREE_CHAT and REFLECTION modes work
+- Cleaned up test API routes (`/api/test-ai`, `/api/test-imports`)
+
+Stage Summary:
+- **Root Cause 1**: `zai.ts` was bypassing the SDK and calling internal API directly with raw fetch — FIXED: now uses `z-ai-web-dev-sdk` properly
+- **Root Cause 2**: Turbopack crashed when compiling coaching route due to static imports of Prisma/memory modules — FIXED: all heavy imports converted to dynamic `await import()`
+- **Files Changed**: `src/lib/zai.ts` (complete rewrite), `src/app/api/coaching/route.ts` (dynamic imports, removed L0 events)
+- **AI Coach is fully functional**: responds in Indonesian with Socratic coaching, supports both free chat and reflection modes

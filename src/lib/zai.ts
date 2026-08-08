@@ -1,59 +1,32 @@
 /**
- * Direct Z.ai LLM API helper — no SDK dependency.
+ * Z.ai LLM API helper using z-ai-web-dev-sdk.
  *
- * The z-ai-web-dev-sdk requires a .z-ai-config file which doesn't exist
- * on Vercel. This helper calls the API directly via fetch.
+ * Uses the official SDK for all AI calls.
+ * MUST only be used in server-side code (API routes).
+ * Import is lazy to avoid build-time issues.
  */
 
-interface ChatCompletionResponse {
-  choices?: Array<{
-    finish_reason?: string
-    message?: { content?: string; role?: string }
-  }>
-  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number }
-}
+let zaiInstance: Awaited<ReturnType<typeof import('z-ai-web-dev-sdk').default.create>> | null = null
 
-function getConfig() {
-  return {
-    baseUrl: process.env.ZAI_BASE_URL || 'https://internal-api.z.ai/v1',
-    apiKey: process.env.ZAI_API_KEY || 'Z.ai',
-    chatId: process.env.ZAI_CHAT_ID || undefined,
-    userId: process.env.ZAI_USER_ID || undefined,
-    token: process.env.ZAI_TOKEN || undefined,
+async function getZAI() {
+  if (!zaiInstance) {
+    const ZAI = (await import('z-ai-web-dev-sdk')).default
+    zaiInstance = await ZAI.create()
   }
+  return zaiInstance
 }
 
 /**
- * Call the Z.ai chat completions API directly.
- * Uses the same interface as z-ai-web-dev-sdk for easy migration.
+ * Call the Z.ai chat completions API via the SDK.
+ * Returns the AI response text.
  */
 export async function chatCompletion(messages: Array<{ role: string; content: string }>): Promise<string> {
-  const config = getConfig()
-  const url = `${config.baseUrl}/chat/completions`
+  const zai = await getZAI()
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${config.apiKey}`,
-    'X-Z-AI-From': 'Z',
-  }
-  if (config.chatId) headers['X-Chat-Id'] = config.chatId
-  if (config.userId) headers['X-User-Id'] = config.userId
-  if (config.token) headers['X-Token'] = config.token
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      messages,
-      thinking: { type: 'disabled' },
-    }),
+  const completion = await zai.chat.completions.create({
+    messages: messages as Array<{ role: 'assistant' | 'user'; content: string }>,
+    thinking: { type: 'disabled' },
   })
 
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => '')
-    throw new Error(`AI API error ${response.status}: ${errorText}`)
-  }
-
-  const data: ChatCompletionResponse = await response.json()
-  return data.choices?.[0]?.message?.content || ''
+  return completion.choices?.[0]?.message?.content || ''
 }
