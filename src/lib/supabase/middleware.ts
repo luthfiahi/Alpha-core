@@ -33,15 +33,12 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
-  // Refresh the session so it doesn't expire
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Do not redirect API routes or auth callback
-  const isApiRoute = request.nextUrl.pathname.startsWith('/api')
-  const isAuthCallback = request.nextUrl.pathname.startsWith('/auth/callback')
-  if (isApiRoute || isAuthCallback) {
+  // Refresh the session — wrap in try/catch to prevent blocking all requests
+  try {
+    await supabase.auth.getUser()
+  } catch (err) {
+    // If getUser fails (network error, timeout, etc.), don't block the request
+    console.error('[updateSession] getUser failed (non-blocking):', err)
     return supabaseResponse
   }
 

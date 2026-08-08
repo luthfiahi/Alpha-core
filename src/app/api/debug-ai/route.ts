@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 
 /**
- * GET /api/debug-ai — Diagnose AI Coach connection issues.
- * Call this from browser to see exactly what's failing.
+ * GET /api/debug-ai — Diagnose AI Coach and Supabase connection issues.
  */
 export async function GET() {
   const results: Record<string, unknown> = {}
@@ -14,9 +13,25 @@ export async function GET() {
     ZAI_CHAT_ID: process.env.ZAI_CHAT_ID ? 'SET ✓' : 'NOT SET (optional)',
     ZAI_USER_ID: process.env.ZAI_USER_ID ? 'SET ✓' : 'NOT SET (optional)',
     ZAI_TOKEN: process.env.ZAI_TOKEN ? 'SET ✓ (len=' + process.env.ZAI_TOKEN.length + ')' : 'NOT SET (optional)',
+    DATABASE_URL: process.env.DATABASE_URL ? 'SET ✓ (len=' + process.env.DATABASE_URL.length + ')' : 'MISSING ✗',
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET ✓' : 'MISSING ✗',
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET ✓' : 'MISSING ✗',
+    NODE_ENV: process.env.NODE_ENV || 'unknown',
   }
 
-  // 2. Check .z-ai-config file
+  // 2. Test database connection
+  try {
+    const { db } = await import('@/lib/db')
+    const traderCount = await db.trader.count()
+    results.database = { status: 'OK ✓', traderCount }
+  } catch (err: unknown) {
+    results.database = {
+      status: 'FAILED ✗',
+      error: err instanceof Error ? err.message : String(err),
+    }
+  }
+
+  // 3. Check .z-ai-config file
   try {
     const fs = await import('fs/promises')
     const path = await import('path')
@@ -30,10 +45,10 @@ export async function GET() {
       path: configPath,
     }
   } catch {
-    results.fileConfig = { found: false, path: '.z-ai-config in project root' }
+    results.fileConfig = { found: false }
   }
 
-  // 3. Test actual API call
+  // 4. Test AI API call
   const baseUrl = process.env.ZAI_BASE_URL
   const apiKey = process.env.ZAI_API_KEY
 
@@ -80,11 +95,10 @@ export async function GET() {
       results.apiTest = {
         error: true,
         message: err instanceof Error ? err.message : String(err),
-        hint: 'If this says "fetch failed", the API URL is not reachable from this server.',
       }
     }
   } else {
-    results.apiTest = { skipped: 'No env variables set' }
+    results.apiTest = { skipped: true, reason: 'ZAI_BASE_URL or ZAI_API_KEY not set' }
   }
 
   return NextResponse.json(results, {
