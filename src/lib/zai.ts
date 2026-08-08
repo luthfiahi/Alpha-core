@@ -1,9 +1,9 @@
 /**
  * Z.ai LLM API helper using z-ai-web-dev-sdk.
  *
- * Uses the official SDK for all AI calls.
- * MUST only be used in server-side code (API routes).
- * Import is lazy to avoid build-time issues.
+ * The SDK reads .z-ai-config from: project root > home dir > /etc.
+ * On Vercel, the file is in the project root (committed to git).
+ * Import is lazy to avoid Turbopack build-time issues.
  */
 
 let zaiInstance: Awaited<ReturnType<typeof import('z-ai-web-dev-sdk').default.create>> | null = null
