@@ -137,7 +137,11 @@ export function JournalPage() {
   // Fetch trades
   const { data, isLoading, isError } = useQuery<TradesResponse>({
     queryKey: ['trades', queryParams],
-    queryFn: () => fetch(`/api/trades?${queryParams}`).then((r) => r.json()),
+    queryFn: async () => {
+      const res = await fetch(`/api/trades?${queryParams}`)
+      if (!res.ok) throw new Error('Gagal memuat data trade')
+      return res.json()
+    },
   });
 
   const trades = data?.trades || [];

@@ -78,16 +78,42 @@ export function SettingsPage() {
   const [name, setName] = useState(traderName ?? '')
   const [timezone, setTimezone] = useState('Asia/Makassar')
 
-  // Trading preferences state
-  const [timeframe, setTimeframe] = useState('H1')
-  const [currency, setCurrency] = useState('USD')
-  const [lotSize, setLotSize] = useState('0.1')
-  const [tradingStyle, setTradingStyle] = useState('Day Trader')
+  // Trading preferences state — load from localStorage on mount
+  const [timeframe, setTimeframe] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('alpha:trading-prefs') || '{}')
+      return saved.timeframe || 'H1'
+    } catch { return 'H1' }
+  })
+  const [currency, setCurrency] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('alpha:trading-prefs') || '{}')
+      return saved.currency || 'USD'
+    } catch { return 'USD' }
+  })
+  const [lotSize, setLotSize] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('alpha:trading-prefs') || '{}')
+      return saved.lotSize || '0.1'
+    } catch { return '0.1' }
+  })
+  const [tradingStyle, setTradingStyle] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('alpha:trading-prefs') || '{}')
+      return saved.tradingStyle || 'Day Trader'
+    } catch { return 'Day Trader' }
+  })
 
-  // Notifications state (all default ON)
-  const [weeklyReview, setWeeklyReview] = useState(true)
-  const [behavioralAlert, setBehavioralAlert] = useState(true)
-  const [growthReport, setGrowthReport] = useState(true)
+  // Notifications state — load from localStorage on mount
+  const [weeklyReview, setWeeklyReview] = useState(() => {
+    try { const v = localStorage.getItem('alpha:notif:weekly-review'); return v === null ? true : v === 'true' } catch { return true }
+  })
+  const [behavioralAlert, setBehavioralAlert] = useState(() => {
+    try { const v = localStorage.getItem('alpha:notif:behavioral-alert'); return v === null ? true : v === 'true' } catch { return true }
+  })
+  const [growthReport, setGrowthReport] = useState(() => {
+    try { const v = localStorage.getItem('alpha:notif:growth-report'); return v === null ? true : v === 'true' } catch { return true }
+  })
 
   // Loading states
   const [savingProfile, setSavingProfile] = useState(false)
@@ -432,7 +458,7 @@ export function SettingsPage() {
                 </div>
                 <Switch
                   checked={weeklyReview}
-                  onCheckedChange={setWeeklyReview}
+                  onCheckedChange={(v) => { setWeeklyReview(v); localStorage.setItem('alpha:notif:weekly-review', String(v)) }}
                   className="shrink-0"
                 />
               </div>
@@ -451,7 +477,7 @@ export function SettingsPage() {
                 </div>
                 <Switch
                   checked={behavioralAlert}
-                  onCheckedChange={setBehavioralAlert}
+                  onCheckedChange={(v) => { setBehavioralAlert(v); localStorage.setItem('alpha:notif:behavioral-alert', String(v)) }}
                   className="shrink-0"
                 />
               </div>
@@ -470,7 +496,7 @@ export function SettingsPage() {
                 </div>
                 <Switch
                   checked={growthReport}
-                  onCheckedChange={setGrowthReport}
+                  onCheckedChange={(v) => { setGrowthReport(v); localStorage.setItem('alpha:notif:growth-report', String(v)) }}
                   className="shrink-0"
                 />
               </div>

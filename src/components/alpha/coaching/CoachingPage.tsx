@@ -784,6 +784,15 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
           body: JSON.stringify({ messages: allMessages }),
         })
 
+        if (!response.ok) {
+          let errorMsg = 'Gagal menganalisis screenshot.'
+          try {
+            const errData = await response.json()
+            if (errData.error) errorMsg = errData.error
+          } catch { /* ignore */ }
+          throw new Error(errorMsg)
+        }
+
         if (!response.body) throw new Error('No response body')
 
         const reader = response.body.getReader()

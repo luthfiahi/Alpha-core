@@ -148,6 +148,14 @@ function EmotionBarChart({ data }: { data: Record<string, number> }) {
     color: EMOTION_COLORS[key] || '#6B7280',
   }))
 
+  if (chartData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[160px]">
+        <p className="text-sm text-[#6B7280]">Belum ada data emosi</p>
+      </div>
+    )
+  }
+
   return (
     <ResponsiveContainer width="100%" height={160}>
       <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
@@ -288,7 +296,7 @@ export function WeeklyReviewTab() {
   }
 
   const review = currentData?.current
-  const emotionData = currentData?.emotionBreakdown || { calm: 50, anxious: 25, confident: 20, fearful: 5 }
+  const emotionData = currentData?.emotionBreakdown || {}
 
   const handleRetry = useCallback(() => {
     setError(null)
@@ -491,11 +499,17 @@ export function WeeklyReviewTab() {
           Minggu-Minggu Sebelumnya
         </h4>
         <ScrollArea className="max-h-[280px] overflow-y-auto">
-          <div className="space-y-3 pr-2">
-            {reviews
-              .filter((r) => r.id !== review?.id)
-              .slice(0, 10)
-              .map((r) => (
+          {reviews.filter((r) => r.id !== review?.id).length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <CheckCircle2 className="w-8 h-8 text-[#4B5563] mb-2" />
+              <p className="text-sm text-[#6B7280]">Belum ada review minggu sebelumnya</p>
+            </div>
+          ) : (
+            <div className="space-y-3 pr-2">
+              {reviews
+                .filter((r) => r.id !== review?.id)
+                .slice(0, 10)
+                .map((r) => (
                 <div
                   key={r.id}
                   className="flex items-center gap-4 p-3 rounded-lg bg-[#10121E] border border-[#232636] hover:bg-[#1E2030] transition-colors"
@@ -533,7 +547,8 @@ export function WeeklyReviewTab() {
                   </div>
                 </div>
               ))}
-          </div>
+            </div>
+          )}
         </ScrollArea>
       </div>
 

@@ -78,7 +78,9 @@ function CreatePlaybookDialog({
     },
     onSuccess: (data) => {
       toast.success('Playbook berhasil dibuat');
-      onCreated(data.playbook.id);
+      if (data?.playbook?.id) {
+        onCreated(data.playbook.id);
+      }
       setName('');
       setDescription('');
       setSessionType(null);

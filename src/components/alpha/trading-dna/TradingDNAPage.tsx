@@ -43,8 +43,8 @@ export function TradingDNAPage() {
   const [notGenerated, setNotGenerated] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const strengths: string[] = dna?.strengths ? JSON.parse(dna.strengths) : []
-  const weaknesses: string[] = dna?.weaknesses ? JSON.parse(dna.weaknesses) : []
+  const strengths: string[] = (() => { try { return dna?.strengths ? JSON.parse(dna.strengths) : [] } catch { return [] } })()
+  const weaknesses: string[] = (() => { try { return dna?.weaknesses ? JSON.parse(dna.weaknesses) : [] } catch { return [] } })()
 
   // Fetch DNA
   const fetchDNA = useCallback(async () => {
@@ -52,6 +52,7 @@ export function TradingDNAPage() {
     setIsError(false)
     try {
       const res = await fetch('/api/trading-dna')
+      if (!res.ok) throw new Error('Gagal memuat data DNA')
       const data = await res.json()
       if (data.dna) {
         setDna(data.dna)
@@ -81,6 +82,10 @@ export function TradingDNAPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.error || 'Gagal generate DNA')
+      }
       const data = await res.json()
       if (data.dna) {
         setDna(data.dna)

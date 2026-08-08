@@ -56,12 +56,12 @@ export async function GET() {
     const hasTrades = trades.length > 0
 
     // Parse emotion breakdown
-    let emotionData: Record<string, number> = { calm: 50, anxious: 25, confident: 20, fearful: 5 }
+    let emotionData: Record<string, number> = {}
     if (currentReview?.emotionBreakdown) {
       try {
         emotionData = JSON.parse(currentReview.emotionBreakdown)
       } catch {
-        // keep default
+        // keep empty
       }
     }
 
