@@ -95,14 +95,14 @@ function CreatePlaybookDialog({
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Nama Playbook
             </label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., ICT London Session"
-              className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40"
+              className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -113,18 +113,18 @@ function CreatePlaybookDialog({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Deskripsi
             </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe your playbook strategy..."
-              className="min-h-[80px] text-sm bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none"
+              className="min-h-[80px] text-sm bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none alpha-focus-ring"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Tipe Sesi
             </label>
             <Select
@@ -133,7 +133,7 @@ function CreatePlaybookDialog({
                 setSessionType(v === 'none' ? null : (v as SessionType))
               }
             >
-              <SelectTrigger className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40">
+              <SelectTrigger className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40 alpha-focus-ring">
                 <SelectValue placeholder="Pilih tipe sesi" />
               </SelectTrigger>
               <SelectContent className="bg-[#151827] border-[#232636]">
@@ -157,14 +157,14 @@ function CreatePlaybookDialog({
           <Button
             variant="ghost"
             size="sm"
-            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={() => onOpenChange(false)}
           >
             Batal
           </Button>
           <Button
             size="sm"
-            className="bg-[#6366F1] hover:bg-[#818CF8] text-white"
+            className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
             onClick={() => createMutation.mutate()}
             disabled={!name.trim() || createMutation.isPending}
           >
@@ -207,13 +207,13 @@ function DeletePlaybookDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={() => onOpenChange(false)}
           >
             Batal
           </AlertDialogCancel>
           <AlertDialogAction
-            className="bg-red-500 hover:bg-red-600 text-white"
+            className="bg-red-500 hover:bg-red-600 text-white alpha-press"
             onClick={onConfirm}
             disabled={isLoading}
           >
@@ -355,11 +355,11 @@ export function PlaybookPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-3 rounded-xl border border-[#1E2030] bg-[#0B0D17] px-6 py-10 text-center">
           <AlertTriangle className="size-8 text-[#F59E0B]" />
-          <p className="text-sm text-[#F3F4F6]">Gagal memuat playbook</p>
+          <p className="alpha-body text-[#F3F4F6]">Gagal memuat playbook</p>
           <Button
             variant="ghost"
             size="sm"
-            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={() => refetchDetail()}
           >
             <RefreshCw className="size-3.5 mr-1.5" />
@@ -375,7 +375,7 @@ export function PlaybookPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 alpha-animate-in">
       {/* Create dialog */}
       <CreatePlaybookDialog
         open={createDialogOpen}
@@ -398,13 +398,13 @@ export function PlaybookPage() {
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-[#F3F4F6]">Playbook</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">
+          <h1 className="alpha-heading-lg text-[#F3F4F6]">Playbook</h1>
+          <p className="alpha-body mt-0.5">
             Kelola trading setup, checklist, dan aturan entry.
           </p>
         </div>
         <Button
-          className="bg-[#6366F1] hover:bg-[#818CF8] text-white"
+          className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
           onClick={() => setCreateDialogOpen(true)}
         >
           <Plus className="size-4 mr-1.5" />
@@ -420,11 +420,11 @@ export function PlaybookPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari playbook..."
-            className="h-9 pl-9 text-sm bg-[#151827] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40"
+            className="h-9 pl-9 text-sm bg-[#151827] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
           />
           {search && (
             <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] hover:text-[#9CA3AF]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B5563] hover:text-[#9CA3AF] alpha-press"
               onClick={() => setSearch('')}
             >
               <X className="size-3.5" />
@@ -432,7 +432,7 @@ export function PlaybookPage() {
           )}
         </div>
         <Select value={filterSession} onValueChange={setFilterSession}>
-          <SelectTrigger className="h-9 w-full sm:w-[160px] text-sm bg-[#151827] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40">
+          <SelectTrigger className="h-9 w-full sm:w-[160px] text-sm bg-[#151827] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40 alpha-focus-ring">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-[#151827] border-[#232636]">
@@ -462,11 +462,11 @@ export function PlaybookPage() {
         <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-[#1E2030] bg-[#0B0D17]">
           <div className="flex flex-col items-center gap-3 text-center px-6 py-10">
             <AlertTriangle className="size-8 text-[#F59E0B]" />
-            <p className="text-sm text-[#F3F4F6]">Gagal memuat playbook</p>
+            <p className="alpha-body text-[#F3F4F6]">Gagal memuat playbook</p>
             <Button
               variant="ghost"
               size="sm"
-              className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
               onClick={() => refetch()}
             >
               <RefreshCw className="size-3.5 mr-1.5" />
@@ -532,12 +532,12 @@ function EmptyState({
       <div className="size-16 rounded-2xl bg-[#1E2030] flex items-center justify-center mb-4">
         <BookOpen className="size-7 text-[#6B7280]" />
       </div>
-      <h3 className="text-base font-semibold text-[#F3F4F6] mb-1">
+      <h3 className="alpha-heading-sm text-[#F3F4F6] mb-1">
         {hasPlaybooks
           ? 'Tidak ada playbook cocok'
           : 'Belum ada playbook'}
       </h3>
-      <p className="text-sm text-[#6B7280] max-w-xs mb-4">
+      <p className="alpha-body text-[#6B7280] max-w-xs mb-4">
         {hasPlaybooks
           ? 'Coba ubah filter atau kata kunci pencarian.'
           : 'Buat playbook pertamamu untuk mulai mendokumentasikan trading setup.'}
@@ -547,7 +547,7 @@ function EmptyState({
           <Button
             variant="ghost"
             size="sm"
-            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={onClear}
           >
             Reset Filter
@@ -555,7 +555,7 @@ function EmptyState({
         )}
         <Button
           size="sm"
-          className="bg-[#6366F1] hover:bg-[#818CF8] text-white"
+          className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
           onClick={onCreate}
         >
           <Plus className="size-4 mr-1" />

@@ -27,7 +27,7 @@ export function ScoreCard({ label, score, diff, trend, color, icon }: ScoreCardP
 
   return (
     <motion.div
-      className="bg-[#151827] border border-[#232636] rounded-[14px] p-4 hover:bg-[#1E2030] transition-colors"
+      className="bg-[#151827] border border-[#232636] rounded-[14px] p-4 hover:bg-[#1E2030] transition-colors alpha-press"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -42,7 +42,7 @@ export function ScoreCard({ label, score, diff, trend, color, icon }: ScoreCardP
               <span style={{ color }}>{icon}</span>
             </div>
           )}
-          <span className="text-xs font-medium text-[#9CA3AF]">{label}</span>
+          <span className="alpha-label text-[#9CA3AF]">{label}</span>
         </div>
         <div className={`flex items-center gap-1 ${trendColor}`}>
           <TrendIcon className="w-3.5 h-3.5" />

@@ -315,3 +315,211 @@
   border-radius: 0 8px 8px 0;
   padding: 0.5rem 1rem;
 }
+
+/* ========================================
+   P2: Smooth Animations
+   ======================================== */
+@keyframes alpha-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes alpha-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes alpha-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes alpha-slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes alpha-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes alpha-subtle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Animation utility classes */
+.alpha-animate-in {
+  animation: alpha-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.alpha-animate-in-fast {
+  animation: alpha-slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.alpha-animate-fade {
+  animation: alpha-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.alpha-animate-scale {
+  animation: alpha-scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays — apply to child elements */
+.alpha-stagger-1 { animation-delay: 0.05s; }
+.alpha-stagger-2 { animation-delay: 0.10s; }
+.alpha-stagger-3 { animation-delay: 0.15s; }
+.alpha-stagger-4 { animation-delay: 0.20s; }
+.alpha-stagger-5 { animation-delay: 0.25s; }
+.alpha-stagger-6 { animation-delay: 0.30s; }
+.alpha-stagger-7 { animation-delay: 0.35s; }
+
+/* ========================================
+   P2: Typography System
+   ======================================== */
+.alpha-heading-xl {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--alpha-text-primary);
+}
+
+.alpha-heading-lg {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--alpha-text-primary);
+}
+
+.alpha-heading-sm {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--alpha-text-primary);
+}
+
+.alpha-heading-xs {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--alpha-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alpha-body {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--alpha-text-secondary);
+}
+
+.alpha-caption {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--alpha-text-muted);
+}
+
+.alpha-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--alpha-text-secondary);
+}
+
+/* ========================================
+   P2: Micro-interactions
+   ======================================== */
+
+/* Subtle press effect for buttons and cards */
+.alpha-press {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.alpha-press:active {
+  transform: scale(0.97);
+}
+
+/* Smooth color transition for text links */
+.alpha-link {
+  color: var(--alpha-primary);
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+.alpha-link:hover {
+  color: var(--alpha-primary-hover);
+}
+
+/* Focus ring — consistent across all interactive elements */
+.alpha-focus-ring {
+  outline: none;
+}
+.alpha-focus-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--alpha-surface), 0 0 0 4px var(--alpha-primary);
+  border-radius: var(--radius-md);
+}
+
+/* Table row hover micro-interaction */
+.alpha-row-hover {
+  transition: background-color 0.15s ease;
+}
+.alpha-row-hover:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Badge micro-interaction */
+.alpha-badge-interactive {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.alpha-badge-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   P2: Enhanced Card Styles
+   ======================================== */
+.alpha-card {
+  background: var(--alpha-surface);
+  border: 1px solid var(--alpha-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.alpha-card-interactive:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.08),
+              0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Card with accent glow on hover */
+.alpha-card-glow:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.08),
+              0 8px 32px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   P2: Smooth Scroll Behavior
+   ======================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Remove default focus outlines, use alpha-focus-ring instead */
+  *:focus {
+    outline: none;
+  }
+
+  /* Global selection color */
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: #F3F4F6;
+  }
+}

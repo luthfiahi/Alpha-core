@@ -102,7 +102,7 @@ function ModeToggle({
       <button
         onClick={() => onModeChange('free_chat')}
         className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
+          'alpha-badge-interactive alpha-press flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
           mode === 'free_chat'
             ? 'bg-alpha-surface text-alpha-text-primary shadow-sm'
             : 'text-alpha-text-muted hover:text-alpha-text-secondary'
@@ -114,7 +114,7 @@ function ModeToggle({
       <button
         onClick={() => onModeChange('reflection')}
         className={cn(
-          'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
+          'alpha-badge-interactive alpha-press flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
           mode === 'reflection'
             ? 'bg-alpha-surface text-alpha-text-primary shadow-sm'
             : 'text-alpha-text-muted hover:text-alpha-text-secondary'
@@ -695,7 +695,7 @@ export function CoachingPage() {
           setSessions((prev) =>
             prev.map((s) =>
               s.id === activeSessionId
-                ? {
+                ? ({
                     ...s,
                     reflectionStep: nextStep > 5 ? 6 : nextStep,
                     reflectionCompletedSteps: [
@@ -704,7 +704,7 @@ export function CoachingPage() {
                     ],
                     // Mark session completed after step 5
                     status: nextStep > 5 ? 'COMPLETED' : s.status,
-                  }
+                  } as Session)
                 : s
             )
           )
@@ -851,7 +851,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
   const isReflectionCompleted = activeSession?.status === 'COMPLETED'
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="alpha-animate-in h-full flex flex-col bg-background">
       {/* Header */}
       <header className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-alpha-border flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -1072,7 +1072,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
       {/* Chat Messages Area */}
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="px-4 sm:px-6 py-6 space-y-6 max-w-3xl mx-auto">
+          <div className="alpha-animate-in-fast px-4 sm:px-6 py-6 space-y-6 max-w-3xl mx-auto">
             {activeSession?.turns.map((turn) => (
               <ChatMessage
                 key={turn.id}
@@ -1135,7 +1135,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
                 className={cn(
                   'w-full resize-none rounded-xl border border-alpha-border bg-alpha-surface px-4 py-2.5',
                   'text-sm text-alpha-text-primary placeholder:text-alpha-text-muted',
-                  'focus:outline-none focus:ring-2 focus:ring-alpha-primary/30 focus:border-alpha-primary/50',
+                  'alpha-focus-ring focus:outline-none focus:ring-2 focus:ring-alpha-primary/30 focus:border-alpha-primary/50',
                   'transition-all duration-150',
                   'disabled:opacity-50 disabled:cursor-not-allowed',
                   'max-h-40'
@@ -1145,7 +1145,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
 
             <Button
               size="icon"
-              className="h-10 w-10 rounded-xl flex-shrink-0"
+              className="alpha-press h-10 w-10 rounded-xl flex-shrink-0"
               disabled={!inputValue.trim() || isStreaming}
               onClick={() => sendMessage(inputValue)}
               aria-label="Kirim pesan"

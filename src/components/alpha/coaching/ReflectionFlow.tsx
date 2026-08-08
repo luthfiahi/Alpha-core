@@ -57,7 +57,7 @@ export const REFLECTION_STEPS: ReflectionStep[] = [
   },
 ]
 
-interface ReflectionProgress {
+export interface ReflectionProgress {
   currentStep: number
   totalSteps: number
   completedSteps: number[]
@@ -73,7 +73,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className={cn('w-full', className)}>
+      <div className={cn('alpha-animate-in w-full', className)}>
         {/* Step indicators */}
         <div className="flex items-center justify-center gap-0">
           {REFLECTION_STEPS.map((step, index) => {
@@ -90,7 +90,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                     <div className="flex flex-col items-center">
                       <motion.div
                         className={cn(
-                          'relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300',
+                          'alpha-press relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer',
                           isCompleted && 'bg-alpha-primary shadow-lg shadow-alpha-primary/30',
                           isCurrent &&
                             'bg-alpha-primary/20 border-2 border-alpha-primary',
@@ -159,7 +159,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                       {/* Step label */}
                       <span
                         className={cn(
-                          'text-[10px] font-medium mt-2 whitespace-nowrap hidden sm:block',
+                          'alpha-caption mt-2 whitespace-nowrap hidden sm:block',
                           isCompleted && 'text-alpha-primary',
                           isCurrent && 'text-alpha-primary',
                           isFuture && 'text-alpha-text-muted'
@@ -175,8 +175,8 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                   >
                     <div className="text-center">
                       <p className="font-medium">{step.title}</p>
-                      <p className="text-alpha-text-muted">{step.description}</p>
-                      <p className="text-alpha-text-muted mt-0.5">
+                      <p className="alpha-caption">{step.description}</p>
+                      <p className="alpha-caption mt-0.5">
                         Langkah {step.id} dari {totalSteps}
                       </p>
                     </div>
@@ -202,7 +202,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
 
         {/* Progress label */}
         <div className="flex items-center justify-center mt-1 sm:mt-2">
-          <span className="text-[11px] text-alpha-text-muted">
+          <span className="alpha-caption">
             Refleksi Trade — Langkah{' '}
             <span className="text-alpha-primary font-semibold">{currentStep}</span>/{' '}
             {totalSteps}

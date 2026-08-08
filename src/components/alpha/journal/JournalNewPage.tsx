@@ -66,7 +66,7 @@ function DirectionToggle({
       <button
         type='button'
         onClick={() => onChange('LONG')}
-        className={`flex-1 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-150 ${
+        className={`alpha-press flex-1 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-150 ${
           value === 'LONG'
             ? 'bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]'
             : 'bg-transparent border-[#232636] text-[#9CA3AF] hover:border-[#9CA3AF]/40'
@@ -77,7 +77,7 @@ function DirectionToggle({
       <button
         type='button'
         onClick={() => onChange('SHORT')}
-        className={`flex-1 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-150 ${
+        className={`alpha-press flex-1 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-150 ${
           value === 'SHORT'
             ? 'bg-[#EF4444]/15 border-[#EF4444]/40 text-[#EF4444]'
             : 'bg-transparent border-[#232636] text-[#9CA3AF] hover:border-[#9CA3AF]/40'
@@ -105,7 +105,7 @@ function TagChips({
             key={tag}
             type='button'
             onClick={() => onToggle(tag)}
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-150 border ${
+            className={`alpha-press alpha-badge-interactive inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-150 border ${
               active
                 ? 'bg-[#6366F1]/15 border-[#6366F1]/40 text-[#818CF8]'
                 : 'bg-transparent border-[#232636] text-[#9CA3AF] hover:border-[#9CA3AF]/40 hover:text-[#F3F4F6]'
@@ -219,20 +219,20 @@ export function JournalNewPage() {
   };
 
   return (
-    <div className='space-y-6'>
+    <div className='alpha-animate-in space-y-6'>
       {/* Header */}
       <div className='flex items-center gap-4'>
         <Button
           variant='ghost'
           size='icon'
-          className='size-9 hover:bg-[#1E2030]'
+          className='alpha-press size-9 hover:bg-[#1E2030]'
           onClick={() => navigate('journal')}
         >
           <ArrowLeft className='size-4 text-[#9CA3AF]' />
         </Button>
         <div>
           <h1 className='text-xl font-semibold text-[#F3F4F6]'>Trade Baru</h1>
-          <p className='text-sm text-[#6B7280]'>Catat trade kamu dengan detail lengkap</p>
+          <p className='alpha-caption'>Catat trade kamu dengan detail lengkap</p>
         </div>
       </div>
 
@@ -242,26 +242,26 @@ export function JournalNewPage() {
           <div className='lg:col-span-3 space-y-6'>
             {/* Pair & Direction */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='text-sm font-semibold text-[#F3F4F6] mb-1'>Info Trade</h3>
+              <h3 className='alpha-heading-sm mb-1'>Info Trade</h3>
 
               <FormField
                 control={form.control}
                 name='pair'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-xs text-[#9CA3AF]'>Pair *</FormLabel>
+                    <FormLabel className='alpha-label'>Pair *</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         placeholder='EURUSD'
-                        className='bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
                         onChange={(e) =>
                           field.onChange(e.target.value.toUpperCase())
                         }
                       />
                     </FormControl>
                     <FormMessage />
-                    <p className='text-[10px] text-[#6B7280]'>Format: EURUSD, GBPJPY, dll.</p>
+                    <p className='alpha-caption'>Format: EURUSD, GBPJPY, dll.</p>
                   </FormItem>
                 )}
               />
@@ -271,7 +271,7 @@ export function JournalNewPage() {
                 name='direction'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-xs text-[#9CA3AF]'>Arah (Direction) *</FormLabel>
+                    <FormLabel className='alpha-label'>Arah (Direction) *</FormLabel>
                     <FormControl>
                       <Controller
                         name='direction'
@@ -295,13 +295,13 @@ export function JournalNewPage() {
                   name='timeframe'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-xs text-[#9CA3AF]'>Timeframe</FormLabel>
+                      <FormLabel className='alpha-label'>Timeframe</FormLabel>
                       <Select
                         value={field.value || ''}
                         onValueChange={field.onChange}
                       >
                         <FormControl>
-                          <SelectTrigger className='bg-[#0B0D17] border-[#232636] h-9 text-sm'>
+                          <SelectTrigger className='alpha-focus-ring bg-[#0B0D17] border-[#232636] h-9 text-sm'>
                             <SelectValue placeholder='Pilih' />
                           </SelectTrigger>
                         </FormControl>
@@ -322,12 +322,12 @@ export function JournalNewPage() {
                   name='strategy'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-xs text-[#9CA3AF]'>Strategi</FormLabel>
+                      <FormLabel className='alpha-label'>Strategi</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder='Breakout, Pullback...'
-                          className='bg-[#0B0D17] border-[#232636] text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm h-9 placeholder:text-[#6B7280]'
                         />
                       </FormControl>
                     </FormItem>
@@ -338,21 +338,21 @@ export function JournalNewPage() {
 
             {/* Price Data */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='text-sm font-semibold text-[#F3F4F6] mb-1'>Harga & Posisi</h3>
+              <h3 className='alpha-heading-sm mb-1'>Harga & Posisi</h3>
 
               <FormField
                 control={form.control}
                 name='entryPrice'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-xs text-[#9CA3AF]'>Entry Price *</FormLabel>
+                    <FormLabel className='alpha-label'>Entry Price *</FormLabel>
                     <FormControl>
                       <Input
                         type='number'
                         step='any'
                         {...field}
                         placeholder='1.08500'
-                        className='bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
                       />
                     </FormControl>
                     <FormMessage />
@@ -366,7 +366,7 @@ export function JournalNewPage() {
                   name='stopLoss'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-xs text-[#9CA3AF]'>Stop Loss</FormLabel>
+                      <FormLabel className='alpha-label'>Stop Loss</FormLabel>
                       <FormControl>
                         <Input
                           type='number'
@@ -377,7 +377,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='—'
-                          className='bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
                         />
                       </FormControl>
                     </FormItem>
@@ -389,7 +389,7 @@ export function JournalNewPage() {
                   name='takeProfit'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-xs text-[#9CA3AF]'>Take Profit</FormLabel>
+                      <FormLabel className='alpha-label'>Take Profit</FormLabel>
                       <FormControl>
                         <Input
                           type='number'
@@ -400,7 +400,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='—'
-                          className='bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
                         />
                       </FormControl>
                     </FormItem>
@@ -412,7 +412,7 @@ export function JournalNewPage() {
                   name='lotSize'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='text-xs text-[#9CA3AF]'>Lot Size</FormLabel>
+                      <FormLabel className='alpha-label'>Lot Size</FormLabel>
                       <FormControl>
                         <Input
                           type='number'
@@ -423,7 +423,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='0.1'
-                          className='bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
                         />
                       </FormControl>
                     </FormItem>
@@ -434,20 +434,20 @@ export function JournalNewPage() {
 
             {/* Psychology & Tags */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='text-sm font-semibold text-[#F3F4F6] mb-1'>Psikologi & Tag</h3>
+              <h3 className='alpha-heading-sm mb-1'>Psikologi & Tag</h3>
 
               <FormField
                 control={form.control}
                 name='planNotes'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-xs text-[#9CA3AF]'>Catatan Rencana</FormLabel>
+                    <FormLabel className='alpha-label'>Catatan Rencana</FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
                         placeholder='Apa rencana trade kamu sebelum entry?'
                         rows={3}
-                        className='bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
                       />
                     </FormControl>
                   </FormItem>
@@ -459,13 +459,13 @@ export function JournalNewPage() {
                 name='emotionBefore'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-xs text-[#9CA3AF]'>Emosi Sebelum Entry</FormLabel>
+                    <FormLabel className='alpha-label'>Emosi Sebelum Entry</FormLabel>
                     <Select
                       value={field.value || ''}
                       onValueChange={field.onChange}
                     >
                       <FormControl>
-                        <SelectTrigger className='bg-[#0B0D17] border-[#232636] h-9 text-sm'>
+                        <SelectTrigger className='alpha-focus-ring bg-[#0B0D17] border-[#232636] h-9 text-sm'>
                           <SelectValue placeholder='Pilih emosi' />
                         </SelectTrigger>
                       </FormControl>
@@ -482,7 +482,7 @@ export function JournalNewPage() {
               />
 
               <div>
-                <label className='text-xs text-[#9CA3AF] block mb-2'>Tags</label>
+                <label className='alpha-label block mb-2'>Tags</label>
                 <Controller
                   name='tags'
                   control={form.control}
@@ -498,7 +498,7 @@ export function JournalNewPage() {
 
             {/* Screenshot Upload */}
             <div className='alpha-card p-5 space-y-3'>
-              <h3 className='text-sm font-semibold text-[#F3F4F6] mb-1'>Screenshot Chart</h3>
+              <h3 className='alpha-heading-sm mb-1'>Screenshot Chart</h3>
 
               <input
                 ref={fileInputRef}
@@ -525,7 +525,7 @@ export function JournalNewPage() {
                       form.setValue('screenshotUrl', '');
                       if (fileInputRef.current) fileInputRef.current.value = '';
                     }}
-                    className='absolute top-2 right-2 size-7 rounded-full bg-[#0B0D17]/80 border border-[#232636] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'
+                    className='alpha-press absolute top-2 right-2 size-7 rounded-full bg-[#0B0D17]/80 border border-[#232636] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'
                   >
                     <X className='size-3.5 text-[#9CA3AF]' />
                   </button>
@@ -536,7 +536,7 @@ export function JournalNewPage() {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex flex-col items-center justify-center py-8 rounded-lg border-2 border-dashed cursor-pointer transition-colors ${
+                  className={`alpha-press flex flex-col items-center justify-center py-8 rounded-lg border-2 border-dashed cursor-pointer transition-colors ${
                     isDragging
                       ? 'border-[#6366F1] bg-[#6366F1]/5'
                       : 'border-[#232636] hover:border-[#6366F1]/40'
@@ -550,7 +550,7 @@ export function JournalNewPage() {
                     )}
                   </div>
                   <p className='text-sm text-[#9CA3AF]'>Drag & drop atau klik untuk upload</p>
-                  <p className='text-xs text-[#6B7280] mt-1'>PNG, JPG, max 5MB</p>
+                  <p className='alpha-caption mt-1'>PNG, JPG, max 5MB</p>
                 </div>
               )}
             </div>
@@ -560,7 +560,7 @@ export function JournalNewPage() {
               <Button
                 type='submit'
                 disabled={createMutation.isPending}
-                className='bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-6'
+                className='alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-6'
               >
                 {createMutation.isPending ? (
                   <span className='inline-flex items-center gap-2'>
@@ -577,7 +577,7 @@ export function JournalNewPage() {
               <Button
                 type='button'
                 variant='outline'
-                className='border-[#232636] text-[#9CA3AF] hover:text-[#F3F4F6] h-10 px-6'
+                className='alpha-press border-[#232636] text-[#9CA3AF] hover:text-[#F3F4F6] h-10 px-6'
                 onClick={() => navigate('journal')}
               >
                 Batal
@@ -588,16 +588,16 @@ export function JournalNewPage() {
           {/* Right: Preview — 2 cols */}
           <div className='lg:col-span-2'>
             <div className='sticky top-6 alpha-card p-5 space-y-4'>
-              <h3 className='text-sm font-semibold text-[#F3F4F6]'>Preview Trade</h3>
+              <h3 className='alpha-heading-sm'>Preview Trade</h3>
               <div className='space-y-3'>
                 <div className='flex justify-between items-center'>
-                  <span className='text-xs text-[#6B7280]'>Pair</span>
+                  <span className='alpha-caption'>Pair</span>
                   <span className='font-financial text-sm font-bold text-[#F3F4F6]'>
                     {formValues.pair || '—'}
                   </span>
                 </div>
                 <div className='flex justify-between items-center'>
-                  <span className='text-xs text-[#6B7280]'>Direction</span>
+                  <span className='alpha-caption'>Direction</span>
                   {formValues.direction ? (
                     <span
                       className={`inline-flex rounded-md px-2 py-0.5 text-xs font-semibold ${
@@ -613,13 +613,13 @@ export function JournalNewPage() {
                   )}
                 </div>
                 <div className='flex justify-between items-center'>
-                  <span className='text-xs text-[#6B7280]'>Timeframe</span>
+                  <span className='alpha-caption'>Timeframe</span>
                   <span className='text-sm text-[#F3F4F6]'>
                     {formValues.timeframe || '—'}
                   </span>
                 </div>
                 <div className='flex justify-between items-center'>
-                  <span className='text-xs text-[#6B7280]'>Strategi</span>
+                  <span className='alpha-caption'>Strategi</span>
                   <span className='text-sm text-[#F3F4F6]'>
                     {formValues.strategy || '—'}
                   </span>
@@ -627,25 +627,25 @@ export function JournalNewPage() {
 
                 <div className='border-t border-[#232636] pt-3 space-y-2'>
                   <div className='flex justify-between items-center'>
-                    <span className='text-xs text-[#6B7280]'>Entry Price</span>
+                    <span className='alpha-caption'>Entry Price</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
                       {formValues.entryPrice ? Number(formValues.entryPrice).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>
-                    <span className='text-xs text-[#6B7280]'>Stop Loss</span>
+                    <span className='alpha-caption'>Stop Loss</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
                       {formValues.stopLoss ? Number(formValues.stopLoss).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>
-                    <span className='text-xs text-[#6B7280]'>Take Profit</span>
+                    <span className='alpha-caption'>Take Profit</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
                       {formValues.takeProfit ? Number(formValues.takeProfit).toFixed(5) : '—'}
                     </span>
                   </div>
                   <div className='flex justify-between items-center'>
-                    <span className='text-xs text-[#6B7280]'>Lot Size</span>
+                    <span className='alpha-caption'>Lot Size</span>
                     <span className='font-financial text-sm text-[#F3F4F6]'>
                       {formValues.lotSize || '—'}
                     </span>
@@ -654,14 +654,14 @@ export function JournalNewPage() {
 
                 <div className='border-t border-[#232636] pt-3 space-y-2'>
                   <div className='flex justify-between items-center'>
-                    <span className='text-xs text-[#6B7280]'>Emosi</span>
+                    <span className='alpha-caption'>Emosi</span>
                     <span className='text-sm text-[#F3F4F6]'>
                       {formValues.emotionBefore || '—'}
                     </span>
                   </div>
                   {(formValues.tags && formValues.tags.length > 0) && (
                     <div className='flex justify-between items-start'>
-                      <span className='text-xs text-[#6B7280]'>Tags</span>
+                      <span className='alpha-caption'>Tags</span>
                       <div className='flex flex-wrap gap-1 justify-end'>
                         {formValues.tags.map((tag) => (
                           <span
@@ -678,8 +678,8 @@ export function JournalNewPage() {
 
                 {formValues.planNotes && (
                   <div className='border-t border-[#232636] pt-3'>
-                    <p className='text-xs text-[#6B7280] mb-1'>Rencana</p>
-                    <p className='text-sm text-[#9CA3AF] whitespace-pre-wrap line-clamp-4'>
+                    <p className='alpha-caption mb-1'>Rencana</p>
+                    <p className='alpha-body whitespace-pre-wrap line-clamp-4'>
                       {formValues.planNotes}
                     </p>
                   </div>

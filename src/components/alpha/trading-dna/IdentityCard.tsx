@@ -49,19 +49,19 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="rounded-[14px] border border-[#232636] bg-[#151827] p-6"
+      className="alpha-animate-in rounded-[14px] border border-[#232636] bg-[#151827] p-6"
     >
       <div className="mb-5 flex items-center gap-2">
         <Dna size={18} className="text-[#6366F1]" />
-        <h3 className="text-sm font-semibold text-[#F3F4F6]">Identitas Trading</h3>
+        <h3 className="alpha-heading-sm text-[#F3F4F6]">Identitas Trading</h3>
       </div>
 
       {/* Trading Style */}
       <div className="mb-4 flex items-center gap-3 rounded-lg bg-[#10121E] px-4 py-3">
-        <Zap size={20} className="text-[#6366F1]" />
+        <Zap size={16} className="text-[#6366F1]" />
         <div>
-          <p className="text-xs text-[#6B7280]">Trading Style</p>
-          <Badge variant="secondary" className="mt-1 border-[#6366F1]/30 bg-[#6366F1]/12 text-[#6366F1]">
+          <p className="alpha-caption">Trading Style</p>
+          <Badge variant="secondary" className="mt-1 alpha-badge-interactive border-[#6366F1]/30 bg-[#6366F1]/12 text-[#6366F1]">
             {styleLabel}
           </Badge>
         </div>
@@ -69,10 +69,10 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
 
       {/* Dominant Emotion */}
       <div className="mb-4 flex items-center gap-3 rounded-lg bg-[#10121E] px-4 py-3">
-        <Brain size={20} className={emotionConfig?.color || 'text-[#6B7280]'} />
+        <Brain size={16} className={emotionConfig?.color || 'text-[#6B7280]'} />
         <div>
-          <p className="text-xs text-[#6B7280]">Emosi Dominan</p>
-          <p className={`mt-0.5 text-sm font-semibold ${emotionConfig?.color || 'text-[#9CA3AF]'}`}>
+          <p className="alpha-caption">Emosi Dominan</p>
+          <p className={`mt-0.5 alpha-body font-semibold ${emotionConfig?.color || 'text-[#9CA3AF]'}`}>
             {emotionConfig?.label || 'Belum teridentifikasi'}
           </p>
         </div>
@@ -83,15 +83,15 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
         <div className="rounded-lg bg-[#10121E] px-3 py-3">
           <div className="flex items-center gap-1.5">
             <BarChart3 size={14} className="text-[#6B7280]" />
-            <p className="text-xs text-[#6B7280]">Total Trades</p>
+            <p className="alpha-caption">Total Trades</p>
           </div>
           <p className="mt-1 text-lg font-bold text-[#F3F4F6]">
             {totalTradesAnalyzed || 0}
           </p>
         </div>
         <div className="rounded-lg bg-[#10121E] px-3 py-3">
-          <p className="text-xs text-[#6B7280]">Periode</p>
-          <p className="mt-1 text-sm font-semibold text-[#9CA3AF]">
+          <p className="alpha-caption">Periode</p>
+          <p className="mt-1 alpha-body font-semibold text-[#9CA3AF]">
             {analysisPeriod || 'N/A'}
           </p>
         </div>

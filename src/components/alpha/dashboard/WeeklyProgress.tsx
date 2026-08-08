@@ -39,7 +39,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
   if (data.length === 0) {
     return (
       <div className="alpha-card p-5 flex flex-col">
-        <h3 className="text-sm font-semibold text-[#F3F4F6] mb-4">
+        <h3 className="alpha-heading-sm mb-4">
           Weekly Progress
         </h3>
         <div className="flex-1 min-h-[180px] flex items-center justify-center">
@@ -48,7 +48,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
             <p className="text-sm font-medium text-[#9CA3AF]">
               Belum ada data mingguan
             </p>
-            <p className="text-xs text-[#6B7280] text-center max-w-[200px]">
+            <p className="alpha-caption text-center max-w-[200px]">
               Process Score akan muncul setelah kamu mencatat trade
             </p>
           </div>
@@ -64,10 +64,10 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
 
   return (
     <div className="alpha-card p-5 flex flex-col">
-      <h3 className="text-sm font-semibold text-[#F3F4F6] mb-4">
+      <h3 className="alpha-heading-sm mb-4">
         Weekly Progress
       </h3>
-      <div className="flex-1 min-h-[180px]">
+      <div className="flex-1 min-h-[180px] alpha-animate-scale">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}

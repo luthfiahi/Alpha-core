@@ -171,21 +171,21 @@ export function SettingsPage() {
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-6 lg:p-8">
+      <div className="alpha-animate-in p-6 lg:p-8">
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Page Header */}
           <div>
             <h1 className="text-xl font-bold text-[#F3F4F6]">Pengaturan</h1>
-            <p className="text-sm text-[#6B7280] mt-1">
+            <p className="alpha-caption mt-1">
               Kelola profil, preferensi trading, dan notifikasi
             </p>
           </div>
 
           {/* ─────────── 1. Profile Section ─────────── */}
-          <section className="alpha-card p-6">
+          <section className="alpha-card alpha-animate-in alpha-stagger-1 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <User className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="text-sm font-semibold text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm text-[#F3F4F6]">
                 Profil
               </h2>
             </div>
@@ -203,7 +203,7 @@ export function SettingsPage() {
                   <p className="text-sm font-medium text-[#F3F4F6]">
                     {name || 'Trader'}
                   </p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="alpha-caption">
                     {traderEmail || '—'}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export function SettingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="settings-name"
-                  className="text-xs font-medium text-[#9CA3AF]"
+                  className="alpha-label"
                 >
                   Nama
                 </Label>
@@ -224,7 +224,7 @@ export function SettingsPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Masukkan nama kamu"
-                  className="bg-[#1E2030] border-[#232636] text-[#F3F4F6] placeholder:text-[#6B7280] focus-visible:border-[#6366F1] focus-visible:ring-[#6366F1]/30 h-9"
+                  className="alpha-focus-ring bg-[#1E2030] border-[#232636] text-[#F3F4F6] placeholder:text-[#6B7280] focus-visible:border-[#6366F1] focus-visible:ring-[#6366F1]/30 h-9"
                 />
               </div>
 
@@ -232,7 +232,7 @@ export function SettingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="settings-email"
-                  className="text-xs font-medium text-[#9CA3AF]"
+                  className="alpha-label"
                 >
                   Email
                 </Label>
@@ -254,11 +254,11 @@ export function SettingsPage() {
 
               {/* Timezone */}
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-[#9CA3AF]">
+                <Label className="alpha-label">
                   Zona Waktu
                 </Label>
                 <Select value={timezone} onValueChange={setTimezone}>
-                  <SelectTrigger className="w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
+                  <SelectTrigger className="alpha-focus-ring w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
                     <SelectValue placeholder="Pilih zona waktu" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#151827] border-[#232636]">
@@ -280,7 +280,7 @@ export function SettingsPage() {
                 <Button
                   onClick={handleSaveProfile}
                   disabled={savingProfile}
-                  className="bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
+                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
                 >
                   {savingProfile ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -294,10 +294,10 @@ export function SettingsPage() {
           </section>
 
           {/* ─────────── 2. Trading Preferences ─────────── */}
-          <section className="alpha-card p-6">
+          <section className="alpha-card alpha-animate-in alpha-stagger-2 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <Clock className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="text-sm font-semibold text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm text-[#F3F4F6]">
                 Preferensi Trading
               </h2>
             </div>
@@ -305,11 +305,11 @@ export function SettingsPage() {
             <div className="space-y-5">
               {/* Default Timeframe */}
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-[#9CA3AF]">
+                <Label className="alpha-label">
                   Timeframe Default
                 </Label>
                 <Select value={timeframe} onValueChange={setTimeframe}>
-                  <SelectTrigger className="w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
+                  <SelectTrigger className="alpha-focus-ring w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
                     <SelectValue placeholder="Pilih timeframe" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#151827] border-[#232636]">
@@ -328,11 +328,11 @@ export function SettingsPage() {
 
               {/* Default Currency */}
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-[#9CA3AF]">
+                <Label className="alpha-label">
                   Mata Uang Default
                 </Label>
                 <Select value={currency} onValueChange={setCurrency}>
-                  <SelectTrigger className="w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
+                  <SelectTrigger className="alpha-focus-ring w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
                     <SelectValue placeholder="Pilih mata uang" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#151827] border-[#232636]">
@@ -353,7 +353,7 @@ export function SettingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="settings-lot"
-                  className="text-xs font-medium text-[#9CA3AF]"
+                  className="alpha-label"
                 >
                   Lot Size Default
                 </Label>
@@ -365,17 +365,17 @@ export function SettingsPage() {
                   value={lotSize}
                   onChange={(e) => setLotSize(e.target.value)}
                   placeholder="0.1"
-                  className="bg-[#1E2030] border-[#232636] text-[#F3F4F6] placeholder:text-[#6B7280] focus-visible:border-[#6366F1] focus-visible:ring-[#6366F1]/30 h-9 font-financial"
+                  className="alpha-focus-ring bg-[#1E2030] border-[#232636] text-[#F3F4F6] placeholder:text-[#6B7280] focus-visible:border-[#6366F1] focus-visible:ring-[#6366F1]/30 h-9 font-financial"
                 />
               </div>
 
               {/* Trading Style */}
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-[#9CA3AF]">
+                <Label className="alpha-label">
                   Gaya Trading
                 </Label>
                 <Select value={tradingStyle} onValueChange={setTradingStyle}>
-                  <SelectTrigger className="w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
+                  <SelectTrigger className="alpha-focus-ring w-full bg-[#1E2030] border-[#232636] text-[#F3F4F6] h-9">
                     <SelectValue placeholder="Pilih gaya trading" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#151827] border-[#232636]">
@@ -397,7 +397,7 @@ export function SettingsPage() {
                 <Button
                   onClick={handleSaveTradingPrefs}
                   disabled={savingPrefs}
-                  className="bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
+                  className="alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-9 px-4 text-sm font-medium"
                 >
                   {savingPrefs ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -411,10 +411,10 @@ export function SettingsPage() {
           </section>
 
           {/* ─────────── 3. Notifications ─────────── */}
-          <section className="alpha-card p-6">
+          <section className="alpha-card alpha-animate-in alpha-stagger-3 p-6">
             <div className="flex items-center gap-2.5 mb-5">
               <Bell className="w-4.5 h-4.5 text-[#6366F1]" />
-              <h2 className="text-sm font-semibold text-[#F3F4F6]">
+              <h2 className="alpha-heading-sm text-[#F3F4F6]">
                 Notifikasi
               </h2>
             </div>
@@ -426,7 +426,7 @@ export function SettingsPage() {
                   <p className="text-sm font-medium text-[#F3F4F6]">
                     Pengingat Review Mingguan
                   </p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="alpha-caption">
                     Dapatkan pengingat untuk menyelesaikan review mingguan
                   </p>
                 </div>
@@ -445,7 +445,7 @@ export function SettingsPage() {
                   <p className="text-sm font-medium text-[#F3F4F6]">
                     Peringatan Perilaku
                   </p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="alpha-caption">
                     Notifikasi ketika terdeteksi pola perilaku yang perlu diperhatikan
                   </p>
                 </div>
@@ -464,7 +464,7 @@ export function SettingsPage() {
                   <p className="text-sm font-medium text-[#F3F4F6]">
                     Laporan Pertumbuhan Siap
                   </p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="alpha-caption">
                     Dapatkan notifikasi ketika laporan pertumbuhan baru tersedia
                   </p>
                 </div>
@@ -478,10 +478,10 @@ export function SettingsPage() {
           </section>
 
           {/* ─────────── 4. Danger Zone ─────────── */}
-          <section className="alpha-card p-6 border-[#EF4444]/30">
+          <section className="alpha-card alpha-animate-in alpha-stagger-4 p-6 border-[#EF4444]/30">
             <div className="flex items-center gap-2.5 mb-4">
               <AlertTriangle className="w-4.5 h-4.5 text-[#EF4444]" />
-              <h2 className="text-sm font-semibold text-[#EF4444]">
+              <h2 className="alpha-heading-sm text-[#EF4444]">
                 Zona Berbahaya
               </h2>
             </div>
@@ -491,7 +491,7 @@ export function SettingsPage() {
                 <p className="text-sm font-medium text-[#F3F4F6]">
                   Reset Semua Data
                 </p>
-                <p className="text-xs text-[#6B7280] mt-0.5">
+                <p className="alpha-caption mt-0.5">
                   Hapus semua data trading, playbook, dan coaching. Tindakan ini
                   tidak bisa dibatalkan.
                 </p>
@@ -500,7 +500,7 @@ export function SettingsPage() {
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="destructive"
-                    className="shrink-0 h-9 px-4 text-sm font-medium"
+                    className="alpha-press shrink-0 h-9 px-4 text-sm font-medium"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     Reset Data
@@ -538,15 +538,15 @@ export function SettingsPage() {
           </section>
 
           {/* ─────────── 5. App Info ─────────── */}
-          <section className="text-center py-6">
+          <section className="alpha-animate-in alpha-stagger-5 text-center py-6">
             <div className="flex items-center justify-center gap-2 mb-1.5">
               <Info className="w-3.5 h-3.5 text-[#6B7280]" />
               <p className="text-sm font-semibold text-[#9CA3AF]">
                 Project Alpha
               </p>
             </div>
-            <p className="text-xs text-[#6B7280]">v0.2.1</p>
-            <p className="text-xs text-[#6B7280] mt-1.5">
+            <p className="alpha-caption">v0.2.1</p>
+            <p className="alpha-caption mt-1.5">
               Dibuat dengan ❤️ untuk trader Indonesia
             </p>
           </section>

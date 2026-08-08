@@ -106,7 +106,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
           type="button"
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-alpha-text-muted hover:text-alpha-text-primary hover:bg-alpha-surface rounded-lg"
+          className="alpha-press h-8 w-8 text-alpha-text-muted hover:text-alpha-text-primary hover:bg-alpha-surface rounded-lg"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Upload screenshot"
         >
@@ -127,7 +127,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
           <Button
             size="sm"
             variant="default"
-            className="h-7 px-3 text-xs rounded-md"
+            className="alpha-press h-7 px-3 text-xs rounded-md"
             onClick={handleAnalyze}
             disabled={isAnalyzing}
           >
@@ -141,7 +141,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
           <Button
             size="sm"
             variant="ghost"
-            className="h-7 w-7 p-0 text-alpha-text-muted hover:text-alpha-error rounded-md"
+            className="alpha-press h-7 w-7 p-0 text-alpha-text-muted hover:text-alpha-error rounded-md"
             onClick={clearImage}
           >
             <X className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
         onDragLeave={handleDragLeave}
         onClick={() => fileInputRef.current?.click()}
         className={cn(
-          'relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200',
+          'alpha-animate-scale alpha-press relative border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200',
           isDragging
             ? 'border-alpha-primary bg-alpha-primary/5'
             : 'border-alpha-border hover:border-alpha-primary/30 hover:bg-alpha-primary/3'
@@ -178,10 +178,10 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
           <Upload className="w-5 h-5 text-alpha-primary" />
         </div>
 
-        <p className="text-sm text-alpha-text-secondary text-center">
+        <p className="alpha-body text-center">
           <span className="font-medium text-alpha-text-primary">Klik untuk upload</span> atau drag & drop
         </p>
-        <p className="text-xs text-alpha-text-muted mt-1">
+        <p className="alpha-caption mt-1">
           PNG, JPG, JPEG hingga 10MB
         </p>
       </div>
@@ -211,7 +211,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
           <div className="flex items-center gap-2">
             <Button
               size="sm"
-              className="flex-1 rounded-lg"
+              className="alpha-press flex-1 rounded-lg"
               onClick={handleAnalyze}
               disabled={isAnalyzing}
             >
@@ -230,7 +230,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
             <Button
               size="sm"
               variant="outline"
-              className="rounded-lg"
+              className="alpha-press rounded-lg"
               onClick={clearImage}
             >
               <X className="w-3.5 h-3.5 mr-1" />

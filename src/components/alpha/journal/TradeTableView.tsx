@@ -55,11 +55,11 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
             return (
               <TableRow
                 key={trade.id}
-                className="border-[#232636]/60 cursor-pointer hover:bg-[#1E2030]/80 transition-colors duration-150"
+                className="border-[#232636]/60 cursor-pointer hover:bg-[#1E2030]/80 transition-colors duration-150 alpha-row-hover"
                 onClick={() => onSelectTrade(trade.id)}
               >
                 {/* Date */}
-                <TableCell className="px-4 py-3 text-xs text-[#9CA3AF]">
+                <TableCell className="px-4 py-3 alpha-caption">
                   {dateStr}
                 </TableCell>
 
@@ -73,7 +73,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                 {/* Direction Badge */}
                 <TableCell className="py-3">
                   <span
-                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${
+                    className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold alpha-badge-interactive ${
                       trade.direction === 'LONG'
                         ? 'bg-[#22C55E]/15 text-[#22C55E]'
                         : 'bg-[#EF4444]/15 text-[#EF4444]'
@@ -85,14 +85,14 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
 
                 {/* Entry Price */}
                 <TableCell className="py-3 text-right">
-                  <span className="font-financial text-xs text-[#9CA3AF]">
+                  <span className="font-financial alpha-caption">
                     {(trade.entryPrice ?? 0).toFixed(Number(trade.entryPrice) >= 100 ? 3 : 5)}
                   </span>
                 </TableCell>
 
                 {/* Exit Price */}
                 <TableCell className="py-3 text-right">
-                  <span className="font-financial text-xs text-[#9CA3AF]">
+                  <span className="font-financial alpha-caption">
                     {trade.exitPrice !== null
                       ? (trade.exitPrice ?? 0).toFixed(Number(trade.exitPrice) >= 100 ? 3 : 5)
                       : '—'}
@@ -121,7 +121,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                       {trade.processScore}
                     </span>
                   ) : (
-                    <span className="text-[#6B7280] text-xs">—</span>
+                    <span className="alpha-caption">—</span>
                   )}
                 </TableCell>
 
@@ -152,7 +152,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                       align="end"
                     >
                       <DropdownMenuItem
-                        className="text-xs text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6]"
+                        className="text-xs text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6] alpha-link"
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectTrade(trade.id);
@@ -162,7 +162,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                         Lihat Detail
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        className="text-xs text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6]"
+                        className="text-xs text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6] alpha-link"
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectTrade(trade.id);

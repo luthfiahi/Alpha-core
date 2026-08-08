@@ -50,22 +50,22 @@ export function AISummary({ aiSummary, updatedAt, isGenerating, onRegenerate, is
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="relative overflow-hidden rounded-[14px] border border-[#6366F1]/25 bg-[#151827] p-6"
+      className="alpha-animate-in relative overflow-hidden rounded-[14px] border border-[#6366F1]/25 bg-[#151827] p-6"
     >
       {/* Gradient accent bar at top */}
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#6366F1] to-transparent" />
 
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Brain size={18} className="text-[#6366F1]" />
-          <h3 className="text-sm font-semibold text-[#F3F4F6]">Ringkasan AI</h3>
+          <Brain size={16} className="text-[#6366F1]" />
+          <h3 className="alpha-heading-sm text-[#F3F4F6]">Ringkasan AI</h3>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={onRegenerate}
           disabled={isGenerating}
-          className="gap-1.5 text-xs text-[#6366F1] hover:bg-[#6366F1]/10 hover:text-[#818CF8]"
+          className="gap-1.5 alpha-label text-[#6366F1] hover:bg-[#6366F1]/10 hover:text-[#818CF8] alpha-press"
         >
           <RefreshCw size={14} className={isGenerating ? 'animate-spin' : ''} />
           {isGenerating ? 'Generating...' : 'Regenerate DNA'}
@@ -73,16 +73,16 @@ export function AISummary({ aiSummary, updatedAt, isGenerating, onRegenerate, is
       </div>
 
       {aiSummary ? (
-        <p className="mb-4 text-sm leading-relaxed text-[#D1D5DB]">
+        <p className="mb-4 alpha-body leading-relaxed text-[#D1D5DB]">
           {aiSummary}
         </p>
       ) : (
-        <p className="mb-4 text-sm text-[#6B7280]">
+        <p className="mb-4 alpha-body text-[#6B7280]">
           DNA belum di-generate. Klik &quot;Regenerate DNA&quot; untuk memulai analisis.
         </p>
       )}
 
-      <div className="flex items-center gap-1.5 text-xs text-[#4B5563]">
+      <div className="flex items-center gap-1.5 alpha-caption text-[#4B5563]">
         <Clock size={12} />
         <span>Terakhir diperbarui: {formatTimeAgo(updatedAt)}</span>
       </div>

@@ -99,7 +99,7 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
   if (!active || !payload?.length) return null
   return (
     <div className="bg-[#151827] border border-[#232636] rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-[10px] text-[#6B7280] mb-1.5">{label}</p>
+      <p className="alpha-caption mb-1.5">{label}</p>
       <div className="space-y-1">
         {payload.map((entry) => (
           <div key={entry.dataKey} className="flex items-center gap-2">
@@ -180,12 +180,12 @@ export function GrowthTimeline() {
         <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
           <CardContent className="flex flex-col items-center justify-center py-8 px-6">
             <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
-            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <p className="alpha-body mb-4">{error}</p>
             <Button
               variant="outline"
               size="sm"
               onClick={() => fetchData(period)}
-              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Coba Lagi
@@ -199,11 +199,11 @@ export function GrowthTimeline() {
   return (
     <div className="space-y-6">
       {/* Chart Section */}
-      <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-6">
+      <div className="alpha-animate-in bg-[#151827] border border-[#232636] rounded-[14px] p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h3 className="text-base font-semibold text-[#F3F4F6]">Timeline Pertumbuhan</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5">Pantau perkembangan berbagai dimensi trading</p>
+            <h3 className="alpha-heading-sm text-[#F3F4F6]">Timeline Pertumbuhan</h3>
+            <p className="alpha-caption mt-0.5">Pantau perkembangan berbagai dimensi trading</p>
           </div>
           {/* Period selector */}
           <div className="flex items-center bg-[#10121E] rounded-lg p-1 gap-0.5">
@@ -212,7 +212,7 @@ export function GrowthTimeline() {
                 key={p}
                 onClick={() => handlePeriodChange(p)}
                 className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-md transition-all',
+                  'px-3 py-1.5 alpha-label rounded-md transition-all',
                   period === p
                     ? 'bg-[#1E2030] text-[#F3F4F6]'
                     : 'text-[#6B7280] hover:text-[#9CA3AF]'
@@ -231,7 +231,7 @@ export function GrowthTimeline() {
               key={dim.key}
               onClick={() => toggleDimension(dim.key)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-full alpha-label transition-all border alpha-press',
                 activeDimensions.has(dim.key)
                   ? 'border-opacity-30 bg-opacity-10'
                   : 'border-[#232636] text-[#6B7280] opacity-50'
@@ -307,7 +307,7 @@ export function GrowthTimeline() {
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
                 <Target className="w-10 h-10 text-[#232636] mx-auto mb-2" />
-                <p className="text-sm text-[#6B7280]">Belum ada data growth</p>
+                <p className="alpha-body text-[#6B7280]">Belum ada data growth</p>
               </div>
             </div>
           )}

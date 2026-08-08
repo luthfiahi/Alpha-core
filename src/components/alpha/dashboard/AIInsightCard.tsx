@@ -78,12 +78,13 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
     <div className="alpha-card p-5 border-l-[3px] border-l-[#6366F1] h-full flex flex-col justify-between">
       <div>
         <div className="flex items-center gap-2.5 mb-3">
-          {/* AI Avatar */}
+          {/* AI Avatar with subtle breathing animation */}
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
               background:
                 'linear-gradient(135deg, #6366F1 0%, #A78BFA 100%)',
+              animation: 'alpha-subtle-pulse 3s ease-in-out infinite',
             }}
           >
             <svg
@@ -105,15 +106,15 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
             AI Coach Insight
           </span>
         </div>
-        <h3 className="text-sm font-semibold text-[#F3F4F6] mb-1.5">
+        <h3 className="alpha-heading-sm mb-1.5">
           {title}
         </h3>
-        <p className="text-sm text-[#9CA3AF] leading-relaxed line-clamp-3">
+        <p className="alpha-body line-clamp-3">
           {content}
         </p>
       </div>
       <div className="mt-3">
-        <span className="text-xs text-[#6B7280]">{time}</span>
+        <span className="alpha-caption">{time}</span>
       </div>
     </div>
   )

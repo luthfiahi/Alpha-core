@@ -68,7 +68,7 @@ function MobileHeader() {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-[#232636] px-4">
+    <header className="alpha-animate-fade flex h-14 shrink-0 items-center gap-3 border-b border-[#232636] px-4">
       <AppSidebar />
       <h1 className="text-sm font-semibold text-[#F3F4F6]">
         {pageLabels[currentPage] || 'Project Alpha'}

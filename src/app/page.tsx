@@ -159,7 +159,9 @@ export default function Home() {
           <AppErrorBoundary>
             <AppLayout>
               <Suspense fallback={<PageSkeleton />}>
-                <PageContent />
+                <div className="alpha-animate-in">
+                  <PageContent />
+                </div>
               </Suspense>
             </AppLayout>
           </AppErrorBoundary>

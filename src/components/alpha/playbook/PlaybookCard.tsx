@@ -39,7 +39,7 @@ export function PlaybookCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="group relative bg-[#151827] border border-[#232636] rounded-[14px] p-5 hover:bg-[#1E2030] hover:border-[#2E3148] transition-all duration-200 cursor-pointer"
+      className="group relative bg-[#151827] border border-[#232636] rounded-[14px] p-5 hover:bg-[#1E2030] hover:border-[#2E3148] transition-all duration-200 cursor-pointer alpha-card-glow"
       onClick={() => onOpen(playbook.id)}
     >
       {/* Header */}
@@ -49,13 +49,13 @@ export function PlaybookCard({
             <BookOpen className="size-5 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-[#F3F4F6] truncate">
+            <h3 className="alpha-heading-sm text-[#F3F4F6] truncate">
               {playbook.name}
             </h3>
             {session && (
               <Badge
                 variant="outline"
-                className={`mt-1 text-[10px] px-1.5 py-0 h-4 font-medium ${session.color} ${session.bgColor} ${session.borderColor} border`}
+                className={`alpha-badge-interactive mt-1 text-[10px] px-1.5 py-0 h-4 font-medium ${session.color} ${session.bgColor} ${session.borderColor} border`}
               >
                 {session.label}
               </Badge>
@@ -67,18 +67,18 @@ export function PlaybookCard({
 
       {/* Description */}
       {playbook.description && (
-        <p className="text-xs text-[#6B7280] line-clamp-2 mb-3 leading-relaxed">
+        <p className="alpha-caption line-clamp-2 mb-3 leading-relaxed">
           {playbook.description}
         </p>
       )}
 
       {/* Stats */}
       <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF]">
+        <div className="flex items-center gap-1.5 alpha-caption text-[#9CA3AF]">
           <ListChecks className="size-3.5" />
           <span>{playbook._count.checklists} checklist</span>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF]">
+        <div className="flex items-center gap-1.5 alpha-caption text-[#9CA3AF]">
           <TrendingUp className="size-3.5" />
           <span>{playbook._count.trades} trade</span>
         </div>
@@ -97,7 +97,7 @@ export function PlaybookCard({
             }
             className="data-[state=checked]:bg-emerald-500"
           />
-          <span className="text-[11px] text-[#6B7280]">
+          <span className="alpha-caption">
             {playbook.isActive ? 'Aktif' : 'Nonaktif'}
           </span>
         </div>
@@ -105,7 +105,7 @@ export function PlaybookCard({
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-[#6B7280] hover:text-[#F3F4F6] hover:bg-[#1E2030]"
+            className="size-7 text-[#6B7280] hover:text-[#F3F4F6] hover:bg-[#1E2030] alpha-press"
             onClick={() => onEdit(playbook.id)}
           >
             <Edit className="size-3.5" />
@@ -113,7 +113,7 @@ export function PlaybookCard({
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-[#6B7280] hover:text-red-400 hover:bg-red-400/10"
+            className="size-7 text-[#6B7280] hover:text-red-400 hover:bg-red-400/10 alpha-press"
             onClick={() => onDelete(playbook.id)}
           >
             <Trash2 className="size-3.5" />

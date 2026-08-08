@@ -22,7 +22,7 @@ export function ChatMessage({ role, content, timestamp, isTyping }: ChatMessageP
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className={`flex w-full gap-3 ${
+      className={`alpha-animate-in-fast flex w-full gap-3 ${
         role === 'AI_COACH' ? 'justify-start' : 'justify-end'
       }`}
     >
@@ -62,11 +62,11 @@ export function ChatMessage({ role, content, timestamp, isTyping }: ChatMessageP
               <ReactMarkdown>{content}</ReactMarkdown>
             </div>
           ) : (
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">{content}</p>
+            <p className="alpha-body leading-relaxed whitespace-pre-wrap">{content}</p>
           )}
         </div>
 
-        <span className="text-[11px] text-alpha-text-muted mt-1.5 px-1">
+        <span className="alpha-caption mt-1.5 px-1">
           {timeStr}
         </span>
       </div>

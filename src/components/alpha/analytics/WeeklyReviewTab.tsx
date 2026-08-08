@@ -132,7 +132,7 @@ function MiniProcessRing({ score }: { score: number }) {
         <span className="font-financial text-xl font-bold leading-none" style={{ color }}>
           {score}
         </span>
-        <span className="text-[9px] text-[#6B7280] mt-0.5">Score</span>
+        <span className="alpha-caption mt-0.5">Score</span>
       </div>
     </div>
   )
@@ -174,7 +174,7 @@ function EmotionBarChart({ data }: { data: Record<string, number> }) {
             return (
               <div className="bg-[#151827] border border-[#232636] rounded-lg px-3 py-2">
                 <p className="text-xs text-[#F3F4F6] font-medium">
-                  {payload[0].payload.name}: {Math.round(payload[0].value)}%
+                  {payload[0].payload.name}: {Math.round(Number(payload[0].value) || 0)}%
                 </p>
               </div>
             )
@@ -302,12 +302,12 @@ export function WeeklyReviewTab() {
         <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
           <CardContent className="flex flex-col items-center justify-center py-8 px-6">
             <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
-            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <p className="alpha-body mb-4">{error}</p>
             <Button
               variant="outline"
               size="sm"
               onClick={handleRetry}
-              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Coba Lagi
@@ -331,12 +331,12 @@ export function WeeklyReviewTab() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 alpha-animate-in">
       {/* Generate button */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-[#F3F4F6]">Review Mingguan</h3>
-          <p className="text-xs text-[#6B7280] mt-0.5">
+          <h3 className="alpha-heading-sm text-[#F3F4F6]">Review Mingguan</h3>
+          <p className="alpha-caption mt-0.5">
             {currentData?.weekRange
               ? formatWeekRange(currentData.weekRange.start, currentData.weekRange.end)
               : '—'}
@@ -345,7 +345,7 @@ export function WeeklyReviewTab() {
         <Button
           onClick={handleGenerate}
           disabled={generating || !!review}
-          className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
+          className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white alpha-press"
           size="sm"
         >
           {generating ? (
@@ -370,19 +370,19 @@ export function WeeklyReviewTab() {
               <MiniProcessRing score={review.processScore ?? 0} />
               <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
                 <div className="text-center md:text-left">
-                  <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Total Trade</p>
+                  <p className="alpha-caption uppercase tracking-wider">Total Trade</p>
                   <p className="font-financial text-lg font-semibold text-[#F3F4F6]">{review.totalTrades}</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Win Rate</p>
+                  <p className="alpha-caption uppercase tracking-wider">Win Rate</p>
                   <p className="font-financial text-lg font-semibold text-[#F3F4F6]">{review.winRate ?? 0}%</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Rule Compliance</p>
+                  <p className="alpha-caption uppercase tracking-wider">Rule Compliance</p>
                   <p className="font-financial text-lg font-semibold text-[#F3F4F6]">{Math.round(review.ruleCompliance ?? 0)}%</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Playbook Usage</p>
+                  <p className="alpha-caption uppercase tracking-wider">Playbook Usage</p>
                   <p className="font-financial text-lg font-semibold text-[#F3F4F6]">{Math.round(review.playbookUsage ?? 0)}%</p>
                 </div>
               </div>
@@ -391,12 +391,12 @@ export function WeeklyReviewTab() {
             {/* Right: Summary + P/L */}
             <div className="flex-1 space-y-4 min-w-0">
               <div>
-                <h4 className="text-sm font-medium text-[#F3F4F6] mb-1">Ringkasan</h4>
-                <p className="text-sm text-[#9CA3AF] leading-relaxed">{review.summary}</p>
+                <h4 className="alpha-heading-sm text-[#F3F4F6] mb-1">Ringkasan</h4>
+                <p className="alpha-body leading-relaxed">{review.summary}</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="px-3 py-1.5 rounded-lg bg-[#10121E] border border-[#232636]">
-                  <span className="text-[10px] text-[#6B7280]">P/L Minggu Ini</span>
+                  <span className="alpha-caption">P/L Minggu Ini</span>
                   <p className={`font-financial text-sm font-semibold ${(review.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                     ${(review.totalPnL ?? 0).toFixed(2)}
                   </p>
@@ -408,8 +408,8 @@ export function WeeklyReviewTab() {
       ) : (
         <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-8 text-center">
           <Calendar className="w-10 h-10 text-[#232636] mx-auto mb-3" />
-          <p className="text-sm text-[#6B7280]">Belum ada review minggu ini</p>
-          <p className="text-xs text-[#4B5563] mt-1">Klik &quot;Generate Review&quot; untuk membuat review AI</p>
+          <p className="alpha-body text-[#6B7280]">Belum ada review minggu ini</p>
+          <p className="alpha-caption mt-1">Klik &quot;Generate Review&quot; untuk membuat review AI</p>
         </div>
       )}
 
@@ -427,9 +427,9 @@ export function WeeklyReviewTab() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <h4 className="text-sm font-semibold text-amber-400">Kesalahan Terbesar</h4>
+                <h4 className="alpha-heading-sm text-amber-400">Kesalahan Terbesar</h4>
               </div>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">{review.biggestMistake}</p>
+              <p className="alpha-body leading-relaxed">{review.biggestMistake}</p>
             </motion.div>
           )}
 
@@ -444,9 +444,9 @@ export function WeeklyReviewTab() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <Lightbulb className="w-4 h-4 text-indigo-400" />
-                <h4 className="text-sm font-semibold text-indigo-400">Rekomendasi AI</h4>
+                <h4 className="alpha-heading-sm text-indigo-400">Rekomendasi AI</h4>
               </div>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">{review.recommendation}</p>
+              <p className="alpha-body leading-relaxed">{review.recommendation}</p>
             </motion.div>
           )}
 
@@ -460,7 +460,7 @@ export function WeeklyReviewTab() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="w-4 h-4 text-[#EC4899]" />
-                <h4 className="text-sm font-semibold text-[#F3F4F6]">Isu Perilaku Teratas</h4>
+                <h4 className="alpha-heading-sm text-[#F3F4F6]">Isu Perilaku Teratas</h4>
               </div>
               <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-pink-500/15 text-pink-400 border border-pink-500/30">
                 {review.topBehavioralIssue.replace(/_/g, ' ')}
@@ -477,7 +477,7 @@ export function WeeklyReviewTab() {
           >
             <div className="flex items-center gap-2 mb-3">
               <BarChart3 className="w-4 h-4 text-[#14B8A6]" />
-              <h4 className="text-sm font-semibold text-[#F3F4F6]">Distribusi Emosi</h4>
+              <h4 className="alpha-heading-sm text-[#F3F4F6]">Distribusi Emosi</h4>
             </div>
             <EmotionBarChart data={emotionData} />
           </motion.div>
@@ -486,7 +486,7 @@ export function WeeklyReviewTab() {
 
       {/* Previous weeks */}
       <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-6">
-        <h4 className="text-sm font-semibold text-[#F3F4F6] mb-4 flex items-center gap-2">
+        <h4 className="alpha-heading-sm text-[#F3F4F6] mb-4 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-[#6B7280]" />
           Minggu-Minggu Sebelumnya
         </h4>
@@ -513,19 +513,19 @@ export function WeeklyReviewTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-[#F3F4F6] font-medium truncate">{r.summary}</p>
-                    <p className="text-[10px] text-[#6B7280] mt-0.5">
+                    <p className="alpha-caption mt-0.5">
                       {formatWeekRange(r.weekStart, r.weekEnd)}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <div className="text-right">
-                      <p className="text-xs text-[#6B7280]">{r.totalTrades} trade</p>
+                      <p className="alpha-caption">{r.totalTrades} trade</p>
                       <p className={`text-xs font-financial font-medium ${(r.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                         ${(r.totalPnL ?? 0).toFixed(0)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-[#6B7280]">WR</p>
+                      <p className="alpha-caption">WR</p>
                       <p className="text-xs font-financial font-medium text-[#F3F4F6]">
                         {r.winRate ?? 0}%
                       </p>
@@ -546,8 +546,8 @@ export function WeeklyReviewTab() {
               <FileText className="w-4 h-4 text-indigo-400" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-[#F3F4F6]">Laporan Pertumbuhan AI</h3>
-              <p className="text-xs text-[#6B7280] mt-0.5">Analisis komprehensif perkembangan trading kamu</p>
+              <h3 className="alpha-heading-sm text-[#F3F4F6]">Laporan Pertumbuhan AI</h3>
+              <p className="alpha-caption mt-0.5">Analisis komprehensif perkembangan trading kamu</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -556,7 +556,7 @@ export function WeeklyReviewTab() {
               disabled={reportGenerating}
               variant="outline"
               size="sm"
-              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             >
               {reportGenerating ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -568,7 +568,7 @@ export function WeeklyReviewTab() {
             <Button
               onClick={() => handleGenerateReport('WEEKLY')}
               disabled={reportGenerating}
-              className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
+              className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white alpha-press"
               size="sm"
             >
               {reportGenerating ? (
@@ -591,8 +591,8 @@ export function WeeklyReviewTab() {
               <Loader2 className="w-16 h-16 text-indigo-400 animate-spin" />
               <Sparkles className="w-5 h-5 text-amber-400 absolute top-0 right-0" />
             </div>
-            <h4 className="text-sm font-semibold text-[#F3F4F6] mb-1">Menganalisis Periode Ini...</h4>
-            <p className="text-xs text-[#6B7280] max-w-xs mx-auto">
+            <h4 className="alpha-heading-sm text-[#F3F4F6] mb-1">Menganalisis Periode Ini...</h4>
+            <p className="alpha-caption max-w-xs mx-auto">
               AI sedang menganalisis trade, perilaku, dan compliance untuk menghasilkan laporan pertumbuhan
             </p>
           </div>
@@ -603,8 +603,8 @@ export function WeeklyReviewTab() {
             <div className="w-12 h-12 rounded-xl bg-[#10121E] border border-[#232636] flex items-center justify-center mx-auto mb-3">
               <FileText className="w-6 h-6 text-[#4B5563]" />
             </div>
-            <p className="text-sm text-[#6B7280] mb-1">Belum ada laporan pertumbuhan</p>
-            <p className="text-xs text-[#4B5563]">
+            <p className="alpha-body text-[#6B7280] mb-1">Belum ada laporan pertumbuhan</p>
+            <p className="alpha-caption">
               Klik &quot;Generate Laporan&quot; untuk membuat laporan AI pertama kamu
             </p>
           </div>
@@ -619,7 +619,7 @@ export function WeeklyReviewTab() {
             >
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-[#6B7280]" />
-                <h4 className="text-sm font-semibold text-[#F3F4F6]">Riwayat Laporan</h4>
+                <h4 className="alpha-heading-sm text-[#F3F4F6]">Riwayat Laporan</h4>
                 <Badge variant="secondary" className="text-[10px] px-2 py-0 h-5">
                   {reportHistory.length}
                 </Badge>

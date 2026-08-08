@@ -15,7 +15,7 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-      {trades.map((trade) => {
+      {trades.map((trade, index) => {
         const pnlPositive = trade.profitLoss >= 0;
         const dateStr = trade.entryTime
           ? format(new Date(trade.entryTime), 'dd MMM yyyy')
@@ -27,7 +27,7 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
             key={trade.id}
             type="button"
             onClick={() => onSelectTrade(trade.id)}
-            className="alpha-card-interactive p-4 text-left cursor-pointer w-full"
+            className={`alpha-card-glow alpha-animate-in alpha-stagger-${Math.min(index + 1, 7)} p-4 text-left cursor-pointer w-full`}
           >
             {/* Header: Pair + Direction + Reflection */}
             <div className="flex items-start justify-between mb-3">
@@ -55,13 +55,13 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
             {/* Prices */}
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-0.5">Entry</p>
+                <p className="alpha-caption uppercase tracking-wider mb-0.5">Entry</p>
                 <p className="font-financial text-sm text-[#9CA3AF]">
                   {(trade.entryPrice ?? 0).toFixed(Number(trade.entryPrice) >= 100 ? 3 : 5)}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-0.5">Exit</p>
+                <p className="alpha-caption uppercase tracking-wider mb-0.5">Exit</p>
                 <p className="font-financial text-sm text-[#9CA3AF]">
                   {trade.exitPrice !== null
                     ? (trade.exitPrice ?? 0).toFixed(Number(trade.exitPrice) >= 100 ? 3 : 5)
@@ -79,7 +79,7 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
               >
                 {formatPnL(trade.profitLoss)}
               </span>
-              <span className="text-xs text-[#6B7280]">{dateStr}</span>
+              <span className="alpha-caption">{dateStr}</span>
             </div>
 
             {/* Tags */}
@@ -88,7 +88,7 @@ export function TradeCardView({ trades, onSelectTrade }: TradeCardViewProps) {
                 {tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-[#6366F1]/10 border border-[#6366F1]/20 px-2 py-0.5 text-[10px] text-[#818CF8]"
+                    className="alpha-badge-interactive rounded-full bg-[#6366F1]/10 border border-[#6366F1]/20 px-2 py-0.5 text-[10px] text-[#818CF8]"
                   >
                     {tag}
                   </span>

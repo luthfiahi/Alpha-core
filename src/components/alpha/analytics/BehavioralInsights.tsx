@@ -177,12 +177,12 @@ export function BehavioralInsights() {
         <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
           <CardContent className="flex flex-col items-center justify-center py-8 px-6">
             <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
-            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <p className="alpha-body mb-4">{error}</p>
             <Button
               variant="outline"
               size="sm"
               onClick={fetchData}
-              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Coba Lagi
@@ -207,8 +207,8 @@ export function BehavioralInsights() {
       {/* Header with unresolved count */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-[#F3F4F6]">Insight Perilaku</h3>
-          <p className="text-xs text-[#6B7280] mt-0.5">
+          <h3 className="alpha-heading-sm text-[#F3F4F6]">Insight Perilaku</h3>
+          <p className="alpha-caption mt-0.5">
             {data?.unresolvedCount ?? 0} event belum diselesaikan
           </p>
         </div>
@@ -218,11 +218,11 @@ export function BehavioralInsights() {
       <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-4">
         <div className="flex items-center gap-2 mb-3">
           <Filter className="w-3.5 h-3.5 text-[#6B7280]" />
-          <span className="text-xs font-medium text-[#9CA3AF]">Filter</span>
+          <span className="alpha-label text-[#9CA3AF]">Filter</span>
           {activeFilters > 0 && (
             <button
               onClick={clearFilters}
-              className="ml-auto text-[10px] text-indigo-400 hover:text-indigo-300"
+              className="ml-auto alpha-caption text-indigo-400 hover:text-indigo-300"
             >
               Hapus semua
             </button>
@@ -235,7 +235,7 @@ export function BehavioralInsights() {
               <button
                 key={type}
                 onClick={() => setTypeFilter(typeFilter === type ? '' : type)}
-                className="px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all"
+                className="alpha-badge-interactive alpha-press px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all"
                 style={
                   typeFilter === type
                     ? {
@@ -261,7 +261,7 @@ export function BehavioralInsights() {
               <button
                 key={sev}
                 onClick={() => setSeverityFilter(severityFilter === sev ? '' : sev)}
-                className="px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all"
+                className="alpha-badge-interactive alpha-press px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all"
                 style={
                   severityFilter === sev
                     ? {
@@ -285,7 +285,7 @@ export function BehavioralInsights() {
           <div className="flex gap-1">
             <button
               onClick={() => setResolvedFilter(resolvedFilter === 'false' ? '' : 'false')}
-              className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${
+              className={`alpha-badge-interactive alpha-press px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${
                 resolvedFilter === 'false'
                   ? 'border-red-500/50 bg-red-500/15 text-red-400'
                   : 'border-[#232636] text-[#6B7280]'
@@ -295,7 +295,7 @@ export function BehavioralInsights() {
             </button>
             <button
               onClick={() => setResolvedFilter(resolvedFilter === 'true' ? '' : 'true')}
-              className={`px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${
+              className={`alpha-badge-interactive alpha-press px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${
                 resolvedFilter === 'true'
                   ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-400'
                   : 'border-[#232636] text-[#6B7280]'
@@ -311,7 +311,7 @@ export function BehavioralInsights() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pie Chart */}
         <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-5">
-          <h4 className="text-sm font-semibold text-[#F3F4F6] mb-4">Distribusi Tipe Perilaku</h4>
+          <h4 className="alpha-heading-sm text-[#F3F4F6] mb-4">Distribusi Tipe Perilaku</h4>
           {pieData.length > 0 ? (
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -339,7 +339,7 @@ export function BehavioralInsights() {
                             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
                             <span className="text-xs text-[#F3F4F6]">{item.name}</span>
                           </div>
-                          <p className="text-xs text-[#6B7280] mt-0.5">{item.value} event</p>
+                          <p className="alpha-caption mt-0.5">{item.value} event</p>
                         </div>
                       )
                     }}
@@ -349,7 +349,7 @@ export function BehavioralInsights() {
             </div>
           ) : (
             <div className="h-[220px] flex items-center justify-center">
-              <p className="text-xs text-[#6B7280]">Belum ada data</p>
+              <p className="alpha-body text-[#6B7280]">Belum ada data</p>
             </div>
           )}
           {/* Legend */}
@@ -357,23 +357,23 @@ export function BehavioralInsights() {
             {pieData.map((d) => (
               <div key={d.type} className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-                <span className="text-[10px] text-[#9CA3AF] truncate">{d.name}</span>
-                <span className="text-[10px] text-[#6B7280] ml-auto">{d.value}</span>
+                <span className="alpha-caption text-[#9CA3AF] truncate">{d.name}</span>
+                <span className="alpha-caption text-[#6B7280] ml-auto">{d.value}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Event Feed */}
-        <div className="lg:col-span-2 bg-[#151827] border border-[#232636] rounded-[14px] p-5">
-          <h4 className="text-sm font-semibold text-[#F3F4F6] mb-4">Timeline Event</h4>
+        <div className="lg:col-span-2 alpha-animate-in bg-[#151827] border border-[#232636] rounded-[14px] p-5">
+          <h4 className="alpha-heading-sm text-[#F3F4F6] mb-4">Timeline Event</h4>
           <ScrollArea className="max-h-[400px] overflow-y-auto">
             <div className="space-y-3 pr-2">
               {data?.events && data.events.length > 0 ? (
                 data.events.map((event) => (
                   <div
                     key={event.id}
-                    className={`p-4 rounded-lg border transition-colors ${
+                    className={`p-4 rounded-lg border transition-colors alpha-row-hover ${
                       event.resolved
                         ? 'bg-[#10121E] border-[#232636] opacity-60'
                         : 'bg-[#10121E] border-[#232636] hover:bg-[#1E2030]'
@@ -383,7 +383,7 @@ export function BehavioralInsights() {
                       <div className="flex items-center gap-2 flex-wrap">
                         {/* Behavior type badge */}
                         <Badge
-                          className="text-[10px] px-2 py-0.5 rounded-full border-0 font-medium"
+                          className="alpha-badge-interactive text-[10px] px-2 py-0.5 rounded-full border-0 font-medium"
                           style={{
                             backgroundColor: (BEHAVIOR_COLORS[event.behaviorType] || '#6B7280') + '20',
                             color: BEHAVIOR_COLORS[event.behaviorType] || '#6B7280',
@@ -393,7 +393,7 @@ export function BehavioralInsights() {
                         </Badge>
                         {/* Severity badge */}
                         <Badge
-                          className="text-[10px] px-2 py-0.5 rounded-full border-0 font-medium"
+                          className="alpha-badge-interactive text-[10px] px-2 py-0.5 rounded-full border-0 font-medium"
                           style={{
                             backgroundColor: (SEVERITY_COLORS[event.severity] || '#6B7280') + '20',
                             color: SEVERITY_COLORS[event.severity] || '#6B7280',
@@ -402,13 +402,13 @@ export function BehavioralInsights() {
                           {SEVERITY_LABELS[event.severity] || event.severity}
                         </Badge>
                         {event.resolved && (
-                          <span className="flex items-center gap-1 text-[10px] text-emerald-400">
+                          <span className="flex items-center gap-1 alpha-caption text-emerald-400">
                             <CheckCircle2 className="w-3 h-3" />
                             Selesai
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] text-[#6B7280] flex-shrink-0">
+                      <span className="alpha-caption flex-shrink-0">
                         {formatDate(event.createdAt)}
                       </span>
                     </div>
@@ -423,14 +423,14 @@ export function BehavioralInsights() {
 
                     {/* Confidence + Resolve */}
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-[10px] text-[#6B7280]">
+                      <span className="alpha-caption">
                         Confidence: {Math.round(event.confidence * 100)}%
                       </span>
                       {!event.resolved && (
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 px-2.5 text-[10px] text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                          className="h-7 px-2.5 text-[10px] text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 alpha-press"
                           onClick={() => handleResolve(event.id)}
                           disabled={resolvingId === event.id}
                         >
@@ -448,7 +448,7 @@ export function BehavioralInsights() {
               ) : (
                 <div className="py-8 text-center">
                   <AlertOctagon className="w-8 h-8 text-[#232636] mx-auto mb-2" />
-                  <p className="text-xs text-[#6B7280]">Tidak ada event ditemukan</p>
+                  <p className="alpha-body text-[#6B7280]">Tidak ada event ditemukan</p>
                 </div>
               )}
             </div>

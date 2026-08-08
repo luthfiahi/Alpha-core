@@ -26,7 +26,7 @@ export function PromptSuggestions({
   if (!visible) return null
 
   return (
-    <div className="flex items-center gap-2 mb-3">
+    <div className="alpha-animate-fade flex items-center gap-2 mb-3">
       <Lightbulb className="w-3.5 h-3.5 text-alpha-text-muted flex-shrink-0" />
       <div
         ref={scrollRef}
@@ -37,7 +37,7 @@ export function PromptSuggestions({
             key={idx}
             onClick={() => onSelect(suggestion)}
             className={cn(
-              'flex-shrink-0 px-3 py-1.5 text-xs rounded-full',
+              'alpha-link alpha-badge-interactive alpha-press flex-shrink-0 px-3 py-1.5 text-xs rounded-full',
               'border border-alpha-border text-alpha-text-secondary',
               'hover:border-alpha-primary/40 hover:text-alpha-text-primary',
               'hover:bg-alpha-primary/5 transition-all duration-150',

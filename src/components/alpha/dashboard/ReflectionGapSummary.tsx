@@ -27,14 +27,14 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
               style={{ color: hasGaps ? '#F59E0B' : '#22C55E' }}
             />
           </div>
-          <h3 className="text-sm font-semibold text-[#F3F4F6]">
+          <h3 className="alpha-heading-sm">
             Reflection Gap
           </h3>
         </div>
 
         {hasGaps ? (
           <>
-            <p className="text-sm text-[#9CA3AF] mb-1">
+            <p className="alpha-body mb-1">
               <span
                 className="font-financial font-bold text-base"
                 style={{ color: '#F59E0B' }}
@@ -43,12 +43,12 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
               </span>{' '}
               trade belum di-reflection minggu ini.
             </p>
-            <p className="text-xs text-[#6B7280]">
+            <p className="alpha-caption">
               Refleksi membantu kamu belajar dari setiap keputusan trading.
             </p>
           </>
         ) : (
-          <p className="text-sm text-[#22C55E]">
+          <p className="alpha-body text-[#22C55E]">
             Semua trade sudah di-reflection minggu ini. Pertahankan!
           </p>
         )}
@@ -57,7 +57,7 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
       {hasGaps && (
         <Button
           variant="secondary"
-          className="mt-4 gap-2 w-full h-9 text-sm font-medium"
+          className="alpha-press mt-4 gap-2 w-full h-9 text-sm font-medium"
           style={{
             backgroundColor: 'rgba(245,158,11,0.12)',
             color: '#F59E0B',

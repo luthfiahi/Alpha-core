@@ -8,11 +8,11 @@ import { BehavioralInsights } from './BehavioralInsights'
 
 export function AnalyticsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 alpha-animate-in">
       {/* Page Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#F3F4F6]">Analytics</h1>
-        <p className="text-sm text-[#6B7280] mt-1">
+        <h1 className="alpha-heading-lg text-[#F3F4F6]">Analytics</h1>
+        <p className="alpha-body mt-1">
           Pantau pertumbuhan proses, review mingguan, dan insight perilaku trading
         </p>
       </div>
@@ -22,7 +22,7 @@ export function AnalyticsPage() {
         <TabsList className="bg-[#151827] border border-[#232636] rounded-lg p-1 gap-1">
           <TabsTrigger
             value="growth"
-            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 text-xs font-medium"
+            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 alpha-label"
           >
             <TrendingUp className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Timeline Pertumbuhan</span>
@@ -30,7 +30,7 @@ export function AnalyticsPage() {
           </TabsTrigger>
           <TabsTrigger
             value="weekly"
-            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 text-xs font-medium"
+            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 alpha-label"
           >
             <BarChart3 className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Review Mingguan</span>
@@ -38,7 +38,7 @@ export function AnalyticsPage() {
           </TabsTrigger>
           <TabsTrigger
             value="behavioral"
-            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 text-xs font-medium"
+            className="gap-1.5 data-[state=active]:bg-[#1E2030] data-[state=active]:text-[#F3F4F6] text-[#6B7280] rounded-md px-4 alpha-label"
           >
             <Brain className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Insight Perilaku</span>
@@ -47,15 +47,21 @@ export function AnalyticsPage() {
         </TabsList>
 
         <TabsContent value="growth" className="mt-6">
-          <GrowthTimeline />
+          <div className="alpha-animate-in alpha-stagger-1">
+            <GrowthTimeline />
+          </div>
         </TabsContent>
 
         <TabsContent value="weekly" className="mt-6">
-          <WeeklyReviewTab />
+          <div className="alpha-animate-in alpha-stagger-2">
+            <WeeklyReviewTab />
+          </div>
         </TabsContent>
 
         <TabsContent value="behavioral" className="mt-6">
-          <BehavioralInsights />
+          <div className="alpha-animate-in alpha-stagger-3">
+            <BehavioralInsights />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

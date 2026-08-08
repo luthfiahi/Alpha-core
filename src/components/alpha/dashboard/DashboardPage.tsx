@@ -38,12 +38,12 @@ interface DashboardData {
 /* -------------------------------------------------------------------------- */
 
 function SkeletonBlock({ className }: { className?: string }) {
-  return <div className={`bg-[#1E2030] animate-pulse rounded-lg ${className ?? ''}`} />
+  return <div className={`alpha-skeleton rounded-lg ${className ?? ''}`} />
 }
 
 function DashboardSkeleton() {
   return (
-    <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+    <main className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Row 1: Welcome Hero skeleton */}
         <SkeletonBlock className="h-32 w-full" />
@@ -94,7 +94,7 @@ function DashboardError({
   onRetry: () => void
 }) {
   return (
-    <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+    <main className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
         <Card className="bg-[#0B0D17] border border-[#1E2030] rounded-xl max-w-md w-full">
           <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
@@ -176,17 +176,19 @@ export function DashboardPage() {
   const todayCount = data?.todayTradesCount ?? 0
 
   return (
-    <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+    <main className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Row 1: Welcome Hero */}
-        <WelcomeHero
-          todayTradesCount={todayCount}
-          processScore={score}
-          traderName={data?.trader?.name}
-        />
+        <div className="alpha-animate-in alpha-stagger-1">
+          <WelcomeHero
+            todayTradesCount={todayCount}
+            processScore={score}
+            traderName={data?.trader?.name}
+          />
+        </div>
 
         {/* Row 2: Process Score + AI Insight */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-2">
           <div className="md:col-span-7">
             <ProcessScoreCard score={score} previousScore={prevScore} />
           </div>
@@ -196,10 +198,12 @@ export function DashboardPage() {
         </div>
 
         {/* Row 3: Quick Actions */}
-        <QuickActions />
+        <div className="alpha-animate-in alpha-stagger-3">
+          <QuickActions />
+        </div>
 
         {/* Row 4: Recent Trades + Weekly Progress */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-4">
           <div className="md:col-span-6">
             <RecentTrades
               trades={data?.recentTrades ?? []}
@@ -212,9 +216,11 @@ export function DashboardPage() {
         </div>
 
         {/* Row 5: Reflection Gap only (BehavioralTrend removed — no fake data) */}
-        <ReflectionGapSummary
-          unreflectedCount={data?.unreflectedCount ?? 0}
-        />
+        <div className="alpha-animate-in alpha-stagger-5">
+          <ReflectionGapSummary
+            unreflectedCount={data?.unreflectedCount ?? 0}
+          />
+        </div>
       </div>
     </main>
   )

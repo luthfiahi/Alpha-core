@@ -60,7 +60,7 @@ function Chip({
       onClick={onClick}
       className={`
         inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium
-        transition-all duration-150 border
+        transition-all duration-150 border alpha-press alpha-badge-interactive
         ${
           active
             ? `${colorClass || 'bg-[#6366F1]/15 border-[#6366F1]/40 text-[#818CF8]'}`
@@ -81,12 +81,12 @@ function ActiveFilterChip({
   onRemove: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/25 px-2.5 py-1 text-xs text-[#818CF8]">
+    <span className="inline-flex items-center gap-1 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/25 px-2.5 py-1 text-xs text-[#818CF8] alpha-badge-interactive">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        className="hover:text-[#F3F4F6] transition-colors"
+        className="hover:text-[#F3F4F6] transition-colors alpha-press"
       >
         <X className="size-3" />
       </button>
@@ -120,48 +120,55 @@ export function JournalFilters({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 alpha-animate-in-fast">
       {/* Filter Controls */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Date Range */}
-        <Select
-          value={filters.dateRange}
-          onValueChange={(v) => updateFilter('dateRange', v)}
-        >
-          <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636]">
-            <SelectValue placeholder="Periode" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#151827] border-[#232636]">
-            {DATE_RANGE_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value} className="text-xs">
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="space-y-1">
+          <span className="alpha-caption">Periode</span>
+          <Select
+            value={filters.dateRange}
+            onValueChange={(v) => updateFilter('dateRange', v)}
+          >
+            <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636] alpha-focus-ring">
+              <SelectValue placeholder="Periode" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#151827] border-[#232636]">
+              {DATE_RANGE_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Pair Filter */}
-        <Select
-          value={filters.pair}
-          onValueChange={(v) => updateFilter('pair', v)}
-        >
-          <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636]">
-            <SelectValue placeholder="Pair" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#151827] border-[#232636]">
-            <SelectItem value="ALL" className="text-xs">
-              Semua Pair
-            </SelectItem>
-            {availablePairs.map((pair) => (
-              <SelectItem key={pair} value={pair} className="text-xs font-financial">
-                {pair}
+        <div className="space-y-1">
+          <span className="alpha-caption">Pair</span>
+          <Select
+            value={filters.pair}
+            onValueChange={(v) => updateFilter('pair', v)}
+          >
+            <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636] alpha-focus-ring">
+              <SelectValue placeholder="Pair" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#151827] border-[#232636]">
+              <SelectItem value="ALL" className="text-xs">
+                Semua Pair
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              {availablePairs.map((pair) => (
+                <SelectItem key={pair} value={pair} className="text-xs font-financial">
+                  {pair}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Direction Chips */}
         <div className="flex items-center gap-1.5">
+          <span className="alpha-caption mr-1">Arah</span>
           {DIRECTION_OPTIONS.map((opt) => (
             <Chip
               key={opt.value}
@@ -182,6 +189,7 @@ export function JournalFilters({
 
         {/* Result Chips */}
         <div className="flex items-center gap-1.5">
+          <span className="alpha-caption mr-1">Hasil</span>
           {RESULT_OPTIONS.map((opt) => (
             <Chip
               key={opt.value}
@@ -201,27 +209,30 @@ export function JournalFilters({
         </div>
 
         {/* Reflection Filter */}
-        <Select
-          value={filters.hasReflected}
-          onValueChange={(v) => updateFilter('hasReflected', v)}
-        >
-          <SelectTrigger className="w-[150px] h-8 text-xs bg-[#151827] border-[#232636]">
-            <SelectValue placeholder="Refleksi" />
-          </SelectTrigger>
-          <SelectContent className="bg-[#151827] border-[#232636]">
-            {REFLECTION_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value} className="text-xs">
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="space-y-1">
+          <span className="alpha-caption">Refleksi</span>
+          <Select
+            value={filters.hasReflected}
+            onValueChange={(v) => updateFilter('hasReflected', v)}
+          >
+            <SelectTrigger className="w-[150px] h-8 text-xs bg-[#151827] border-[#232636] alpha-focus-ring">
+              <SelectValue placeholder="Refleksi" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#151827] border-[#232636]">
+              {REFLECTION_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Active Filters */}
       {activeCount > 0 && (
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-[#6B7280]">Filter aktif:</span>
+          <span className="alpha-caption">Filter aktif:</span>
           {filters.dateRange !== 'all' && (
             <ActiveFilterChip
               label={DATE_RANGE_OPTIONS.find((o) => o.value === filters.dateRange)?.label || filters.dateRange}
@@ -252,7 +263,7 @@ export function JournalFilters({
           <button
             type="button"
             onClick={resetFilters}
-            className="inline-flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-[#F3F4F6] transition-colors ml-1"
+            className="inline-flex items-center gap-1 alpha-caption text-[#9CA3AF] hover:text-[#F3F4F6] transition-colors ml-1 alpha-press"
           >
             <RotateCcw className="size-3" />
             Reset

@@ -93,7 +93,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
 
           {/* Label area */}
           <div className="flex flex-col justify-center min-w-0">
-            <h3 className="text-sm font-medium text-[#9CA3AF] mb-1">
+            <h3 className="alpha-heading-sm mb-1">
               Process Score
             </h3>
             <div
@@ -105,7 +105,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
             >
               <span>Belum ada data</span>
             </div>
-            <p className="text-xs text-[#6B7280] mt-2">
+            <p className="alpha-caption mt-2">
               Catat trade pertamamu untuk mulai melihat Process Score
             </p>
           </div>
@@ -162,7 +162,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
 
         {/* Label area */}
         <div className="flex flex-col justify-center min-w-0">
-          <h3 className="text-sm font-medium text-[#9CA3AF] mb-1">
+          <h3 className="alpha-heading-sm mb-1">
             Process Score
           </h3>
           <div
@@ -180,7 +180,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
               <span>Belum ada data</span>
             )}
           </div>
-          <p className="text-xs text-[#6B7280] mt-2">
+          <p className="alpha-caption mt-2">
             {displayScore <= 40
               ? 'Perlu perhatian segera'
               : displayScore <= 60

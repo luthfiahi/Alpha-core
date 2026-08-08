@@ -229,13 +229,13 @@ export function PlaybookChecklistEditor({
           >
             <div className="flex items-center gap-2 px-4 py-3">
               <button
-                className="shrink-0 cursor-grab active:cursor-grabbing text-[#4B5563] hover:text-[#9CA3AF] transition-colors p-0.5"
+                className="shrink-0 cursor-grab active:cursor-grabbing text-[#4B5563] hover:text-[#9CA3AF] transition-colors p-0.5 alpha-press"
                 title="Drag to reorder"
               >
                 <GripVertical className="size-4" />
               </button>
               <button
-                className="shrink-0 text-[#6B7280] hover:text-[#F3F4F6] transition-colors"
+                className="shrink-0 text-[#6B7280] hover:text-[#F3F4F6] transition-colors alpha-press"
                 onClick={() => toggleSection(cl.id)}
               >
                 {isExpanded ? (
@@ -250,10 +250,10 @@ export function PlaybookChecklistEditor({
               >
                 <div className="flex items-center gap-2">
                   <ListChecks className="size-4 text-[#6B7280] shrink-0" />
-                  <h4 className="text-sm font-medium text-[#F3F4F6] truncate">
+                  <h4 className="alpha-heading-sm text-[#F3F4F6] truncate">
                     {cl.title}
                   </h4>
-                  <span className="text-[10px] text-[#6B7280] shrink-0">
+                  <span className="alpha-caption shrink-0">
                     ({cl.items.length})
                   </span>
                 </div>
@@ -262,7 +262,7 @@ export function PlaybookChecklistEditor({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-6 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#1E2030]"
+                  className="size-6 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#1E2030] alpha-press"
                   onClick={() =>
                     moveChecklistMutation.mutate({
                       checklistId: cl.id,
@@ -276,7 +276,7 @@ export function PlaybookChecklistEditor({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-6 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#1E2030]"
+                  className="size-6 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#1E2030] alpha-press"
                   onClick={() =>
                     moveChecklistMutation.mutate({
                       checklistId: cl.id,
@@ -290,7 +290,7 @@ export function PlaybookChecklistEditor({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-6 text-[#4B5563] hover:text-red-400 hover:bg-red-400/10"
+                  className="size-6 text-[#4B5563] hover:text-red-400 hover:bg-red-400/10 alpha-press"
                   onClick={() => deleteChecklistMutation.mutate(cl.id)}
                 >
                   <Trash2 className="size-3" />
@@ -301,7 +301,7 @@ export function PlaybookChecklistEditor({
             {isExpanded && (
               <div className="border-t border-[#232636]">
                 {cl.description && (
-                  <p className="px-4 pt-3 text-xs text-[#6B7280] leading-relaxed">
+                  <p className="px-4 pt-3 alpha-caption leading-relaxed">
                     {cl.description}
                   </p>
                 )}
@@ -309,7 +309,7 @@ export function PlaybookChecklistEditor({
                   {cl.items.map((item, itemIdx) => (
                     <div
                       key={item.id}
-                      className="group/item flex items-start gap-2 py-1.5 px-2 rounded-lg hover:bg-[#1E2030] transition-colors"
+                      className="group/item flex items-start gap-2 py-1.5 px-2 rounded-lg hover:bg-[#1E2030] transition-colors alpha-row-hover"
                     >
                       <CheckCircle2 className="size-3.5 text-[#4B5563] shrink-0 mt-0.5" />
                       <span className="flex-1 text-xs text-[#D1D5DB] leading-relaxed">
@@ -319,7 +319,7 @@ export function PlaybookChecklistEditor({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-5 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#252840]"
+                          className="size-5 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#252840] alpha-press"
                           onClick={() =>
                             moveItemMutation.mutate({
                               checklistId: cl.id,
@@ -334,7 +334,7 @@ export function PlaybookChecklistEditor({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-5 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#252840]"
+                          className="size-5 text-[#4B5563] hover:text-[#9CA3AF] hover:bg-[#252840] alpha-press"
                           onClick={() =>
                             moveItemMutation.mutate({
                               checklistId: cl.id,
@@ -349,7 +349,7 @@ export function PlaybookChecklistEditor({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-5 text-[#4B5563] hover:text-red-400 hover:bg-red-400/10"
+                          className="size-5 text-[#4B5563] hover:text-red-400 hover:bg-red-400/10 alpha-press"
                           onClick={() =>
                             deleteItemMutation.mutate({
                               checklistId: cl.id,
@@ -363,7 +363,7 @@ export function PlaybookChecklistEditor({
                     </div>
                   ))}
                   {cl.items.length === 0 && (
-                    <div className="flex items-center gap-2 py-3 px-2 text-xs text-[#4B5563]">
+                    <div className="flex items-center gap-2 py-3 px-2 alpha-caption text-[#4B5563]">
                       <Circle className="size-3" />
                       <span>Belum ada item</span>
                     </div>
@@ -387,11 +387,11 @@ export function PlaybookChecklistEditor({
                         }
                       }}
                       placeholder="Tambah item baru..."
-                      className="h-7 text-xs bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40"
+                      className="h-7 text-xs bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
                     />
                     <Button
                       size="icon"
-                      className="size-7 shrink-0 bg-[#1E2030] hover:bg-[#252840] text-[#9CA3AF] hover:text-[#F3F4F6] border border-[#232636]"
+                      className="size-7 shrink-0 bg-[#1E2030] hover:bg-[#252840] text-[#9CA3AF] hover:text-[#F3F4F6] border border-[#232636] alpha-press"
                       onClick={() => handleAddItem(cl.id)}
                       disabled={!newItemText[cl.id]?.trim()}
                     >
@@ -411,19 +411,19 @@ export function PlaybookChecklistEditor({
             value={newClTitle}
             onChange={(e) => setNewClTitle(e.target.value)}
             placeholder="Judul checklist"
-            className="h-8 text-xs bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40"
+            className="h-8 text-xs bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
             autoFocus
           />
           <Textarea
             value={newClDesc}
             onChange={(e) => setNewClDesc(e.target.value)}
             placeholder="Deskripsi (opsional)"
-            className="min-h-[60px] text-xs bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none"
+            className="min-h-[60px] text-xs bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none alpha-focus-ring"
           />
           <div className="flex items-center gap-2">
             <Button
               size="sm"
-              className="h-7 text-xs bg-[#6366F1] hover:bg-[#818CF8] text-white"
+              className="h-7 text-xs bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
               onClick={() =>
                 addChecklistMutation.mutate({
                   title: newClTitle,
@@ -438,7 +438,7 @@ export function PlaybookChecklistEditor({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 text-xs text-[#9CA3AF] hover:text-[#F3F4F6]"
+              className="h-7 text-xs text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
               onClick={() => {
                 setIsAddingChecklist(false);
                 setNewClTitle('');
@@ -452,7 +452,7 @@ export function PlaybookChecklistEditor({
       ) : (
         <Button
           variant="ghost"
-          className="w-full h-9 border border-dashed border-[#232636] text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#3E4158] hover:bg-transparent text-xs"
+          className="w-full h-9 border border-dashed border-[#232636] text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#3E4158] hover:bg-transparent alpha-caption alpha-press"
           onClick={() => setIsAddingChecklist(true)}
         >
           <Plus className="size-3.5 mr-1.5" />

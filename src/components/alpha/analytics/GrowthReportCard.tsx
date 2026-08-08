@@ -116,7 +116,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
 
   return (
     <motion.div
-      className="bg-[#151827] border border-[#232636] rounded-[14px] overflow-hidden"
+      className="alpha-animate-in bg-[#151827] border border-[#232636] rounded-[14px] overflow-hidden"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
     >
@@ -128,22 +128,22 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-              <FileText className="w-4.5 h-4.5 text-indigo-400" />
+              <FileText className="w-4 h-4 text-indigo-400" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-[#F3F4F6]">{typeLabel}</h3>
-                <Badge variant={typeVariant} className="text-[10px] px-2 py-0.5">
+                <h3 className="alpha-heading-sm text-[#F3F4F6]">{typeLabel}</h3>
+                <Badge variant={typeVariant} className="alpha-badge-interactive text-[10px] px-2 py-0.5">
                   {typeLabel}
                 </Badge>
               </div>
-              <p className="text-xs text-[#6B7280] mt-0.5">{periodText}</p>
+              <p className="alpha-caption mt-0.5">{periodText}</p>
             </div>
           </div>
           {report.highlight && (
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 max-w-[260px]">
               <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-              <p className="text-[11px] text-amber-300 font-medium leading-tight line-clamp-2">
+              <p className="alpha-caption text-amber-300 font-medium leading-tight line-clamp-2">
                 {report.highlight}
               </p>
             </div>
@@ -154,7 +154,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {report.highlight && (
           <div className="sm:hidden flex items-start gap-1.5 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] text-amber-300 font-medium leading-tight">
+            <p className="alpha-caption text-amber-300 font-medium leading-tight">
               {report.highlight}
             </p>
           </div>
@@ -163,13 +163,13 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {/* Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
-            <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Trade</p>
+            <p className="alpha-caption uppercase tracking-wider">Trade</p>
             <p className="font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5">
               {report.totalTrades}
             </p>
           </div>
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
-            <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Score</p>
+            <p className="alpha-caption uppercase tracking-wider">Score</p>
             <div className="flex items-baseline gap-2 mt-0.5">
               <p className="font-financial text-lg font-semibold text-[#F3F4F6]">
                 {report.processScore ?? 0}
@@ -178,13 +178,13 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
             </div>
           </div>
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
-            <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">Win Rate</p>
+            <p className="alpha-caption uppercase tracking-wider">Win Rate</p>
             <p className="font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5">
               {report.winRate ?? 0}%
             </p>
           </div>
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
-            <p className="text-[10px] text-[#6B7280] uppercase tracking-wider">P/L</p>
+            <p className="alpha-caption uppercase tracking-wider">P/L</p>
             <p className={`font-financial text-lg font-semibold mt-0.5 ${(report.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               ${(report.totalPnL ?? 0).toFixed(0)}
             </p>
@@ -196,7 +196,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] text-[#6B7280] uppercase tracking-wider">Rule Compliance</span>
+                <span className="alpha-caption uppercase tracking-wider">Rule Compliance</span>
                 <span className="text-xs font-financial font-medium text-[#F3F4F6]">
                   {Math.round(report.ruleCompliance ?? 0)}%
                 </span>
@@ -214,7 +214,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] text-[#6B7280] uppercase tracking-wider">Playbook Usage</span>
+                <span className="alpha-caption uppercase tracking-wider">Playbook Usage</span>
                 <span className="text-xs font-financial font-medium text-[#F3F4F6]">
                   {Math.round(report.playbookUsage ?? 0)}%
                 </span>
@@ -238,7 +238,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <h4 className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+              <h4 className="alpha-heading-xs text-emerald-400 uppercase tracking-wider">
                 Perilaku yang Membaik
               </h4>
             </div>
@@ -246,7 +246,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
               {behaviorsImproved.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-[#9CA3AF] leading-relaxed">{item}</p>
+                  <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
             </div>
@@ -258,7 +258,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <h4 className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+              <h4 className="alpha-heading-xs text-amber-400 uppercase tracking-wider">
                 Masih Perlu Diperbaiki
               </h4>
             </div>
@@ -266,7 +266,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
               {behaviorsToImprove.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400/60 mt-2 flex-shrink-0" />
-                  <p className="text-sm text-[#9CA3AF] leading-relaxed">{item}</p>
+                  <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
             </div>
@@ -278,7 +278,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <Target className="w-4 h-4 text-indigo-400" />
-              <h4 className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+              <h4 className="alpha-heading-xs text-indigo-400 uppercase tracking-wider">
                 Target {isMonthly ? 'Bulan' : 'Minggu'} Depan
               </h4>
             </div>
@@ -286,7 +286,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
               {nextTargets.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
                   <ArrowUp className="w-3.5 h-3.5 text-indigo-500/60 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-[#9CA3AF] leading-relaxed">{item}</p>
+                  <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
             </div>
@@ -300,11 +300,11 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-4 h-4 text-purple-400" />
-                <h4 className="text-xs font-semibold text-purple-400 uppercase tracking-wider">
+                <h4 className="alpha-heading-xs text-purple-400 uppercase tracking-wider">
                   AI Summary
                 </h4>
               </div>
-              <p className="text-sm text-[#D1D5DB] leading-relaxed pl-1">
+              <p className="alpha-body text-[#D1D5DB] leading-relaxed pl-1">
                 &ldquo;{report.aiSummary}&rdquo;
               </p>
             </div>
@@ -314,7 +314,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {/* Footer timestamp */}
         <div className="flex items-center gap-1.5 pt-1">
           <TrendingUp className="w-3 h-3 text-[#4B5563]" />
-          <p className="text-[10px] text-[#4B5563]">
+          <p className="alpha-caption text-[#4B5563]">
             Digenerate: {formatFullDate(report.generatedAt)}
           </p>
         </div>
@@ -371,12 +371,12 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
             </span>
             <Badge
               variant={isMonthly ? 'secondary' : 'outline'}
-              className="text-[10px] px-2 py-0 h-5"
+              className="alpha-badge-interactive text-[10px] px-2 py-0 h-5"
             >
               {isMonthly ? 'Bulanan' : 'Mingguan'}
             </Badge>
           </div>
-          <p className="text-[11px] text-[#6B7280] mt-0.5 truncate">
+          <p className="alpha-caption mt-0.5 truncate">
             {report.highlight || report.aiSummary || 'Laporan pertumbuhan'}
           </p>
         </div>
@@ -384,11 +384,11 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
         {/* Right side stats */}
         <div className="flex items-center gap-4 flex-shrink-0">
           <div className="text-right hidden sm:block">
-            <p className="text-[10px] text-[#6B7280]">Trade</p>
+            <p className="alpha-caption">Trade</p>
             <p className="text-xs font-financial font-medium text-[#F3F4F6]">{report.totalTrades}</p>
           </div>
           <div className="text-right hidden sm:block">
-            <p className="text-[10px] text-[#6B7280]">P/L</p>
+            <p className="alpha-caption">P/L</p>
             <p className={`text-xs font-financial font-medium ${(report.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               ${(report.totalPnL ?? 0).toFixed(0)}
             </p>
@@ -418,19 +418,19 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
             {/* Stats grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <div className="text-center p-2 bg-[#10121E] rounded-lg">
-                <p className="text-[10px] text-[#6B7280]">Score</p>
+                <p className="alpha-caption">Score</p>
                 <p className="font-financial text-sm font-semibold text-[#F3F4F6]">{report.processScore ?? 0}</p>
               </div>
               <div className="text-center p-2 bg-[#10121E] rounded-lg">
-                <p className="text-[10px] text-[#6B7280]">Win Rate</p>
+                <p className="alpha-caption">Win Rate</p>
                 <p className="font-financial text-sm font-semibold text-[#F3F4F6]">{report.winRate ?? 0}%</p>
               </div>
               <div className="text-center p-2 bg-[#10121E] rounded-lg">
-                <p className="text-[10px] text-[#6B7280]">Compliance</p>
+                <p className="alpha-caption">Compliance</p>
                 <p className="font-financial text-sm font-semibold text-[#F3F4F6]">{Math.round(report.ruleCompliance ?? 0)}%</p>
               </div>
               <div className="text-center p-2 bg-[#10121E] rounded-lg">
-                <p className="text-[10px] text-[#6B7280]">Playbook</p>
+                <p className="alpha-caption">Playbook</p>
                 <p className="font-financial text-sm font-semibold text-[#F3F4F6]">{Math.round(report.playbookUsage ?? 0)}%</p>
               </div>
             </div>
@@ -440,7 +440,7 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-[10px] text-emerald-400 font-medium mb-0.5">Membaik:</p>
+                  <p className="alpha-caption text-emerald-400 font-medium mb-0.5">Membaik:</p>
                   <p className="text-xs text-[#9CA3AF]">{behaviorsImproved.join(' • ')}</p>
                 </div>
               </div>
@@ -451,7 +451,7 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
               <div className="flex items-start gap-2">
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-[10px] text-amber-400 font-medium mb-0.5">Perlu diperbaiki:</p>
+                  <p className="alpha-caption text-amber-400 font-medium mb-0.5">Perlu diperbaiki:</p>
                   <p className="text-xs text-[#9CA3AF]">{behaviorsToImprove.join(' • ')}</p>
                 </div>
               </div>
@@ -462,7 +462,7 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
               <div className="flex items-start gap-2">
                 <Target className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="text-[10px] text-indigo-400 font-medium mb-0.5">Target:</p>
+                  <p className="alpha-caption text-indigo-400 font-medium mb-0.5">Target:</p>
                   <p className="text-xs text-[#9CA3AF]">{nextTargets.join(' • ')}</p>
                 </div>
               </div>

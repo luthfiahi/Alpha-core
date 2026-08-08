@@ -89,7 +89,7 @@ function ScoreRing({ score, size = 80 }: { score: number | null; size?: number }
         <span className='font-financial text-lg font-bold' style={{ color }}>
           {displayScore}
         </span>
-        <span className='text-[9px] text-[#6B7280]'>Score</span>
+        <span className='alpha-caption'>Score</span>
       </div>
     </div>
   );
@@ -101,7 +101,7 @@ function TimelineItem({
   time,
   color = '#6B7280',
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   label: string;
   time: string;
   color?: string;
@@ -117,8 +117,8 @@ function TimelineItem({
         </div>
       </div>
       <div className='flex-1 min-w-0'>
-        <p className='text-xs font-medium text-[#F3F4F6]'>{label}</p>
-        <p className='text-[10px] text-[#6B7280]'>{time}</p>
+        <p className='alpha-body font-medium'>{label}</p>
+        <p className='alpha-caption'>{time}</p>
       </div>
     </div>
   );
@@ -166,7 +166,7 @@ export function JournalDetailPage() {
       return res.json();
     },
     onSuccess: () => {
- queryClient.invalidateQueries({ queryKey: ['trades'] });
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
       queryClient.invalidateQueries({ queryKey: ['trade', selectedTradeId] });
       toast.success('Berhasil disimpan!');
       setEditForm(null);
@@ -220,7 +220,10 @@ export function JournalDetailPage() {
     return (
       <div className='flex items-center justify-center h-[60vh]'>
         <div className='space-y-4 w-full max-w-lg'>
-          <Skeleton className='h-8 w-64 alpha-skeleton' />\n          <Skeleton className='h-4 w-40 alpha-skeleton' />\n          <Skeleton className='h-48 alpha-skeleton rounded-[14px]' />\n          <Skeleton className='h-24 alpha-skeleton rounded-[14px]' />\n        </div>
+          <Skeleton className='h-8 w-64 alpha-skeleton' />\n          <Skeleton className='h-4 w-40 alpha-skeleton' />
+          <Skeleton className='h-48 alpha-skeleton rounded-[14px]' />
+          <Skeleton className='h-24 alpha-skeleton rounded-[14px]' />
+        </div>
       </div>
     );
   }
@@ -234,7 +237,7 @@ export function JournalDetailPage() {
           <Button
             variant='ghost'
             size='sm'
-            className='text-[#9CA3AF] hover:text-[#F3F4F6]'
+            className='alpha-press text-[#9CA3AF] hover:text-[#F3F4F6]'
             onClick={() => refetch()}
           >
             <RefreshCw className='size-3.5 mr-1.5' />
@@ -250,7 +253,7 @@ export function JournalDetailPage() {
       <div className='flex items-center justify-center h-[60vh]'>
         <div className='text-center'>
           <p className='text-[#6B7280]'>Trade tidak ditemukan</p>
-          <Button variant='ghost' className='mt-3 text-[#9CA3AF]' onClick={handleClose}>
+          <Button variant='ghost' className='alpha-press mt-3 text-[#9CA3AF]' onClick={handleClose}>
             Kembali ke Journal
           </Button>
         </div>
@@ -272,7 +275,7 @@ export function JournalDetailPage() {
     : format(new Date(trade.createdAt), 'dd MMM yyyy, HH:mm');
 
   return (
-    <div className='flex items-start justify-center min-h-screen p-4 md:p-8'>
+    <div className='alpha-animate-in flex items-start justify-center min-h-screen p-4 md:p-8'>
       <div className='w-full max-w-2xl space-y-6'>
         {/* Header */}
         <div className='flex items-start justify-between'>
@@ -280,13 +283,13 @@ export function JournalDetailPage() {
             <Button
               variant='ghost'
               size='icon'
-              className='size-9 hover:bg-[#1E2030]'
+              className='alpha-press size-9 hover:bg-[#1E2030]'
               onClick={handleClose}
             >
               <X className='size-4 text-[#9CA3AF]' />
             </Button>
             <div className='flex items-center gap-2.5'>
-              <span className='font-financial text-xl font-bold text-[#F3F4F6]'>
+              <span className='alpha-heading-lg font-financial text-xl font-bold text-[#F3F4F6]'>
                 {trade.pair}
               </span>
               <span
@@ -316,7 +319,7 @@ export function JournalDetailPage() {
                 <Button
                   variant='ghost'
                   size='icon'
-                  className='size-8 hover:bg-[#EF4444]/10 hover:text-[#EF4444]'
+                  className='alpha-press size-8 hover:bg-[#EF4444]/10 hover:text-[#EF4444]'
                 >
                   <Trash2 className='size-4' />
                 </Button>
@@ -348,8 +351,8 @@ export function JournalDetailPage() {
         </div>
 
         {/* Trade Data Card */}
-        <div className='alpha-card p-5'>
-          <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-1 p-5'>
+          <h3 className='alpha-heading-sm uppercase tracking-wider mb-4'>
             Data Trade
           </h3>
           <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
@@ -403,13 +406,13 @@ export function JournalDetailPage() {
         </div>
 
         {/* Result Card */}
-        <div className='alpha-card p-5'>
-          <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-2 p-5'>
+          <h3 className='alpha-heading-sm uppercase tracking-wider mb-4'>
             Hasil
           </h3>
           <div className='flex items-center gap-6'>
             <div className='text-center'>
-              <p className='text-xs text-[#6B7280] mb-1'>P/L</p>
+              <p className='alpha-caption mb-1'>P/L</p>
               <span
                 className={`font-financial text-2xl font-bold ${
                   pnlPositive ? 'text-[#22C55E]' : 'text-[#EF4444]'
@@ -417,11 +420,11 @@ export function JournalDetailPage() {
               >
                 {formatPnL(trade.profitLoss)}
               </span>
-              <p className='text-xs text-[#6B7280] mt-0.5'>{trade.currency}</p>
+              <p className='alpha-caption mt-0.5'>{trade.currency}</p>
             </div>
             <Separator orientation='vertical' className='h-12 bg-[#232636]' />
             <div className='text-center'>
-              <p className='text-xs text-[#6B7280] mb-1'>Pips</p>
+              <p className='alpha-caption mb-1'>Pips</p>
               <span
                 className={`font-financial text-lg font-semibold ${
                   trade.pipResult && trade.pipResult >= 0
@@ -436,16 +439,16 @@ export function JournalDetailPage() {
             </div>
             <Separator orientation='vertical' className='h-12 bg-[#232636]' />
             <div className='text-center'>
-              <p className='text-xs text-[#6B7280] mb-1'>Durasi</p>
-              <span className='text-sm text-[#F3F4F6]'>{duration}</span>
+              <p className='alpha-caption mb-1'>Durasi</p>
+              <span className='alpha-body text-[#F3F4F6]'>{duration}</span>
             </div>
           </div>
         </div>
 
         {/* Screenshot */}
         {trade.screenshotUrl && (
-          <div className='alpha-card p-5'>
-            <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3'>
+          <div className='alpha-card alpha-animate-in alpha-stagger-3 p-5'>
+            <h3 className='alpha-heading-sm uppercase tracking-wider mb-3'>
               <ImageIcon className='size-3.5 inline mr-1.5' />
               Screenshot
             </h3>
@@ -458,13 +461,13 @@ export function JournalDetailPage() {
         )}
 
         {/* Process Score */}
-        <div className='alpha-card p-5'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-4 p-5'>
           <div className='flex items-center justify-between'>
             <div>
-              <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-1'>
+              <h3 className='alpha-heading-sm uppercase tracking-wider mb-1'>
                 Process Score
               </h3>
-              <p className='text-xs text-[#6B7280]'>
+              <p className='alpha-caption'>
                 {trade.processScore !== null && trade.processScore !== undefined
                   ? trade.processScore >= 80
                     ? 'Excellent — trade process sangat terstruktur'
@@ -481,19 +484,18 @@ export function JournalDetailPage() {
         </div>
 
         {/* Reflection Section */}
-        <div className='alpha-card p-5 space-y-4'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-5 p-5 space-y-4'>
           <div className='flex items-center justify-between'>
-            <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider'>
+            <h3 className='alpha-heading-sm uppercase tracking-wider'>
               <BrainCircuit className='size-3.5 inline mr-1.5' />
               Refleksi
             </h3>
-            {trade.hasReflected && (
+            {trade.hasReflected ? (
               <span className='inline-flex items-center gap-1 text-xs text-[#22C55E]'>
                 <CheckCircle2 className='size-3' />
                 Sudah Refleksi
               </span>
-            )}
-            {!trade.hasReflected && (
+            ) : (
               <span className='inline-flex items-center gap-1 text-xs text-[#F59E0B]'>
                 <AlertTriangle className='size-3' />
                 Belum Refleksi
@@ -504,8 +506,8 @@ export function JournalDetailPage() {
           {/* Plan Notes (read-only) */}
           {trade.planNotes && (
             <div>
-              <p className='text-xs text-[#6B7280] mb-1'>Rencana Trade</p>
-              <div className='bg-[#0B0D17] rounded-lg p-3 text-sm text-[#9CA3AF] whitespace-pre-wrap'>
+              <p className='alpha-label mb-1'>Rencana Trade</p>
+              <div className='bg-[#0B0D17] rounded-lg p-3 alpha-body text-[#9CA3AF] whitespace-pre-wrap'>
                 {trade.planNotes}
               </div>
             </div>
@@ -514,8 +516,8 @@ export function JournalDetailPage() {
           {/* Emotion Before */}
           {trade.emotionBefore && (
             <div className='flex items-center gap-2'>
-              <span className='text-xs text-[#6B7280]'>Emosi sebelum:</span>
-              <span className='text-xs text-[#F3F4F6]'>{trade.emotionBefore}</span>
+              <span className='alpha-caption'>Emosi sebelum:</span>
+              <span className='alpha-body'>{trade.emotionBefore}</span>
             </div>
           )}
 
@@ -524,26 +526,26 @@ export function JournalDetailPage() {
           {isEditingReflection && editForm ? (
             <div className='space-y-4'>
               <div>
-                <label className='text-xs text-[#9CA3AF] block mb-1.5'>Emosi Setelah Trade</label>
+                <label className='alpha-label block mb-1.5'>Emosi Setelah Trade</label>
                 <input
                   value={editForm.emotion}
                   onChange={(e) => setEditForm({ ...editForm, emotion: e.target.value })}
                   placeholder='Tenang, Disesalkan, Bangga...'
-                  className='w-full bg-[#0B0D17] border border-[#232636] rounded-lg px-3 py-2 text-sm text-[#F3F4F6] placeholder:text-[#6B7280] focus:outline-none focus:border-[#6366F1]/40'
+                  className='alpha-focus-ring w-full bg-[#0B0D17] border border-[#232636] rounded-lg px-3 py-2 text-sm text-[#F3F4F6] placeholder:text-[#6B7280] focus:outline-none focus:border-[#6366F1]/40'
                 />
               </div>
               <div>
-                <label className='text-xs text-[#9CA3AF] block mb-1.5'>Catatan Refleksi</label>
+                <label className='alpha-label block mb-1.5'>Catatan Refleksi</label>
                 <Textarea
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
                   placeholder='Apa yang kamu pelajari dari trade ini?'
                   rows={4}
-                  className='bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
+                  className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
                 />
               </div>
               <div>
-                <label className='text-xs text-[#9CA3AF] block mb-1.5'>
+                <label className='alpha-label block mb-1.5'>
                   <Lightbulb className='size-3 inline mr-1 text-[#F59E0B]' />
                   Lesson Learned
                 </label>
@@ -552,7 +554,7 @@ export function JournalDetailPage() {
                   onChange={(e) => setEditForm({ ...editForm, lesson: e.target.value })}
                   placeholder='Apa pelajaran utama dari trade ini?'
                   rows={3}
-                  className='bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
+                  className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
                 />
               </div>
               <div className='flex items-center gap-2 pt-1'>
@@ -560,7 +562,7 @@ export function JournalDetailPage() {
                   onClick={handleSaveReflection}
                   disabled={updateMutation.isPending}
                   size='sm'
-                  className='bg-[#6366F1] hover:bg-[#818CF8] text-white'
+                  className='alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white'
                 >
                   {updateMutation.isPending ? (
                     <span className='inline-flex items-center gap-2'>
@@ -577,7 +579,7 @@ export function JournalDetailPage() {
                 <Button
                   variant='ghost'
                   size='sm'
-                  className='text-[#9CA3AF]'
+                  className='alpha-press text-[#9CA3AF]'
                   onClick={handleCancelEdit}
                 >
                   Batal
@@ -591,25 +593,25 @@ export function JournalDetailPage() {
                 <div className='space-y-3'>
                   {trade.emotionAfter && (
                     <div className='flex items-center gap-2'>
-                      <span className='text-xs text-[#6B7280]'>Emosi setelah:</span>
-                      <span className='text-xs text-[#F3F4F6]'>{trade.emotionAfter}</span>
+                      <span className='alpha-caption'>Emosi setelah:</span>
+                      <span className='alpha-body'>{trade.emotionAfter}</span>
                     </div>
                   )}
                   {trade.reflectionNotes && (
                     <div>
-                      <p className='text-xs text-[#6B7280] mb-1'>Refleksi</p>
-                      <div className='bg-[#0B0D17] rounded-lg p-3 text-sm text-[#9CA3AF] whitespace-pre-wrap'>
+                      <p className='alpha-label mb-1'>Refleksi</p>
+                      <div className='bg-[#0B0D17] rounded-lg p-3 alpha-body text-[#9CA3AF] whitespace-pre-wrap'>
                         {trade.reflectionNotes}
                       </div>
                     </div>
                   )}
                   {trade.lessonLearned && (
                     <div>
-                      <p className='text-xs text-[#6B7280] mb-1'>
+                      <p className='alpha-label mb-1'>
                         <Lightbulb className='size-3 inline mr-1 text-[#F59E0B]' />
                         Lesson Learned
                       </p>
-                      <div className='bg-[#0B0D17] rounded-lg p-3 text-sm text-[#9CA3AF] whitespace-pre-wrap'>
+                      <div className='bg-[#0B0D17] rounded-lg p-3 alpha-body text-[#9CA3AF] whitespace-pre-wrap'>
                         {trade.lessonLearned}
                       </div>
                     </div>
@@ -619,7 +621,7 @@ export function JournalDetailPage() {
               <Button
                 variant='outline'
                 size='sm'
-                className='border-[#232636] text-[#9CA3AF] hover:text-[#F3F4F6]'
+                className='alpha-press border-[#232636] text-[#9CA3AF] hover:text-[#F3F4F6]'
                 onClick={handleStartEdit}
               >
                 <Pencil className='size-3.5' />
@@ -630,8 +632,8 @@ export function JournalDetailPage() {
         </div>
 
         {/* Timeline */}
-        <div className='alpha-card p-5'>
-          <h3 className='text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-6 p-5'>
+          <h3 className='alpha-heading-sm uppercase tracking-wider mb-4'>
             Timeline
           </h3>
           <div className='space-y-4'>
@@ -688,7 +690,7 @@ function DataItem({
 }) {
   return (
     <div>
-      <p className='text-[10px] text-[#6B7280] mb-0.5 flex items-center gap-1'>
+      <p className='alpha-caption mb-0.5 flex items-center gap-1'>
         {Icon && <Icon className='size-2.5' />}
         {label}
       </p>

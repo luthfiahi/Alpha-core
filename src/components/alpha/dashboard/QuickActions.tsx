@@ -54,7 +54,7 @@ export function QuickActions() {
           key={action.page}
           variant={action.variant}
           onClick={() => navigate(action.page)}
-          className="flex-shrink-0 gap-2 h-10 px-4 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          className="alpha-press flex-shrink-0 gap-2 h-10 px-4 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
           {action.icon}
           {action.label}

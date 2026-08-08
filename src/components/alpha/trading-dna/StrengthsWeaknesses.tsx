@@ -36,11 +36,11 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-      className="rounded-[14px] border border-[#232636] bg-[#151827] p-6"
+      className="alpha-animate-in rounded-[14px] border border-[#232636] bg-[#151827] p-6"
     >
       <div className="mb-5 flex items-center gap-2">
-        <Shield size={18} className="text-[#6366F1]" />
-        <h3 className="text-sm font-semibold text-[#F3F4F6]">Kekuatan & Kelemahan</h3>
+        <Shield size={16} className="text-[#6366F1]" />
+        <h3 className="alpha-heading-sm text-[#F3F4F6]">Kekuatan & Kelemahan</h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -48,7 +48,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
         <div>
           <div className="mb-3 flex items-center gap-2">
             <Shield size={14} className="text-emerald-500" />
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-emerald-500">
+            <h4 className="alpha-heading-xs uppercase tracking-wider text-emerald-500">
               Kekuatan
             </h4>
           </div>
@@ -60,14 +60,14 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.15 + i * 0.05 }}
-                    className="flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
+                    className="alpha-press flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
                   >
                     <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-500" />
-                    <p className="text-sm text-[#D1D5DB]">{s}</p>
+                    <p className="alpha-body">{s}</p>
                   </motion.div>
                 ))
               : (
-                <p className="text-sm text-[#6B7280]">Belum ada data</p>
+                <p className="alpha-body text-[#6B7280]">Belum ada data</p>
               )}
           </div>
         </div>
@@ -76,7 +76,7 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
         <div>
           <div className="mb-3 flex items-center gap-2">
             <ShieldAlert size={14} className="text-amber-500" />
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-amber-500">
+            <h4 className="alpha-heading-xs uppercase tracking-wider text-amber-500">
               Kelemahan
             </h4>
           </div>
@@ -88,14 +88,14 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.2 + i * 0.05 }}
-                    className="flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
+                    className="alpha-press flex items-start gap-2.5 rounded-lg bg-[#10121E] px-3 py-2.5"
                   >
                     <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-500" />
-                    <p className="text-sm text-[#D1D5DB]">{w}</p>
+                    <p className="alpha-body">{w}</p>
                   </motion.div>
                 ))
               : (
-                <p className="text-sm text-[#6B7280]">Belum ada data</p>
+                <p className="alpha-body text-[#6B7280]">Belum ada data</p>
               )}
           </div>
         </div>

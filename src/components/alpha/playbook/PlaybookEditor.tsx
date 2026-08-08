@@ -72,23 +72,23 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 alpha-animate-in">
       {/* Header with back button and save */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
-            className="size-8 text-[#6B7280] hover:text-[#F3F4F6] hover:bg-[#1E2030]"
+            className="size-8 text-[#6B7280] hover:text-[#F3F4F6] hover:bg-[#1E2030] alpha-press"
             onClick={onBack}
           >
             <ArrowLeft className="size-4" />
           </Button>
           <div>
-            <h2 className="text-lg font-semibold text-[#F3F4F6]">
+            <h2 className="alpha-heading-sm text-[#F3F4F6]">
               Edit Playbook
             </h2>
-            <p className="text-xs text-[#6B7280]">
+            <p className="alpha-caption">
               {playbook.checklists.length} checklist • {totalItems} item
             </p>
           </div>
@@ -97,7 +97,7 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={onBack}
           >
             <X className="size-4 mr-1" />
@@ -105,7 +105,7 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
           </Button>
           <Button
             size="sm"
-            className="bg-[#6366F1] hover:bg-[#818CF8] text-white"
+            className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
             onClick={handleSave}
             disabled={!hasChanges || updateMutation.isPending}
           >
@@ -119,29 +119,29 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
       <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-5 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Nama Playbook
             </label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., ICT London Session"
-              className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40"
+              className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 alpha-focus-ring"
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Deskripsi
             </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe your playbook strategy..."
-              className="min-h-[80px] text-sm bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none"
+              className="min-h-[80px] text-sm bg-[#10121E] border-[#232636] text-[#D1D5DB] placeholder:text-[#4B5563] focus-visible:ring-[#6366F1]/30 focus-visible:border-[#6366F1]/40 resize-none alpha-focus-ring"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] mb-1.5">
+            <label className="block alpha-label text-[#9CA3AF] mb-1.5">
               Tipe Sesi
             </label>
             <Select
@@ -150,7 +150,7 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
                 setSessionType(v === 'none' ? null : (v as SessionType))
               }
             >
-              <SelectTrigger className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40">
+              <SelectTrigger className="h-9 text-sm bg-[#10121E] border-[#232636] text-[#F3F4F6] focus:ring-[#6366F1]/30 focus:border-[#6366F1]/40 alpha-focus-ring">
                 <SelectValue placeholder="Pilih tipe sesi" />
               </SelectTrigger>
               <SelectContent className="bg-[#151827] border-[#232636]">
