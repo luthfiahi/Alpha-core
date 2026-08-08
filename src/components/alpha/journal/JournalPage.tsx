@@ -45,7 +45,7 @@ function EmptyState({ onNavigate }: { onNavigate: () => void }) {
       </p>
       <Button
         onClick={onNavigate}
-        className='mt-5 bg-[#6366F1] hover:bg-[#818CF8] text-white'
+        className='mt-5 bg-[#6366F1] hover:bg-[#818CF8] text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
         size='sm'
       >
         <Plus className='size-4' />
@@ -249,7 +249,7 @@ export function JournalPage() {
           <Button
             variant='ghost'
             size='sm'
-            className='mt-2 text-[#9CA3AF]'
+            className='mt-2 text-[#9CA3AF] hover:opacity-90 transition-opacity'
             onClick={() => queryClient.invalidateQueries({ queryKey: ['trades'] })}
           >
             Coba Lagi

@@ -97,11 +97,11 @@ function NavItemButton({
       onClick={onClick}
       className={cn(
         'group relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
-        'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-transparent',
+        'outline-none focus-visible:ring-2 focus-visible:ring-[#6366F1] focus-visible:ring-offset-1 focus-visible:ring-offset-transparent',
         // Active state
         isActive && 'bg-[rgba(99,102,241,0.12)] text-[#6366F1]',
         // Inactive state
-        !isActive && 'text-[#9CA3AF] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#F3F4F6]',
+        !isActive && 'text-[#9CA3AF] hover:bg-[rgba(255,255,255,0.04)] hover:text-[#F3F4F6] hover:translate-x-0.5',
         // Collapsed: center icon
         collapsed && 'justify-center px-0'
       )}

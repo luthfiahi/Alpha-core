@@ -22,6 +22,7 @@ function getScoreBg(score: number): string {
 }
 
 export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps) {
+  const hasData = score !== null
   const displayScore = score ?? 0
   const color = getScoreColor(displayScore)
   const bgColor = getScoreBg(displayScore)
@@ -43,6 +44,74 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
     } else {
       trendLabel = 'Stabil (→)'
     }
+  }
+
+  // Empty state: no data yet
+  if (!hasData) {
+    return (
+      <div className="alpha-card p-6">
+        <div className="flex items-center gap-6">
+          {/* SVG Ring — dashed, static */}
+          <div className="relative flex-shrink-0" style={{ width: 120, height: 120 }}>
+            <svg
+              width={120}
+              height={120}
+              viewBox="0 0 120 120"
+            >
+              {/* Dashed background ring */}
+              <circle
+                cx={60}
+                cy={60}
+                r={radius}
+                fill="none"
+                stroke="#232636"
+                strokeWidth={8}
+                strokeDasharray="8 6"
+              />
+              {/* Progress ring hidden */}
+              <circle
+                cx={60}
+                cy={60}
+                r={radius}
+                fill="none"
+                stroke="transparent"
+                strokeWidth={8}
+                strokeDasharray={circumference}
+                strokeDashoffset={circumference}
+              />
+            </svg>
+            {/* Center text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span
+                className="font-financial text-[32px] font-bold leading-none"
+                style={{ color: '#4B5563' }}
+              >
+                —
+              </span>
+            </div>
+          </div>
+
+          {/* Label area */}
+          <div className="flex flex-col justify-center min-w-0">
+            <h3 className="text-sm font-medium text-[#9CA3AF] mb-1">
+              Process Score
+            </h3>
+            <div
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium w-fit"
+              style={{
+                color: '#4B5563',
+                backgroundColor: 'rgba(75,85,99,0.1)',
+              }}
+            >
+              <span>Belum ada data</span>
+            </div>
+            <p className="text-xs text-[#6B7280] mt-2">
+              Catat trade pertamamu untuk mulai melihat Process Score
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -108,7 +177,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
                 <span>{trendLabel}</span>
               </>
             ) : (
-              <span>No prior data</span>
+              <span>Belum ada data</span>
             )}
           </div>
           <p className="text-xs text-[#6B7280] mt-2">

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, FileText } from 'lucide-react'
 import { useNavigationStore } from '@/stores'
 import { format } from 'date-fns'
 import { id as localeId } from 'date-fns/locale/id'
@@ -39,6 +39,47 @@ function formatPrice(price: number): string {
 function formatPnL(val: number): string {
   const sign = val >= 0 ? '+' : ''
   return `${sign}$${Number(val).toFixed(2)}`
+}
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr)
+    return format(date, 'd MMM', { locale: localeId })
+  } catch {
+    return '—'
+  }
+}
+
+function getStatusBadge(status: string) {
+  const s = status?.toUpperCase() ?? ''
+  if (s === 'CLOSED') {
+    return (
+      <Badge
+        variant="secondary"
+        className="bg-[rgba(34,197,94,0.15)] text-[#22C55E] hover:bg-[rgba(34,197,94,0.2)] border-0 text-[10px] font-semibold px-2 py-0.5"
+      >
+        {s}
+      </Badge>
+    )
+  }
+  if (s === 'OPEN') {
+    return (
+      <Badge
+        variant="secondary"
+        className="bg-[rgba(245,158,11,0.15)] text-[#F59E0B] hover:bg-[rgba(245,158,11,0.2)] border-0 text-[10px] font-semibold px-2 py-0.5"
+      >
+        {s}
+      </Badge>
+    )
+  }
+  return (
+    <Badge
+      variant="secondary"
+      className="bg-[rgba(107,114,128,0.15)] text-[#6B7280] hover:bg-[rgba(107,114,128,0.2)] border-0 text-[10px] font-semibold px-2 py-0.5"
+    >
+      {s || '—'}
+    </Badge>
+  )
 }
 
 function formatTime(dateStr: string | null): string {
@@ -110,11 +151,17 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               <TableHead className="text-xs text-[#6B7280] font-medium h-9 text-right">
                 Entry
               </TableHead>
+              <TableHead className="text-xs text-[#6B7280] font-medium h-9 text-right hidden md:table-cell">
+                Date
+              </TableHead>
               <TableHead className="text-xs text-[#6B7280] font-medium h-9 text-right">
                 P/L
               </TableHead>
               <TableHead className="text-xs text-[#6B7280] font-medium h-9 text-right">
                 Time
+              </TableHead>
+              <TableHead className="text-xs text-[#6B7280] font-medium h-9 hidden sm:table-cell">
+                Status
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -124,17 +171,37 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
             ) : trades.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-sm text-[#6B7280]"
+                  colSpan={7}
+                  className="h-auto py-8"
                 >
-                  Belum ada trade.
+                  <div className="flex flex-col items-center gap-2">
+                    <FileText className="h-6 w-6 text-[#6B7280]" />
+                    <p className="text-sm font-medium text-[#9CA3AF]">
+                      Belum ada trade tercatat
+                    </p>
+                    <p className="text-xs text-[#6B7280]">
+                      Mulai catat trade pertamamu untuk melacak performa
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate('journal-new')
+                      }}
+                      className="mt-1 border-[#2A2D3E] text-[#9CA3AF] hover:bg-[#1E2030] hover:text-white text-xs h-8 gap-1.5"
+                    >
+                      <ArrowRight className="h-3 w-3" />
+                      Log Trade Pertama
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
               trades.map((trade) => (
                 <TableRow
                   key={trade.id}
-                  className="border-b border-[#232636]/50 hover:bg-white/[0.02] cursor-pointer"
+                  className="border-b border-[#232636]/50 hover:bg-white/[0.04] cursor-pointer transition-colors duration-150"
                   onClick={() => {
                     useNavigationStore.getState().selectTrade(trade.id)
                     navigate('journal-detail')
@@ -160,6 +227,11 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                       {formatPrice(trade.entryPrice)}
                     </span>
                   </TableCell>
+                  <TableCell className="text-right py-3 hidden md:table-cell">
+                    <span className="text-xs text-[#6B7280]">
+                      {formatDate(trade.entryTime ?? trade.createdAt)}
+                    </span>
+                  </TableCell>
                   <TableCell className="text-right py-3">
                     <span
                       className={`font-financial text-sm font-medium ${
@@ -175,6 +247,9 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                     <span className="text-xs text-[#6B7280]">
                       {formatTime(trade.entryTime ?? trade.createdAt)}
                     </span>
+                  </TableCell>
+                  <TableCell className="py-3 hidden sm:table-cell">
+                    {getStatusBadge(trade.status)}
                   </TableCell>
                 </TableRow>
               ))

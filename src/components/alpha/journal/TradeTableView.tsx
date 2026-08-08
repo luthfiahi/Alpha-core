@@ -55,7 +55,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
             return (
               <TableRow
                 key={trade.id}
-                className="border-[#232636]/60 cursor-pointer hover:bg-[#1E2030]/60 transition-colors"
+                className="border-[#232636]/60 cursor-pointer hover:bg-[#1E2030]/80 transition-colors duration-150"
                 onClick={() => onSelectTrade(trade.id)}
               >
                 {/* Date */}

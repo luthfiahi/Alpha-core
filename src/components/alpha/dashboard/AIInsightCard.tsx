@@ -1,5 +1,10 @@
 'use client'
 
+interface TraderContext {
+  todayTradesCount: number
+  processScore: number | null
+}
+
 interface AIInsightCardProps {
   insight: {
     id: string
@@ -8,6 +13,7 @@ interface AIInsightCardProps {
     createdAt: string
     category: string
   } | null
+  traderContext?: TraderContext
 }
 
 function timeAgo(dateStr: string): string {
@@ -24,12 +30,48 @@ function timeAgo(dateStr: string): string {
   return `${diffDay}h lalu`
 }
 
-export function AIInsightCard({ insight }: AIInsightCardProps) {
-  // Default insight when none exists
-  const title = insight?.title ?? 'Selamat Datang di Alpha'
-  const content =
-    insight?.content ??
-    'Mulai catat trade pertamamu untuk mendapatkan insight personal dari AI Coach. Proses yang konsisten adalah kunci pertumbuhan.'
+function getDefaultMessage(ctx?: TraderContext): { title: string; content: string } {
+  if (!ctx) {
+    return {
+      title: 'Selamat Datang di Alpha',
+      content: 'Mulai catat trade pertamamu untuk mendapatkan insight personal dari AI Coach.',
+    }
+  }
+  if (ctx.todayTradesCount === 0) {
+    return {
+      title: 'Hari Ini Belum Ada Trade',
+      content: 'Hari ini belum ada trade. Ingat, kualitas lebih penting dari kuantitas. Fokus pada setup yang sudah kamu rencanakan.',
+    }
+  }
+  if (ctx.processScore === null) {
+    return {
+      title: 'Selamat Datang di Alpha',
+      content: 'Selamat datang di Alpha! Catat trade pertamamu untuk mendapatkan insight personal dari AI Coach.',
+    }
+  }
+  if (ctx.processScore <= 40) {
+    return {
+      title: 'Fokus pada Proses',
+      content: 'Process Score-mu masih di bawah 40. Fokus pada disiplin menjalankan trading plan dan mengelola risiko.',
+    }
+  }
+  if (ctx.processScore > 80) {
+    return {
+      title: 'Konsistensi yang Baik!',
+      content: 'Process Score-mu sudah sangat baik! Pertahankan konsistensi dan terus lakukan refleksi.',
+    }
+  }
+  return {
+    title: 'Selamat Datang di Alpha',
+    content: 'Mulai catat trade pertamamu untuk mendapatkan insight personal dari AI Coach.',
+  }
+}
+
+export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
+  // Default insight when none exists — use contextual message
+  const defaultMsg = getDefaultMessage(traderContext)
+  const title = insight?.title ?? defaultMsg.title
+  const content = insight?.content ?? defaultMsg.content
   const time = insight?.createdAt ? timeAgo(insight.createdAt) : 'Sekarang'
 
   return (

@@ -1092,3 +1092,44 @@ Stage Summary:
 - No more fake/misleading data displayed
 - Supabase client won't crash app if env vars missing
 - Mobile header shows correct page name for Trading DNA
+
+---
+Task ID: p1a
+Agent: full-stack-developer
+Task: P1 UX — Better empty states for ProcessScoreCard and WeeklyProgress dashboard components
+
+Work Log:
+- ProcessScoreCard.tsx: When score is null, renders a separate empty-state branch with dashed ring (strokeDasharray="8 6" on bg circle), hidden progress circle, "—" in #4B5563 gray center text, badge "Belum ada data" in muted gray, description "Catat trade pertamamu untuk mulai melihat Process Score". Existing animated ring only renders when score is not null. Also changed the trend badge fallback from "No prior data" to "Belum ada data".
+- WeeklyProgress.tsx: Added TrendingUp icon import from lucide. When data.length === 0, renders centered empty state with TrendingUp icon (gray #4B5563), text "Belum ada data mingguan", subtext "Process Score akan muncul setelah kamu mencatat trade", inside min-h-[180px] flex container. Chart renders unchanged when data exists.
+- ReflectionGapSummary.tsx: Skipped per instructions (needs totalTrades count to differentiate).
+
+Design compliance:
+- Empty states use muted gray palette (#4B5563, #6B7280, #9CA3AF) consistent with dark theme
+- ProcessScoreCard empty ring uses strokeDasharray="8 6" for dashed appearance
+- WeeklyProgress empty state preserves same card structure and min-height as chart view
+- No existing behavior changed when data is present
+
+Stage Summary:
+- 2 files changed
+- Lint passes clean (0 errors, 1 pre-existing warning in unrelated file)
+- ProcessScoreCard no longer shows misleading "0" / red ring / "Perlu perhatian segera" for new users
+- WeeklyProgress shows helpful empty state instead of blank area
+
+---
+Task ID: p1b
+Agent: full-stack-developer
+Task: P1 UX — RecentTrades empty state + Date/Status columns + AIInsightCard dynamic context
+
+Work Log:
+- RecentTrades.tsx: Replaced plain empty state with FileText icon + main/sub text + "Log Trade Pertama" CTA button navigating to journal-new
+- RecentTrades.tsx: Added Date column (Entry→Date→P/L) with `format(date, 'd MMM', { locale: id })`, hidden on mobile (`hidden md:table-cell`)
+- RecentTrades.tsx: Added Status badge column after Time — CLOSED green, OPEN amber, default gray — hidden on mobile (`hidden sm:table-cell`)
+- RecentTrades.tsx: Updated colSpan from 5 to 7 for empty state
+- AIInsightCard.tsx: Added optional `traderContext` prop with `{ todayTradesCount, processScore }`
+- AIInsightCard.tsx: Created `getDefaultMessage()` with 5 contextual branches (no trades today, no process score, score≤40, score>80, default)
+- DashboardPage.tsx: Passed `traderContext={{ todayTradesCount: todayCount, processScore: score }}` to AIInsightCard
+- Lint: 0 errors, dev server compiles clean
+
+Stage Summary:
+- RecentTrades now has informative empty state with CTA, Date column, and Status badge — all mobile responsive
+- AIInsightCard shows contextual default messages based on trader's current state

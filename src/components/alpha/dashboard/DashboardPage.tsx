@@ -191,7 +191,7 @@ export function DashboardPage() {
             <ProcessScoreCard score={score} previousScore={prevScore} />
           </div>
           <div className="md:col-span-5">
-            <AIInsightCard insight={data?.latestInsight ?? null} />
+            <AIInsightCard insight={data?.latestInsight ?? null} traderContext={{ todayTradesCount: todayCount, processScore: score }} />
           </div>
         </div>
 
