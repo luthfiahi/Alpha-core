@@ -8,10 +8,10 @@
  *   OPENROUTER_API_KEY — Get yours at https://openrouter.ai/keys
  *
  * Optional env vars:
- *   AI_MODEL — Model name (default: "openrouter/free")
+ *   AI_MODEL — Model name (default: "poolside/laguna-s-2.1:free")
  */
 
-const DEFAULT_MODEL = 'openrouter/free'
+const DEFAULT_MODEL = 'poolside/laguna-s-2.1:free'
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
 
 /**

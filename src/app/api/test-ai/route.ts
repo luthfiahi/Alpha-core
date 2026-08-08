@@ -14,7 +14,7 @@ export async function GET() {
     })
   }
 
-  const model = process.env.AI_MODEL || 'openrouter/free'
+  const model = process.env.AI_MODEL || 'poolside/laguna-s-2.1:free'
 
   try {
     const startTime = Date.now()

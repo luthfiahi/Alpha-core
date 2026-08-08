@@ -14,7 +14,7 @@ export async function GET() {
       status: 'ok',
       ai_response: response,
       env_openrouter_api_key: process.env.OPENROUTER_API_KEY ? 'SET' : 'MISSING',
-      env_ai_model: process.env.AI_MODEL || 'openrouter/free (default)',
+      env_ai_model: process.env.AI_MODEL || 'poolside/laguna-s-2.1:free (default)',
     })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)
