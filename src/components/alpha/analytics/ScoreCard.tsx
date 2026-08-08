@@ -13,8 +13,6 @@ interface ScoreCardProps {
 }
 
 export function ScoreCard({ label, score, diff, trend, color, icon }: ScoreCardProps) {
-  const displayScore = score ?? 0
-
   const TrendIcon =
     trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
 
@@ -55,8 +53,8 @@ export function ScoreCard({ label, score, diff, trend, color, icon }: ScoreCardP
           )}
         </div>
       </div>
-      <div className="font-financial text-2xl font-bold" style={{ color }}>
-        {displayScore}
+      <div className="font-financial text-2xl font-bold" style={{ color: score !== null && score !== undefined ? color : '#4B5563' }}>
+        {score !== null && score !== undefined ? score : '—'}
       </div>
     </motion.div>
   )

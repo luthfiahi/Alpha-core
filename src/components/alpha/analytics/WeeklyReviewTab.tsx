@@ -27,6 +27,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
@@ -197,6 +198,7 @@ export function WeeklyReviewTab() {
   const [reviews, setReviews] = useState<WeeklyReview[]>([])
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Growth Report state
   const [latestReport, setLatestReport] = useState<GrowthReportData | null>(null)
@@ -208,11 +210,13 @@ export function WeeklyReviewTab() {
 
   const fetchCurrent = useCallback(async () => {
     try {
+      setError(null)
       const res = await fetch('/api/analytics/weekly-review/current')
       const json = await res.json()
       setCurrentData(json)
     } catch (err) {
       console.error('Failed to fetch current review:', err)
+      setError('Gagal memuat data')
     }
   }, [])
 
@@ -223,6 +227,7 @@ export function WeeklyReviewTab() {
       setReviews(json.reviews || [])
     } catch (err) {
       console.error('Failed to fetch reviews:', err)
+      setError('Gagal memuat data')
     }
   }, [])
 
@@ -284,6 +289,34 @@ export function WeeklyReviewTab() {
 
   const review = currentData?.current
   const emotionData = currentData?.emotionBreakdown || { calm: 50, anxious: 25, confident: 20, fearful: 5 }
+
+  const handleRetry = useCallback(() => {
+    setError(null)
+    setLoading(true)
+    Promise.all([fetchCurrent(), fetchReviews()]).finally(() => setLoading(false))
+  }, [fetchCurrent, fetchReviews])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
+          <CardContent className="flex flex-col items-center justify-center py-8 px-6">
+            <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
+            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRetry}
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Coba Lagi
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   if (loading) {
     return (

@@ -12,11 +12,14 @@ import {
   CheckCircle2,
   Circle,
   AlertOctagon,
+  AlertTriangle,
   Filter,
   Loader2,
   Brain,
+  RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -95,6 +98,7 @@ const SEVERITY_LEVELS = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
 export function BehavioralInsights() {
   const [data, setData] = useState<BehavioralData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [typeFilter, setTypeFilter] = useState<string>('')
   const [severityFilter, setSeverityFilter] = useState<string>('')
   const [resolvedFilter, setResolvedFilter] = useState<string>('')
@@ -103,6 +107,7 @@ export function BehavioralInsights() {
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
+      setError(null)
       const params = new URLSearchParams()
       if (typeFilter) params.set('type', typeFilter)
       if (severityFilter) params.set('severity', severityFilter)
@@ -114,6 +119,7 @@ export function BehavioralInsights() {
       setData(json)
     } catch (err) {
       console.error('Failed to fetch behavioral data:', err)
+      setError('Gagal memuat data')
     } finally {
       setLoading(false)
     }
@@ -163,6 +169,28 @@ export function BehavioralInsights() {
     } catch {
       return dateStr
     }
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
+          <CardContent className="flex flex-col items-center justify-center py-8 px-6">
+            <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
+            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchData}
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Coba Lagi
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (loading) {

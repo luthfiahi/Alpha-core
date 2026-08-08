@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Dna, Lightbulb, Sparkles } from 'lucide-react'
+import { Dna, Lightbulb, Sparkles, AlertTriangle, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { IdentityCard } from './IdentityCard'
 import { StrengthsWeaknesses } from './StrengthsWeaknesses'
@@ -41,6 +41,7 @@ export function TradingDNAPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isGenerating, setIsGenerating] = useState(false)
   const [notGenerated, setNotGenerated] = useState(false)
+  const [isError, setIsError] = useState(false)
 
   const strengths: string[] = dna?.strengths ? JSON.parse(dna.strengths) : []
   const weaknesses: string[] = dna?.weaknesses ? JSON.parse(dna.weaknesses) : []
@@ -48,6 +49,7 @@ export function TradingDNAPage() {
   // Fetch DNA
   const fetchDNA = useCallback(async () => {
     setIsLoading(true)
+    setIsError(false)
     try {
       const res = await fetch('/api/trading-dna')
       const data = await res.json()
@@ -60,6 +62,8 @@ export function TradingDNAPage() {
       }
     } catch (err) {
       console.error('Failed to fetch DNA:', err)
+      setIsError(true)
+      setNotGenerated(false)
     } finally {
       setIsLoading(false)
     }
@@ -122,7 +126,24 @@ export function TradingDNAPage() {
         </div>
       </motion.div>
 
-      {notGenerated && !isLoading ? (
+      {isError && !isLoading ? (
+        /* Error State */
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-[#1E2030] bg-[#0B0D17] px-6 py-10 text-center">
+            <AlertTriangle className="size-8 text-[#F59E0B]" />
+            <p className="text-sm text-[#F3F4F6]">Gagal memuat Trading DNA</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+              onClick={() => fetchDNA()}
+            >
+              <RefreshCw className="size-3.5 mr-1.5" />
+              Coba Lagi
+            </Button>
+          </div>
+        </div>
+      ) : notGenerated && !isLoading ? (
         /* Empty State */
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

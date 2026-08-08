@@ -20,6 +20,7 @@ import {
   AlertTriangle,
   BrainCircuit,
   Lightbulb,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -133,7 +134,7 @@ export function JournalDetailPage() {
   const [editForm, setEditForm] = useState<{ notes: string; lesson: string; emotion: string } | null>(null);
   const isEditingReflection = editForm !== null;
 
-  const { data, isLoading } = useQuery<{ trade: TradeItem }>({
+  const { data, isLoading, isError, refetch } = useQuery<{ trade: TradeItem }>({
     queryKey: ['trade', selectedTradeId],
     queryFn: () =>
       fetch(`/api/trades/${selectedTradeId}`).then((r) => {
@@ -220,6 +221,26 @@ export function JournalDetailPage() {
       <div className='flex items-center justify-center h-[60vh]'>
         <div className='space-y-4 w-full max-w-lg'>
           <Skeleton className='h-8 w-64 alpha-skeleton' />\n          <Skeleton className='h-4 w-40 alpha-skeleton' />\n          <Skeleton className='h-48 alpha-skeleton rounded-[14px]' />\n          <Skeleton className='h-24 alpha-skeleton rounded-[14px]' />\n        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className='flex items-center justify-center h-[60vh]'>
+        <div className='flex flex-col items-center gap-3 rounded-xl border border-[#1E2030] bg-[#0B0D17] px-6 py-10 text-center'>
+          <AlertTriangle className='size-8 text-[#F59E0B]' />
+          <p className='text-sm text-[#F3F4F6]'>Gagal memuat detail trade</p>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='text-[#9CA3AF] hover:text-[#F3F4F6]'
+            onClick={() => refetch()}
+          >
+            <RefreshCw className='size-3.5 mr-1.5' />
+            Coba Lagi
+          </Button>
+        </div>
       </div>
     );
   }

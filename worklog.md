@@ -1001,3 +1001,69 @@ Stage Summary:
 - AI provider: OpenRouter with poolside/laguna-s-2.1:free (reliable, good quality)
 - Production confirmed: /api/health shows OPENROUTER_API_KEY=SET
 - Pending: Vercel auto-deploy for model change, then test AI Coach
+
+---
+Task ID: 2-b
+Agent: error-state-fixer
+Task: Fix error states in Analytics page components
+
+Work Log:
+- GrowthTimeline.tsx: Added error state, AlertTriangle/RefreshCw/Card UI on fetch failure, retry button calls fetchData(period)
+- WeeklyReviewTab.tsx: Added error state, same error card UI, retry button re-fetches both current+reviews via handleRetry callback
+- BehavioralInsights.tsx: Added error state, same error card UI, retry button calls fetchData directly
+- ScoreCard.tsx: Changed null/undefined score display from "0" to "—" with muted gray color (#4B5563)
+- All error cards use consistent design: rounded-xl, border-[#1E2030], bg-[#151827], centered with min-h-[200px]
+- ESLint: 0 errors, dev server compiles clean
+
+Stage Summary:
+- 4 files edited, all P0 error state fixes complete
+- Consistent error UI pattern across all analytics tabs
+- ScoreCard gracefully shows "—" for missing data instead of misleading "0"
+
+---
+Task ID: 2-a
+Agent: full-stack-developer (Dashboard P0 Fixes)
+Task: Fix DashboardPage — add loading skeleton, error state, remove BehavioralTrend fake data
+
+Work Log:
+- Read existing DashboardPage.tsx and ProcessScoreCard.tsx to understand layout structure
+- Added `isError`, `error`, and `refetch` destructuring from useQuery
+- Created inline `DashboardSkeleton` component that mirrors the exact grid layout (5 rows with same col-span breakpoints)
+- Skeleton uses `bg-[#1E2030] animate-pulse rounded-lg` per design guidelines
+- Created inline `DashboardError` component with AlertTriangle icon, error message, and "Coba Lagi" button calling refetch()
+- Error card uses dark theme Card with `bg-[#0B0D17] border border-[#1E2030] rounded-xl`
+- Removed entire BehavioralTrend grid row (was passing `tags={[]}` causing fake data display)
+- ReflectionGapSummary now renders standalone without grid wrapper
+- Changed RecentTrades `isLoading` to `false` since loading is now handled at page level
+- Removed unused BehavioralTrend import
+- Lint passes with 0 errors (only pre-existing warning in JournalNewPage.tsx)
+- Dev server compiles successfully
+
+Stage Summary:
+- Dashboard now shows skeleton during loading (no more zeros)
+- Dashboard shows centered error card with retry button on fetch failure
+- BehavioralTrend with fake data completely removed from dashboard
+- All existing components (WelcomeHero, ProcessScoreCard, etc.) unchanged
+
+---
+Task ID: 2-c
+Agent: full-stack-developer
+Task: Fix P0 error states and mobile issues across 4 component files
+
+Work Log:
+- PlaybookPage.tsx: Added `AlertTriangle` and `RefreshCw` imports. Destructured `isError`/`refetch` from list query and `isDetailError`/`refetchDetail` from detail query. Added error card UI between loading and empty states for list, and between loading and detail view for detail fetch failures (prevents infinite loading when selectedId is set but detail fetch fails).
+- TradingDNAPage.tsx: Added `AlertTriangle` and `RefreshCw` imports. Added `isError` state variable. Set `isError` on fetch failure, reset it at the start of `fetchDNA`. Added error card UI with "Gagal memuat Trading DNA" message and "Coba Lagi" retry button that calls `fetchDNA()`.
+- AppLayout.tsx: Added `'trading-dna': 'Trading DNA'` to the `pageLabels` mapping in MobileHeader, fixing the missing label on mobile navigation.
+- JournalDetailPage.tsx: `RefreshCw` was already imported. Added `isError`/`refetch` to useQuery destructuring. Inserted explicit error state between loading and !trade checks, showing error card with "Gagal memuat detail trade" and retry button calling `refetch()`.
+
+Design compliance:
+- All error cards use dark theme: bg-[#0B0D17] rounded-xl border border-[#1E2030]
+- Icons: AlertTriangle (amber), RefreshCw for retry buttons
+- Buttons: ghost variant, size-sm, text-[#9CA3AF] hover:text-[#F3F4F6]
+- Consistent flex centering layout across all error cards
+
+Stage Summary:
+- All 4 P0 error states implemented
+- Mobile header label fix for trading-dna page
+- Lint passes clean (0 errors, 1 pre-existing warning in unrelated file)
+

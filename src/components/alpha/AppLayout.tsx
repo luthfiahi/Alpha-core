@@ -62,6 +62,7 @@ function MobileHeader() {
     'journal-detail': 'Trade Detail',
     coaching: 'AI Coach',
     analytics: 'Analytics',
+    'trading-dna': 'Trading DNA',
     playbook: 'Playbook',
     settings: 'Settings',
   }

@@ -9,6 +9,8 @@ import {
   Search,
   X,
   Loader2,
+  AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -260,7 +262,7 @@ export function PlaybookPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Fetch playbooks list
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['playbooks'],
     queryFn: async () => {
       const res = await fetch('/api/playbooks');
@@ -271,7 +273,7 @@ export function PlaybookPage() {
   });
 
   // Fetch single playbook detail
-  const { data: playbookDetail, isLoading: isDetailLoading } = useQuery({
+  const { data: playbookDetail, isLoading: isDetailLoading, isError: isDetailError, refetch: refetchDetail } = useQuery({
     queryKey: ['playbook', selectedId],
     queryFn: async () => {
       if (!selectedId) return null;
@@ -344,6 +346,27 @@ export function PlaybookPage() {
       >
         <PlaybookEditor playbook={playbookDetail} onBack={handleBack} />
       </motion.div>
+    );
+  }
+
+  // Detail error — when selectedId is set but fetch fails
+  if (selectedId && isDetailError && !isDetailLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-[#1E2030] bg-[#0B0D17] px-6 py-10 text-center">
+          <AlertTriangle className="size-8 text-[#F59E0B]" />
+          <p className="text-sm text-[#F3F4F6]">Gagal memuat playbook</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+            onClick={() => refetchDetail()}
+          >
+            <RefreshCw className="size-3.5 mr-1.5" />
+            Coba Lagi
+          </Button>
+        </div>
+      </div>
     );
   }
 
@@ -435,6 +458,22 @@ export function PlaybookPage() {
       {/* Content */}
       {isLoading ? (
         <LoadingSkeleton />
+      ) : isError ? (
+        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-[#1E2030] bg-[#0B0D17]">
+          <div className="flex flex-col items-center gap-3 text-center px-6 py-10">
+            <AlertTriangle className="size-8 text-[#F59E0B]" />
+            <p className="text-sm text-[#F3F4F6]">Gagal memuat playbook</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-[#9CA3AF] hover:text-[#F3F4F6]"
+              onClick={() => refetch()}
+            >
+              <RefreshCw className="size-3.5 mr-1.5" />
+              Coba Lagi
+            </Button>
+          </div>
+        </div>
       ) : filteredPlaybooks.length === 0 ? (
         <EmptyState
           hasPlaybooks={!!data?.length}

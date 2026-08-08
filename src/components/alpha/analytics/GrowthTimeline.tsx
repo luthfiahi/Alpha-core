@@ -10,9 +10,11 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
-import { Activity, Target, Brain, ShieldCheck, Grip, ShieldAlert } from 'lucide-react'
+import { Activity, Target, Brain, ShieldCheck, Grip, ShieldAlert, AlertTriangle, RefreshCw } from 'lucide-react'
 import { ScoreCard } from './ScoreCard'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 // ========================================
@@ -123,15 +125,18 @@ export function GrowthTimeline() {
   const [period, setPeriod] = useState<string>('DAILY')
   const [data, setData] = useState<GrowthData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchData = useCallback(async (p: string) => {
     setLoading(true)
     try {
+      setError(null)
       const res = await fetch(`/api/analytics/growth?period=${p}`)
       const json = await res.json()
       setData(json)
     } catch (err) {
       console.error('Failed to fetch growth data:', err)
+      setError('Gagal memuat data')
     } finally {
       setLoading(false)
     }
@@ -167,6 +172,28 @@ export function GrowthTimeline() {
     } catch {
       return dateStr
     }
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
+          <CardContent className="flex flex-col items-center justify-center py-8 px-6">
+            <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
+            <p className="text-sm text-[#9CA3AF] mb-4">{error}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchData(period)}
+              className="gap-2 border-[#232636] hover:bg-[#1E2030] text-[#9CA3AF] hover:text-[#F3F4F6]"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Coba Lagi
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

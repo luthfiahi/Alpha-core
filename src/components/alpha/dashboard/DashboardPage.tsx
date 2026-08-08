@@ -2,6 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { useTraderStore } from '@/stores'
 import { WelcomeHero } from './WelcomeHero'
 import { ProcessScoreCard } from './ProcessScoreCard'
@@ -10,7 +13,6 @@ import { QuickActions } from './QuickActions'
 import { RecentTrades, type TradeRow } from './RecentTrades'
 import { WeeklyProgress } from './WeeklyProgress'
 import { ReflectionGapSummary } from './ReflectionGapSummary'
-import { BehavioralTrend } from './BehavioralTrend'
 
 interface DashboardData {
   trader: { id: string; name: string; email: string }
@@ -31,8 +33,101 @@ interface DashboardData {
   todayTradesCount: number
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Skeleton — mimics the dashboard layout structure                         */
+/* -------------------------------------------------------------------------- */
+
+function SkeletonBlock({ className }: { className?: string }) {
+  return <div className={`bg-[#1E2030] animate-pulse rounded-lg ${className ?? ''}`} />
+}
+
+function DashboardSkeleton() {
+  return (
+    <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Row 1: Welcome Hero skeleton */}
+        <SkeletonBlock className="h-32 w-full" />
+
+        {/* Row 2: Process Score + AI Insight */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-7">
+            <SkeletonBlock className="h-64 w-full rounded-xl" />
+          </div>
+          <div className="md:col-span-5">
+            <SkeletonBlock className="h-64 w-full rounded-xl" />
+          </div>
+        </div>
+
+        {/* Row 3: Quick Actions skeleton */}
+        <SkeletonBlock className="h-16 w-full rounded-xl" />
+
+        {/* Row 4: Recent Trades + Weekly Progress */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-6">
+            <SkeletonBlock className="h-80 w-full rounded-xl" />
+          </div>
+          <div className="md:col-span-6">
+            <SkeletonBlock className="h-80 w-full rounded-xl" />
+          </div>
+        </div>
+
+        {/* Row 5: Reflection Gap (no BehavioralTrend) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-5">
+            <SkeletonBlock className="h-48 w-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Error State                                                              */
+/* -------------------------------------------------------------------------- */
+
+function DashboardError({
+  message,
+  onRetry,
+}: {
+  message?: string
+  onRetry: () => void
+}) {
+  return (
+    <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+        <Card className="bg-[#0B0D17] border border-[#1E2030] rounded-xl max-w-md w-full">
+          <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
+              <AlertTriangle className="h-7 w-7 text-red-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white">
+              Gagal Memuat Dashboard
+            </h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              {message ?? 'Terjadi kesalahan saat mengambil data dashboard. Silakan coba lagi.'}
+            </p>
+            <Button
+              onClick={onRetry}
+              variant="outline"
+              className="mt-2 gap-2 border-[#1E2030] text-zinc-300 hover:bg-[#1E2030] hover:text-white"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Coba Lagi
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </main>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Dashboard Page                                                           */
+/* -------------------------------------------------------------------------- */
+
 export function DashboardPage() {
-  const { data, isLoading } = useQuery<DashboardData>({
+  const { data, isLoading, isError, error, refetch } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
     queryFn: async () => {
       const res = await fetch('/api/dashboard')
@@ -60,6 +155,21 @@ export function DashboardPage() {
       updateProcessScore(data.processScore)
     }
   }, [data])
+
+  /* ------ Loading state ------ */
+  if (isLoading) {
+    return <DashboardSkeleton />
+  }
+
+  /* ------ Error state ------ */
+  if (isError) {
+    return (
+      <DashboardError
+        message={error?.message}
+        onRetry={() => refetch()}
+      />
+    )
+  }
 
   const score = data?.processScore ?? null
   const prevScore = data?.processScorePrevious ?? null
@@ -93,7 +203,7 @@ export function DashboardPage() {
           <div className="md:col-span-6">
             <RecentTrades
               trades={data?.recentTrades ?? []}
-              isLoading={isLoading}
+              isLoading={false}
             />
           </div>
           <div className="md:col-span-6">
@@ -101,17 +211,10 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Row 5: Reflection Gap + Behavioral Trend */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-5">
-            <ReflectionGapSummary
-              unreflectedCount={data?.unreflectedCount ?? 0}
-            />
-          </div>
-          <div className="md:col-span-7">
-            <BehavioralTrend tags={[]} />
-          </div>
-        </div>
+        {/* Row 5: Reflection Gap only (BehavioralTrend removed — no fake data) */}
+        <ReflectionGapSummary
+          unreflectedCount={data?.unreflectedCount ?? 0}
+        />
       </div>
     </main>
   )
