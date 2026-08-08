@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const envCheck: Record<string, string> = {}
     envCheck.OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY ? 'SET' : 'MISSING'
-    envCheck.AI_MODEL = process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free (default)'
+    envCheck.AI_MODEL = process.env.AI_MODEL || 'openrouter/free (default)'
     envCheck.DATABASE_URL = process.env.DATABASE_URL ? 'SET' : 'MISSING'
     envCheck.SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'MISSING'
     envCheck.NODE_ENV = process.env.NODE_ENV || 'unknown'

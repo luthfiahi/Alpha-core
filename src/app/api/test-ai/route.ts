@@ -14,7 +14,7 @@ export async function GET() {
     })
   }
 
-  const model = process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free'
+  const model = process.env.AI_MODEL || 'openrouter/free'
 
   try {
     const startTime = Date.now()

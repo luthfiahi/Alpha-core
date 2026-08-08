@@ -9,7 +9,7 @@ export async function GET() {
   // 1. Check env variables
   results.env = {
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY ? 'SET ✓' : 'MISSING ✗',
-    AI_MODEL: process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free (default)',
+    AI_MODEL: process.env.AI_MODEL || 'openrouter/free (default)',
     DATABASE_URL: process.env.DATABASE_URL ? 'SET ✓' : 'MISSING ✗',
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET ✓' : 'MISSING ✗',
     NODE_ENV: process.env.NODE_ENV || 'unknown',
@@ -30,7 +30,7 @@ export async function GET() {
 
   // 3. Test OpenRouter API call
   const apiKey = process.env.OPENROUTER_API_KEY
-  const model = process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free'
+  const model = process.env.AI_MODEL || 'openrouter/free'
 
   if (apiKey) {
     try {

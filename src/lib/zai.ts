@@ -8,10 +8,10 @@
  *   OPENROUTER_API_KEY — Get yours at https://openrouter.ai/keys
  *
  * Optional env vars:
- *   AI_MODEL — Model name (default: "google/gemini-2.0-flash-exp:free")
+ *   AI_MODEL — Model name (default: "openrouter/free")
  */
 
-const DEFAULT_MODEL = 'google/gemini-2.0-flash-exp:free'
+const DEFAULT_MODEL = 'openrouter/free'
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
 
 /**
