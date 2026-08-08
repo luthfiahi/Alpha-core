@@ -1,51 +1,109 @@
 /**
- * Z.ai LLM API helper using z-ai-web-dev-sdk.
+ * Z.ai LLM API helper.
  *
- * Strategy:
- * 1. On Vercel: read config from ENV variables (ZAI_BASE_URL, ZAI_API_KEY, etc.)
- * 2. On local: fallback to .z-ai-config file via SDK's ZAI.create()
- *
- * Import is lazy to avoid Turbopack build-time issues.
+ * Does NOT depend on z-ai-web-dev-sdk at runtime.
+ * Makes direct fetch calls using the exact same headers/body as the SDK.
+ * Config comes from env variables (Vercel) or .z-ai-config file (local).
  */
 
-let zaiInstance: InstanceType<Awaited<ReturnType<typeof import('z-ai-web-dev-sdk').default.create>>['constructor']> | null = null
+interface ZAIConfig {
+  baseUrl: string
+  apiKey: string
+  chatId?: string
+  userId?: string
+  token?: string
+}
 
-async function getZAI() {
-  if (!zaiInstance) {
-    const ZAI = (await import('z-ai-web-dev-sdk')).default
+let cachedConfig: ZAIConfig | null = null
 
-    // Check if env variables are set (Vercel deployment)
-    const baseUrl = process.env.ZAI_BASE_URL
-    const apiKey = process.env.ZAI_API_KEY
+async function loadConfig(): Promise<ZAIConfig> {
+  if (cachedConfig) return cachedConfig
 
-    if (baseUrl && apiKey) {
-      // Vercel path: construct ZAI directly from env vars
-      zaiInstance = new ZAI({
-        baseUrl,
-        apiKey,
-        chatId: process.env.ZAI_CHAT_ID,
-        userId: process.env.ZAI_USER_ID,
-        token: process.env.ZAI_TOKEN,
-      })
-    } else {
-      // Local dev path: SDK reads .z-ai-config from project root / home / /etc
-      zaiInstance = await ZAI.create()
+  // 1. Try env variables first (Vercel / production)
+  const envBaseUrl = process.env.ZAI_BASE_URL
+  const envApiKey = process.env.ZAI_API_KEY
+
+  if (envBaseUrl && envApiKey) {
+    cachedConfig = {
+      baseUrl: envBaseUrl,
+      apiKey: envApiKey,
+      chatId: process.env.ZAI_CHAT_ID || undefined,
+      userId: process.env.ZAI_USER_ID || undefined,
+      token: process.env.ZAI_TOKEN || undefined,
     }
+    return cachedConfig
   }
-  return zaiInstance
+
+  // 2. Fallback: read .z-ai-config file (local dev)
+  try {
+    const fs = await import('fs/promises')
+    const path = await import('path')
+    const os = await import('os')
+
+    const configPaths = [
+      path.join(process.cwd(), '.z-ai-config'),
+      path.join(os.homedir(), '.z-ai-config'),
+      '/etc/.z-ai-config',
+    ]
+
+    for (const filePath of configPaths) {
+      try {
+        const raw = await fs.readFile(filePath, 'utf-8')
+        const parsed = JSON.parse(raw)
+        if (parsed.baseUrl && parsed.apiKey) {
+          cachedConfig = {
+            baseUrl: parsed.baseUrl,
+            apiKey: parsed.apiKey,
+            chatId: parsed.chatId,
+            userId: parsed.userId,
+            token: parsed.token,
+          }
+          return cachedConfig
+        }
+      } catch {
+        // File not found or invalid, try next
+      }
+    }
+  } catch {
+    // fs not available (unlikely in Node.js)
+  }
+
+  throw new Error(
+    'Z.ai config not found. Set ZAI_BASE_URL + ZAI_API_KEY env variables, or create .z-ai-config file.'
+  )
 }
 
 /**
- * Call the Z.ai chat completions API via the SDK.
+ * Call the Z.ai chat completions API.
  * Returns the AI response text.
  */
 export async function chatCompletion(messages: Array<{ role: string; content: string }>): Promise<string> {
-  const zai = await getZAI()
+  const config = await loadConfig()
+  const url = `${config.baseUrl}/chat/completions`
 
-  const completion = await zai.chat.completions.create({
-    messages: messages as Array<{ role: 'assistant' | 'user'; content: string }>,
-    thinking: { type: 'disabled' },
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${config.apiKey}`,
+    'X-Z-AI-From': 'Z',
+  }
+  if (config.chatId) headers['X-Chat-Id'] = config.chatId
+  if (config.userId) headers['X-User-Id'] = config.userId
+  if (config.token) headers['X-Token'] = config.token
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      messages,
+      thinking: { type: 'disabled' },
+    }),
   })
 
-  return completion.choices?.[0]?.message?.content || ''
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => '')
+    throw new Error(`Z.ai API ${response.status}: ${errorBody}`)
+  }
+
+  const data = await response.json()
+  return data.choices?.[0]?.message?.content || ''
 }
