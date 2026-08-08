@@ -333,7 +333,7 @@ export async function POST(request: NextRequest) {
             if (i < words.length) {
               controller.enqueue(encoder.encode(words[i]))
               i++
-              setTimeout(sendNext, 8)
+              setTimeout(sendNext, 3)
             } else {
               controller.close()
             }
@@ -380,17 +380,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Return as a simple text stream (client reads chunks)
+    // Return as a text stream (typing effect, fast)
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder()
-        const words = aiText.split(/(\s+)/)
+        const chunks = aiText.split(/(\s+)/)
         let i = 0
         function sendNext() {
-          if (i < words.length) {
-            controller.enqueue(encoder.encode(words[i]))
+          if (i < chunks.length) {
+            controller.enqueue(encoder.encode(chunks[i]))
             i++
-            setTimeout(sendNext, 8)
+            setTimeout(sendNext, 3)
           } else {
             controller.close()
           }
