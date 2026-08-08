@@ -1,22 +1,21 @@
 import { NextResponse } from 'next/server'
 
 /**
- * GET /api/debug-ai — Diagnose AI Coach and Supabase connection issues.
+ * GET /api/debug-ai — Diagnose AI Coach connection.
+ * Uses Google Gemini API.
  */
 export async function GET() {
   const results: Record<string, unknown> = {}
 
   // 1. Check env variables
   results.env = {
-    ZAI_BASE_URL: process.env.ZAI_BASE_URL ? 'SET ✓' : 'MISSING ✗',
-    ZAI_API_KEY: process.env.ZAI_API_KEY ? 'SET ✓' : 'MISSING ✗',
-    ZAI_CHAT_ID: process.env.ZAI_CHAT_ID ? 'SET ✓' : 'NOT SET (optional)',
-    ZAI_USER_ID: process.env.ZAI_USER_ID ? 'SET ✓' : 'NOT SET (optional)',
-    ZAI_TOKEN: process.env.ZAI_TOKEN ? 'SET ✓ (len=' + process.env.ZAI_TOKEN.length + ')' : 'NOT SET (optional)',
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY ? 'SET ✓' : 'MISSING ✗',
+    GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.0-flash (default)',
     DATABASE_URL: process.env.DATABASE_URL ? 'SET ✓ (len=' + process.env.DATABASE_URL.length + ')' : 'MISSING ✗',
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET ✓' : 'MISSING ✗',
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET ✓' : 'MISSING ✗',
     NODE_ENV: process.env.NODE_ENV || 'unknown',
+    ai_provider: 'Google Gemini (AI Studio)',
   }
 
   // 2. Test database connection
@@ -31,49 +30,22 @@ export async function GET() {
     }
   }
 
-  // 3. Check .z-ai-config file
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const configPath = path.join(process.cwd(), '.z-ai-config')
-    const raw = await fs.readFile(configPath, 'utf-8')
-    const config = JSON.parse(raw)
-    results.fileConfig = {
-      found: true,
-      baseUrl: config.baseUrl || 'MISSING',
-      hasApiKey: !!config.apiKey,
-      path: configPath,
-    }
-  } catch {
-    results.fileConfig = { found: false }
-  }
+  // 3. Test Gemini API call
+  const apiKey = process.env.GEMINI_API_KEY
+  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
 
-  // 4. Test AI API call
-  const baseUrl = process.env.ZAI_BASE_URL
-  const apiKey = process.env.ZAI_API_KEY
-
-  if (baseUrl && apiKey) {
+  if (apiKey) {
     try {
-      const url = `${baseUrl}/chat/completions`
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-        'X-Z-AI-From': 'Z',
-      }
-      if (process.env.ZAI_CHAT_ID) headers['X-Chat-Id'] = process.env.ZAI_CHAT_ID
-      if (process.env.ZAI_USER_ID) headers['X-User-Id'] = process.env.ZAI_USER_ID
-      if (process.env.ZAI_TOKEN) headers['X-Token'] = process.env.ZAI_TOKEN
-
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`
       const startTime = Date.now()
       const response = await fetch(url, {
         method: 'POST',
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [
-            { role: 'assistant', content: 'Reply with just: OK' },
-            { role: 'user', content: 'test' },
+          contents: [
+            { role: 'user', parts: [{ text: 'Balas dengan kata: OK' }] },
           ],
-          thinking: { type: 'disabled' },
+          generationConfig: { maxOutputTokens: 32 },
         }),
       })
       const elapsed = Date.now() - startTime
@@ -82,14 +54,14 @@ export async function GET() {
         status: response.status,
         statusText: response.statusText,
         elapsed: `${elapsed}ms`,
-        url,
+        model,
       }
 
       if (response.ok) {
         const data = await response.json()
-        results.apiTest.content = data.choices?.[0]?.message?.content || 'EMPTY'
+        results.apiTest.content = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'EMPTY'
       } else {
-        results.apiTest.errorBody = await response.text().catch(() => 'unreadable')
+        results.apiTest.errorBody = (await response.text().catch(() => 'unreadable')).slice(0, 500)
       }
     } catch (err: unknown) {
       results.apiTest = {
@@ -98,7 +70,7 @@ export async function GET() {
       }
     }
   } else {
-    results.apiTest = { skipped: true, reason: 'ZAI_BASE_URL or ZAI_API_KEY not set' }
+    results.apiTest = { skipped: true, reason: 'GEMINI_API_KEY not set' }
   }
 
   return NextResponse.json(results, {

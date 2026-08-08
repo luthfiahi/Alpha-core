@@ -312,9 +312,9 @@ export async function POST(request: NextRequest) {
     contextStr += memoryContextStr
 
     // Build the full messages array with system prompt
-    const fullMessages: Array<{ role: 'assistant' | 'user'; content: string }> = [
+    const fullMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
       {
-        role: 'assistant',
+        role: 'system',
         content: systemPrompt + contextStr,
       },
     ]

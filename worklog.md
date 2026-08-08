@@ -939,3 +939,29 @@ Stage Summary:
 - **Root Cause 2**: Turbopack crashed when compiling coaching route due to static imports of Prisma/memory modules — FIXED: all heavy imports converted to dynamic `await import()`
 - **Files Changed**: `src/lib/zai.ts` (complete rewrite), `src/app/api/coaching/route.ts` (dynamic imports, removed L0 events)
 - **AI Coach is fully functional**: responds in Indonesian with Socratic coaching, supports both free chat and reflection modes
+---
+Task ID: switch-to-gemini
+Agent: Main Orchestrator
+Task: Switch AI provider from Z.ai internal API to Google AI Studio (Gemini) for Vercel production compatibility
+
+Work Log:
+- Identified root cause: `https://internal-api.z.ai/v1` is only accessible from Z.ai sandbox, not from Vercel
+- Rewrote `src/lib/zai.ts` to use Google Gemini API (gemini-2.0-flash)
+  - System prompt → `systemInstruction` field
+  - Assistant messages → `model` role
+  - User messages → `user` role
+  - Uses `GEMINI_API_KEY` env var
+- Updated `src/app/api/coaching/route.ts` to use `role: 'system'` instead of `role: 'assistant'` for system prompt
+- Updated `src/app/api/test-ai/route.ts` to test Gemini API connection
+- Updated `src/app/api/test-coach/route.ts` to use new env vars
+- Updated `src/app/api/health/route.ts` to check GEMINI_API_KEY
+- Updated `src/app/api/debug-ai/route.ts` to test Gemini API
+- Lint passes clean (0 errors, 1 pre-existing warning)
+
+Stage Summary:
+- AI provider switched from Z.ai internal API to Google Gemini (free, publicly accessible)
+- User needs to: get free API key from https://aistudio.google.com/apikey
+- User needs to: add `GEMINI_API_KEY` env var in Vercel
+- Optional: `GEMINI_MODEL` env var (defaults to `gemini-2.0-flash`)
+- All debug/test endpoints updated accordingly
+- Other routes using z-ai-web-dev-sdk (Phase 3 features) not yet updated

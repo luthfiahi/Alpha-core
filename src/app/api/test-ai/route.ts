@@ -1,41 +1,38 @@
 import { NextResponse } from 'next/server'
 
 /**
- * GET /api/test-ai — Tests AI API connection.
+ * GET /api/test-ai — Tests Gemini API connection.
  * Returns diagnostic info even on failure.
  */
 export async function GET() {
-  const baseUrl = process.env.ZAI_BASE_URL
-  const apiKey = process.env.ZAI_API_KEY
+  const apiKey = process.env.GEMINI_API_KEY
 
-  if (!baseUrl || !apiKey) {
+  if (!apiKey) {
     return NextResponse.json({
       status: 'error',
-      message: 'ZAI_BASE_URL or ZAI_API_KEY env not set in Vercel',
-      hint: 'Add these in Vercel Settings > Environment Variables',
+      message: 'GEMINI_API_KEY not set',
+      hint: 'Get a free key at https://aistudio.google.com/apikey and add it in Vercel Settings > Environment Variables',
     })
   }
 
-  try {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'X-Z-AI-From': 'Z',
-    }
-    if (process.env.ZAI_CHAT_ID) headers['X-Chat-Id'] = process.env.ZAI_CHAT_ID
-    if (process.env.ZAI_USER_ID) headers['X-User-Id'] = process.env.ZAI_USER_ID
-    if (process.env.ZAI_TOKEN) headers['X-Token'] = process.env.ZAI_TOKEN
+  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`
 
+  try {
     const startTime = Date.now()
-    const response = await fetch(`${baseUrl}/chat/completions`, {
+    const response = await fetch(url, {
       method: 'POST',
-      headers,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messages: [
-          { role: 'assistant', content: 'Reply OK' },
-          { role: 'user', content: 'test' },
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: 'Balas dengan kata OK' }],
+          },
         ],
-        thinking: { type: 'disabled' },
+        generationConfig: {
+          maxOutputTokens: 32,
+        },
       }),
     })
     const elapsed = Date.now() - startTime
@@ -47,14 +44,17 @@ export async function GET() {
         httpStatus: response.status,
         body: body.slice(0, 500),
         elapsed: `${elapsed}ms`,
-        explanation: `The AI API (${baseUrl}) returned HTTP ${response.status}. This URL may not be reachable from Vercel's network.`,
+        explanation: `Gemini API (${model}) returned HTTP ${response.status}. Check your API key.`,
       })
     }
 
     const data = await response.json()
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'EMPTY'
+
     return NextResponse.json({
       status: 'ok',
-      response: data.choices?.[0]?.message?.content || 'EMPTY',
+      model,
+      response: text,
       elapsed: `${elapsed}ms`,
     })
   } catch (err: unknown) {
@@ -62,11 +62,7 @@ export async function GET() {
     return NextResponse.json({
       status: 'error',
       message: msg,
-      explanation: `"fetch failed" means ${baseUrl} is NOT reachable from Vercel. This is an internal Z.ai API URL that only works inside the Z.ai sandbox environment. For Vercel production, you need a publicly accessible AI API.`,
-      env: {
-        ZAI_BASE_URL: baseUrl,
-        ZAI_API_KEY: apiKey ? '(set)' : 'NOT SET',
-      },
+      model,
     })
   }
 }

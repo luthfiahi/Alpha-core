@@ -1,134 +1,94 @@
 /**
- * Z.ai LLM API helper.
+ * AI Chat Completion helper.
  *
- * Strategy (priority order):
- * 1. If ZAI_PROXY_URL is set → call the local AI proxy mini-service
- * 2. If ZAI_BASE_URL + ZAI_API_KEY env vars are set → call API directly
- * 3. Fallback: read .z-ai-config file and call API directly
+ * Uses Google AI Studio (Gemini API) — free, publicly accessible, works on Vercel.
  *
- * The proxy is used in the Z.ai sandbox (where internal API is only accessible locally).
- * Direct calls are used when the API is publicly reachable.
+ * Required env var:
+ *   GEMINI_API_KEY — Get yours at https://aistudio.google.com/apikey
+ *
+ * Optional env vars:
+ *   GEMINI_MODEL — Model name (default: "gemini-2.0-flash")
  */
 
-interface ZAIConfig {
-  baseUrl: string
-  apiKey: string
-  chatId?: string
-  userId?: string
-  token?: string
-}
-
-let cachedConfig: ZAIConfig | null = null
-
-async function loadConfig(): Promise<ZAIConfig> {
-  if (cachedConfig) return cachedConfig
-
-  // 1. Try env variables
-  const envBaseUrl = process.env.ZAI_BASE_URL
-  const envApiKey = process.env.ZAI_API_KEY
-
-  if (envBaseUrl && envApiKey) {
-    cachedConfig = {
-      baseUrl: envBaseUrl,
-      apiKey: envApiKey,
-      chatId: process.env.ZAI_CHAT_ID || undefined,
-      userId: process.env.ZAI_USER_ID || undefined,
-      token: process.env.ZAI_TOKEN || undefined,
-    }
-    return cachedConfig
-  }
-
-  // 2. Fallback: read .z-ai-config file
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const os = await import('os')
-
-    const configPaths = [
-      path.join(process.cwd(), '.z-ai-config'),
-      path.join(os.homedir(), '.z-ai-config'),
-      '/etc/.z-ai-config',
-    ]
-
-    for (const filePath of configPaths) {
-      try {
-        const raw = await fs.readFile(filePath, 'utf-8')
-        const parsed = JSON.parse(raw)
-        if (parsed.baseUrl && parsed.apiKey) {
-          cachedConfig = {
-            baseUrl: parsed.baseUrl,
-            apiKey: parsed.apiKey,
-            chatId: parsed.chatId,
-            userId: parsed.userId,
-            token: parsed.token,
-          }
-          return cachedConfig
-        }
-      } catch {
-        // Not found, try next
-      }
-    }
-  } catch {
-    // fs not available
-  }
-
-  throw new Error(
-    'Z.ai config not found. Set ZAI_BASE_URL + ZAI_API_KEY, or create .z-ai-config.'
-  )
-}
+const DEFAULT_MODEL = 'gemini-2.0-flash'
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
 
 /**
- * Call the Z.ai chat completions API.
+ * Call Google Gemini chat completions API.
  * Returns the AI response text.
+ *
+ * @param messages - Array of { role, content } objects.
+ *   Supports "system" / "user" / "assistant" roles.
  */
-export async function chatCompletion(messages: Array<{ role: string; content: string }>): Promise<string> {
-  // Check if proxy URL is available (sandbox environment)
-  const proxyUrl = process.env.ZAI_PROXY_URL
+export async function chatCompletion(
+  messages: Array<{ role: string; content: string }>
+): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) {
+    throw new Error(
+      'GEMINI_API_KEY is not set. Get a free key at https://aistudio.google.com/apikey and add it to your env vars.'
+    )
+  }
 
-  if (proxyUrl) {
-    // Use the AI proxy mini-service
-    const response = await fetch(`${proxyUrl}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-    })
+  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL
+  const url = `${GEMINI_BASE_URL}/models/${model}:generateContent?key=${apiKey}`
 
-    if (!response.ok) {
-      const errorBody = await response.text().catch(() => '')
-      throw new Error(`AI Proxy error ${response.status}: ${errorBody}`)
+  // Gemini API format:
+  // - "system" role → systemInstruction field
+  // - "user"/"assistant" → contents array
+  let systemInstruction: string | undefined
+  const contents: Array<{ role: string; parts: Array<{ text: string }> }> = []
+
+  for (const msg of messages) {
+    if (msg.role === 'system') {
+      systemInstruction = msg.content
+    } else {
+      contents.push({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }],
+      })
     }
-
-    const data = await response.json()
-    return data.content || ''
   }
 
-  // Direct API call
-  const config = await loadConfig()
-  const url = `${config.baseUrl}/chat/completions`
-
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${config.apiKey}`,
-    'X-Z-AI-From': 'Z',
+  const body: Record<string, unknown> = { contents }
+  if (systemInstruction) {
+    body.systemInstruction = {
+      parts: [{ text: systemInstruction }],
+    }
   }
-  if (config.chatId) headers['X-Chat-Id'] = config.chatId
-  if (config.userId) headers['X-User-Id'] = config.userId
-  if (config.token) headers['X-Token'] = config.token
+
+  // Generation config
+  body.generationConfig = {
+    temperature: 0.8,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 2048,
+  }
 
   const response = await fetch(url, {
     method: 'POST',
-    headers,
-    body: JSON.stringify({
-      messages,
-      thinking: { type: 'disabled' },
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   })
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '')
-    throw new Error(`Z.ai API ${response.status}: ${errorBody}`)
+    throw new Error(
+      `Gemini API error ${response.status}: ${errorBody}`
+    )
   }
 
   const data = await response.json()
-  return data.choices?.[0]?.message?.content || ''
+
+  // Extract text from Gemini response
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+  if (!text) {
+    const blockReason = data?.candidates?.[0]?.finishReason
+    if (blockReason && blockReason !== 'STOP') {
+      throw new Error(`Gemini blocked response: ${blockReason}`)
+    }
+    throw new Error('Gemini returned empty response')
+  }
+
+  return text
 }
