@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-// GET /api/test-coach — Minimal AI Coach test via Gemini
+// GET /api/test-coach — Minimal AI Coach test via OpenRouter
 export async function GET() {
   try {
     const { chatCompletion } = await import('@/lib/zai')
@@ -13,15 +13,15 @@ export async function GET() {
     return NextResponse.json({
       status: 'ok',
       ai_response: response,
-      env_gemini_api_key: process.env.GEMINI_API_KEY ? 'SET' : 'MISSING',
-      env_gemini_model: process.env.GEMINI_MODEL || 'gemini-2.0-flash (default)',
+      env_openrouter_api_key: process.env.OPENROUTER_API_KEY ? 'SET' : 'MISSING',
+      env_ai_model: process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free (default)',
     })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err)
     return NextResponse.json({
       status: 'error',
       error: msg,
-      env_gemini_api_key: process.env.GEMINI_API_KEY ? 'SET' : 'MISSING',
+      env_openrouter_api_key: process.env.OPENROUTER_API_KEY ? 'SET' : 'MISSING',
     }, { status: 500 })
   }
 }

@@ -965,3 +965,22 @@ Stage Summary:
 - Optional: `GEMINI_MODEL` env var (defaults to `gemini-2.0-flash`)
 - All debug/test endpoints updated accordingly
 - Other routes using z-ai-web-dev-sdk (Phase 3 features) not yet updated
+---
+Task ID: switch-to-openrouter
+Agent: Main Orchestrator
+Task: Switch AI provider from Google Gemini to OpenRouter (free, works on Vercel)
+
+Work Log:
+- Gemini API keys from user had quota=0 (API not enabled), user couldn't login to Groq
+- Switched to OpenRouter API (OpenAI-compatible, free models, GitHub login)
+- Rewrote `src/lib/zai.ts` to use OpenRouter (POST to openrouter.ai/api/v1/chat/completions)
+- Updated all test/debug endpoints: test-ai, test-coach, health, debug-ai
+- OpenRouter uses standard OpenAI format (system/user/assistant roles)
+- Default model: google/gemini-2.0-flash-exp:free (free Gemini via OpenRouter)
+- Lint passes clean
+
+Stage Summary:
+- AI provider: OpenRouter (free tier, many models available)
+- User needs: OPENROUTER_API_KEY from https://openrouter.ai/keys
+- Optional: AI_MODEL env var (defaults to google/gemini-2.0-flash-exp:free)
+- Env vars to remove from Vercel: GEMINI_API_KEY, ZAI_BASE_URL, ZAI_API_KEY, ZAI_CHAT_ID, ZAI_USER_ID, ZAI_TOKEN

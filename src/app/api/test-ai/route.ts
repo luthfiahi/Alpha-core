@@ -1,38 +1,35 @@
 import { NextResponse } from 'next/server'
 
 /**
- * GET /api/test-ai — Tests Gemini API connection.
- * Returns diagnostic info even on failure.
+ * GET /api/test-ai — Tests OpenRouter API connection.
  */
 export async function GET() {
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = process.env.OPENROUTER_API_KEY
 
   if (!apiKey) {
     return NextResponse.json({
       status: 'error',
-      message: 'GEMINI_API_KEY not set',
-      hint: 'Get a free key at https://aistudio.google.com/apikey and add it in Vercel Settings > Environment Variables',
+      message: 'OPENROUTER_API_KEY not set',
+      hint: 'Get a free key at https://openrouter.ai/keys and add it in Vercel Settings > Environment Variables',
     })
   }
 
-  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`
+  const model = process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free'
 
   try {
     const startTime = Date.now()
-    const response = await fetch(url, {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://alpha-core-ten.vercel.app',
+        'X-Title': 'Alpha - Test',
+      },
       body: JSON.stringify({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: 'Balas dengan kata OK' }],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 32,
-        },
+        model,
+        messages: [{ role: 'user', content: 'Balas dengan kata: OK' }],
+        max_tokens: 32,
       }),
     })
     const elapsed = Date.now() - startTime
@@ -44,12 +41,12 @@ export async function GET() {
         httpStatus: response.status,
         body: body.slice(0, 500),
         elapsed: `${elapsed}ms`,
-        explanation: `Gemini API (${model}) returned HTTP ${response.status}. Check your API key.`,
+        model,
       })
     }
 
     const data = await response.json()
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'EMPTY'
+    const text = data?.choices?.[0]?.message?.content || 'EMPTY'
 
     return NextResponse.json({
       status: 'ok',
