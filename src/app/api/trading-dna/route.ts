@@ -3,6 +3,11 @@ import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
 import { getAuthUser } from '@/lib/api-auth'
 
+function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
+  if (!str) return fallback
+  try { return JSON.parse(str) } catch { return fallback }
+}
+
 // ========================================
 // Trading DNA Generation System Prompt
 // ========================================
@@ -157,7 +162,7 @@ export async function POST(request: NextRequest) {
       emotionBefore: t.emotionBefore,
       emotionAfter: t.emotionAfter,
       processScore: t.processScore,
-      tags: t.tags ? JSON.parse(t.tags) : [],
+      tags: safeJsonParse(t.tags, []),
     }))
 
     const behaviorData = behavioralEvents.map((e) => ({

@@ -3,6 +3,11 @@ import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
 import { getAuthUser } from '@/lib/api-auth'
 
+function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
+  if (!str) return fallback
+  try { return JSON.parse(str) } catch { return fallback }
+}
+
 // ========================================
 // Gap Analysis System Prompt
 // ========================================
@@ -169,7 +174,7 @@ export async function POST(request: NextRequest) {
       emotionAfter: trade.emotionAfter,
       hasReflected: trade.hasReflected,
       processScore: trade.processScore,
-      behavioralTags: trade.behavioralTags ? JSON.parse(trade.behavioralTags) : [],
+      behavioralTags: safeJsonParse(trade.behavioralTags, []),
       playbookCompliance: trade.playbookCompliance,
       playbook: trade.playbook
         ? {

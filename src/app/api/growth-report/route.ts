@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const traderId = searchParams.get('traderId')
     const reportType = searchParams.get('reportType')
-    const limit = parseInt(searchParams.get('limit') || '10', 10)
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 200)
 
     // Get trader
     let trader = await db.trader.findFirst()

@@ -333,13 +333,24 @@ export async function POST(request: NextRequest) {
           const encoder = new TextEncoder()
           const words = stepPrompt.split(/(\s+)/)
           let i = 0
+          let aborted = false
           function sendNext() {
+            if (aborted) return
             if (i < words.length) {
-              controller.enqueue(encoder.encode(words[i]))
+              try {
+                controller.enqueue(encoder.encode(words[i]))
+              } catch {
+                aborted = true
+                return
+              }
               i++
               setTimeout(sendNext, 3)
             } else {
-              controller.close()
+              try {
+                controller.close()
+              } catch {
+                // already closed
+              }
             }
           }
           sendNext()
@@ -390,13 +401,24 @@ export async function POST(request: NextRequest) {
         const encoder = new TextEncoder()
         const chunks = aiText.split(/(\s+)/)
         let i = 0
+        let aborted = false
         function sendNext() {
+          if (aborted) return
           if (i < chunks.length) {
-            controller.enqueue(encoder.encode(chunks[i]))
+            try {
+              controller.enqueue(encoder.encode(chunks[i]))
+            } catch {
+              aborted = true
+              return
+            }
             i++
             setTimeout(sendNext, 3)
           } else {
-            controller.close()
+            try {
+              controller.close()
+            } catch {
+              // already closed
+            }
           }
         }
         sendNext()

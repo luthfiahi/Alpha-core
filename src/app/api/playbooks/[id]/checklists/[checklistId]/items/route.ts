@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // POST /api/playbooks/[id]/checklists/[checklistId]/items — Add item to checklist
 export async function POST(
@@ -10,6 +11,9 @@ export async function POST(
     const { checklistId } = await params;
     const body = await request.json();
     const { text } = body;
+
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
 
     if (!text?.trim()) {
       return NextResponse.json(
@@ -65,6 +69,9 @@ export async function PUT(
     const { checklistId } = await params;
     const body = await request.json();
     const { itemId, text, orders } = body;
+
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
 
     // Bulk reorder
     if (orders && Array.isArray(orders)) {
@@ -127,6 +134,9 @@ export async function DELETE(
     const { checklistId } = await params;
     const { searchParams } = new URL(request.url);
     const itemId = searchParams.get("itemId");
+
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
 
     if (!itemId) {
       return NextResponse.json(

@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       const message = errorMap[error.message] || error.message
 
       return NextResponse.json(
-        { error: message, debugCode: (error as { code?: string }).code },
+        { error: message },
         { status: 401 }
       )
     }

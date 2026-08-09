@@ -147,7 +147,7 @@ export function DashboardPage() {
       id: data.trader.id,
       name: data.trader.name ?? 'Trader',
       email: data.trader.email,
-      processScore: data.processScore ?? 0,
+      processScore: data.processScore ?? null,
       totalTrades: data.totalClosedTrades,
       winRate: data.winRate,
     })

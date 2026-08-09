@@ -363,8 +363,10 @@ export function JournalDetailPage() {
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => deleteMutation.mutate()}
+                    disabled={deleteMutation.isPending}
                     className='bg-[#EF4444] hover:bg-[#EF4444]/90 text-white'
                   >
+                    {deleteMutation.isPending && <span className='inline-block size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5' />}
                     Hapus
                   </AlertDialogAction>
                 </AlertDialogFooter>

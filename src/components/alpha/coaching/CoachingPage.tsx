@@ -70,20 +70,18 @@ interface TradeOption {
 
 type CoachingMode = 'free_chat' | 'reflection'
 
-const INITIAL_FREE_CHAT_MESSAGE: ConversationTurn = {
+const INITIAL_FREE_CHAT_MESSAGE: Omit<ConversationTurn, 'timestamp'> = {
   id: 'welcome-free',
   role: 'AI_COACH',
   content:
     'Halo! Aku **Alpha**, coaching partner-mu untuk trading.\n\nAku di sini bukan untuk memberi sinyal atau instruksi trading — aku di sini untuk membantumu **berefleksi** dan memahami proses tradingmu sendiri.\n\n> *"Alpha will never make trading decisions for you."*\n\nCeritakan, apa yang ingin kamu refleksikan hari ini?',
-  timestamp: new Date(),
 }
 
-const INITIAL_REFLECTION_MESSAGE: ConversationTurn = {
+const INITIAL_REFLECTION_MESSAGE: Omit<ConversationTurn, 'timestamp'> = {
   id: 'welcome-reflection',
   role: 'AI_COACH',
   content:
     'Mari kita mulai sesi refleksi trade! \n\nAku akan memandumu melalui **5 langkah refleksi Socratic** untuk membantumu memahami keputusan tradingmu lebih dalam.\n\nPilih trade yang ingin kamu refleksikan dari daftar di atas, atau aku bisa membantu kamu memilih.',
-  timestamp: new Date(),
 }
 
 // ========================================
@@ -290,7 +288,7 @@ export function CoachingPage() {
       startedAt: new Date(),
       status: 'ACTIVE',
       sessionType: 'FREE_CHAT',
-      turns: [{ ...INITIAL_FREE_CHAT_MESSAGE }],
+      turns: [{ ...INITIAL_FREE_CHAT_MESSAGE, timestamp: new Date() }],
     },
   ])
   const [activeSessionId, setActiveSessionId] = useState<string>('session-1')
@@ -456,6 +454,7 @@ export function CoachingPage() {
                 ? INITIAL_REFLECTION_MESSAGE
                 : INITIAL_FREE_CHAT_MESSAGE),
               id: `welcome-${newId}`,
+              timestamp: new Date(),
             },
           ],
           reflectionStep: isReflection ? 1 : null,
@@ -496,6 +495,7 @@ export function CoachingPage() {
               ? INITIAL_REFLECTION_MESSAGE
               : INITIAL_FREE_CHAT_MESSAGE),
             id: `welcome-${newId}`,
+            timestamp: new Date(),
           },
         ],
         reflectionStep: isReflection ? 1 : null,
@@ -756,6 +756,7 @@ export function CoachingPage() {
                 }),
               }).catch((e: unknown) => {
                 console.error('Failed to save reflection:', e)
+                toast.error('Gagal menyimpan refleksi ke trade.')
               })
             }
           }
@@ -1123,7 +1124,12 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
               size="sm"
               variant="outline"
               className="rounded-lg text-xs border-alpha-border"
-              onClick={() => handleModeChange('reflection')}
+              onClick={() => {
+                setSelectedTradeId(null)
+                setSelectedTradeData(null)
+                createNewSession('REFLECTION')
+                fetchTrades()
+              }}
             >
               Refleksi Lagi
             </Button>

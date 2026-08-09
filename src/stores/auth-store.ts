@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useTraderStore } from './index'
 
 // ========================================
 // Auth Store
@@ -34,12 +35,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       isLoading: false,
     }),
 
-  clearUser: () =>
+  clearUser: () => {
+    useTraderStore.getState().clearTrader()
     set({
       user: null,
       isAuthenticated: false,
       isLoading: false,
-    }),
+    })
+  },
 
   setLoading: (loading) =>
     set({ isLoading: loading }),

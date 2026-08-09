@@ -30,8 +30,22 @@ export async function getAuthUser() {
     }
 
     return { user, isDemo: false }
-  } catch {
-    // Supabase not available — demo mode
-    return { user: null, isDemo: true }
+  } catch (err) {
+    // Only use demo mode when Supabase isn't configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!supabaseUrl || !supabaseKey) {
+      return { user: null, isDemo: true }
+    }
+    // Real error — don't silently grant access
+    console.error('[AUTH] Unexpected error in getAuthUser:', err)
+    return {
+      user: null,
+      isDemo: false,
+      error: new Response(JSON.stringify({ error: 'Authentication error' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    }
   }
 }

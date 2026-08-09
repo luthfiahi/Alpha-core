@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
 import { buildTraderContext } from '@/lib/ai/memory/context-builder'
 import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/memory/context — Returns full TraderMemoryContext
 export async function GET(request: Request) {
   try {
+    const { error: authError } = await getAuthUser()
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const traderId = searchParams.get('traderId') || undefined
     const format = searchParams.get('format') // 'full' (default) or 'prompt'

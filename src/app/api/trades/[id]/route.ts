@@ -80,11 +80,44 @@ export async function PUT(
     for (const field of updatableFields) {
       if (body[field] !== undefined) {
         if (["entryPrice", "exitPrice", "stopLoss", "takeProfit", "lotSize", "pipResult", "profitLoss"].includes(field)) {
-          updateData[field] = body[field] !== null ? parseFloat(body[field]) : null;
+          if (body[field] !== null) {
+            const parsed = parseFloat(body[field])
+            if (Number.isNaN(parsed) || !Number.isFinite(parsed)) {
+              return NextResponse.json(
+                { error: field + ' must be a valid number' },
+                { status: 400 }
+              )
+            }
+            updateData[field] = parsed
+          } else {
+            updateData[field] = null
+          }
         } else if (["processScore"].includes(field)) {
-          updateData[field] = body[field] !== null ? parseInt(body[field], 10) : null;
+          if (body[field] !== null) {
+            const parsed = parseInt(body[field], 10)
+            if (Number.isNaN(parsed)) {
+              return NextResponse.json(
+                { error: field + ' must be a valid number' },
+                { status: 400 }
+              )
+            }
+            updateData[field] = parsed
+          } else {
+            updateData[field] = null
+          }
         } else if (["entryTime", "exitTime"].includes(field)) {
-          updateData[field] = body[field] !== null ? new Date(body[field]) : null;
+          if (body[field] !== null) {
+            const date = new Date(body[field])
+            if (isNaN(date.getTime())) {
+              return NextResponse.json(
+                { error: field + ' must be a valid date' },
+                { status: 400 }
+              )
+            }
+            updateData[field] = date
+          } else {
+            updateData[field] = null
+          }
         } else if (field === "tags" && Array.isArray(body[field])) {
           updateData[field] = JSON.stringify(body[field]);
         } else {

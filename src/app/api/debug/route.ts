@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 
 // GET /api/debug — Diagnose Vercel environment
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not available in production' }, { status: 404 })
+  }
+
   const info: Record<string, string | boolean | null> = {}
 
   // 1. Z.ai config

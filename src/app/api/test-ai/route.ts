@@ -60,6 +60,6 @@ export async function GET() {
       status: 'error',
       message: msg,
       model,
-    })
+    }, { status: 500 })
   }
 }

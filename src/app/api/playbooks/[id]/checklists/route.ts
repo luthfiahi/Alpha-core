@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // POST /api/playbooks/[id]/checklists — Add a checklist
 export async function POST(
@@ -10,6 +11,9 @@ export async function POST(
     const { id: playbookId } = await params;
     const body = await request.json();
     const { title, description, items } = body;
+
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
 
     if (!title?.trim()) {
       return NextResponse.json(
@@ -73,6 +77,9 @@ export async function PUT(
     const body = await request.json();
     const { orders } = body; // [{id: "...", sortOrder: 0}, ...]
 
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
+
     if (!Array.isArray(orders)) {
       return NextResponse.json(
         { error: "orders array is required" },
@@ -109,6 +116,9 @@ export async function DELETE(
     const { id: playbookId } = await params;
     const { searchParams } = new URL(request.url);
     const checklistId = searchParams.get("checklistId");
+
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
 
     if (!checklistId) {
       return NextResponse.json(

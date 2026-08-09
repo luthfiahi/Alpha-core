@@ -91,12 +91,16 @@ export function JournalPage() {
   const queryClient = useQueryClient();
 
   // View mode (persisted in localStorage)
-  const [viewMode, setViewMode] = useState<'table' | 'card'>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('alpha-journal-view') as 'table' | 'card') || 'table';
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
+
+  // Sync view mode from localStorage after mount (hydration-safe)
+  useEffect(() => {
+    const saved = localStorage.getItem('alpha-journal-view');
+    if (saved === 'table' || saved === 'card') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe localStorage sync
+      setViewMode(saved);
     }
-    return 'table';
-  });
+  }, []);
 
   // Filters
   const [filters, setFilters] = useState<TradeFiltersType>({ ...DEFAULT_FILTERS });

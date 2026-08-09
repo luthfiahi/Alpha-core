@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type')
     const severity = searchParams.get('severity')
     const resolved = searchParams.get('resolved')
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200)
 
     let trader = await db.trader.findFirst()
     if (!trader) {

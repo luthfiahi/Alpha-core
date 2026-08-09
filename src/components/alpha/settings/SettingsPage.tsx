@@ -136,15 +136,16 @@ export function SettingsPage() {
         toast.error(json.error || 'Gagal menyimpan profil')
         return
       }
-      // Update Zustand store with new name
+      // Update Zustand store with new name, preserving existing stats
       if (json.trader && traderName !== json.trader.name) {
+        const existing = useTraderStore.getState()
         setTrader({
           id: json.trader.id,
           name: json.trader.name ?? '',
           email: json.trader.email,
-          processScore: 0,
-          totalTrades: 0,
-          winRate: 0,
+          processScore: existing.processScore ?? 0,
+          totalTrades: existing.totalTrades,
+          winRate: existing.winRate,
         })
       }
       toast.success('Profil berhasil disimpan')

@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
-import { MoreHorizontal, Pencil, Trash2, Eye, CheckCircle2 } from 'lucide-react';
+import { MoreHorizontal, Trash2, Eye, CheckCircle2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -173,16 +173,6 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                         >
                           <Eye className="size-3.5 mr-2" />
                           View Detail
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-xs text-[#F3F4F6] focus:bg-[#1E2030] focus:text-[#F3F4F6] alpha-link"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onSelectTrade(trade.id);
-                          }}
-                        >
-                          <Pencil className="size-3.5 mr-2" />
-                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-xs text-[#EF4444] focus:bg-[#EF4444]/10 focus:text-[#EF4444]"

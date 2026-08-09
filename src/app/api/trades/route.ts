@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "20", 10);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 200);
     const pair = searchParams.get("pair");
     const direction = searchParams.get("direction");
     const result = searchParams.get("result");
@@ -136,6 +136,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate numeric fields
+    const numericFields = [
+      { field: 'entryPrice', value: entryPrice, required: true },
+      { field: 'exitPrice', value: exitPrice, required: false },
+      { field: 'stopLoss', value: stopLoss, required: false },
+      { field: 'takeProfit', value: takeProfit, required: false },
+      { field: 'lotSize', value: lotSize, required: false },
+      { field: 'profitLoss', value: profitLoss, required: false },
+    ] as const
+
+    for (const { field, value, required } of numericFields) {
+      if (value !== undefined && value !== null) {
+        const parsed = parseFloat(value)
+        if (Number.isNaN(parsed) || !Number.isFinite(parsed)) {
+          return NextResponse.json(
+            { error: field + ' must be a valid number' },
+            { status: 400 }
+          )
+        }
+      }
+    }
+
     // Get or create a default trader (for MVP)
     let trader = await db.trader.findFirst();
     if (!trader) {
@@ -162,8 +184,8 @@ export async function POST(request: NextRequest) {
         emotionBefore: emotionBefore || null,
         tags: tags ? JSON.stringify(tags) : null,
         screenshotUrl: screenshotUrl || null,
-        exitPrice: exitPrice ? parseFloat(exitPrice) : null,
-        profitLoss: profitLoss ? parseFloat(profitLoss) : 0,
+        exitPrice: exitPrice != null ? parseFloat(exitPrice) : null,
+        profitLoss: profitLoss != null ? parseFloat(profitLoss) : 0,
         pipResult: pipResult ? parseFloat(pipResult) : null,
         status: status || "OPEN",
         entryTime: entryTime ? new Date(entryTime) : new Date(),

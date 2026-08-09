@@ -33,7 +33,10 @@ export const useNavigationStore = create<NavigationState>((set) => ({
   sidebarCollapsed: false,
   selectedTradeId: null,
 
-  navigate: (page) => set({ currentPage: page }),
+  navigate: (page) => set((state) => ({
+    currentPage: page,
+    ...(page !== 'journal-detail' ? { selectedTradeId: null } : {}),
+  })),
   toggleSidebar: () =>
     set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
@@ -56,12 +59,13 @@ interface TraderState {
     id: string;
     name: string;
     email: string;
-    processScore: number;
+    processScore: number | null;
     totalTrades: number;
     winRate: number;
   }) => void;
   updateProcessScore: (score: number) => void;
   incrementTrades: () => void;
+  clearTrader: () => void;
 }
 
 export const useTraderStore = create<TraderState>((set) => ({
@@ -82,6 +86,14 @@ export const useTraderStore = create<TraderState>((set) => ({
       winRate: data.winRate,
     }),
   updateProcessScore: (score) => set({ processScore: score }),
+  clearTrader: () => set({
+    traderId: null,
+    traderName: null,
+    traderEmail: null,
+    processScore: null,
+    totalTrades: 0,
+    winRate: 0,
+  }),
   incrementTrades: () =>
     set((state) => ({ totalTrades: state.totalTrades + 1 })),
 }));

@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // DELETE /api/settings/reset — Reset all trader data (keeps Trader itself)
 export async function DELETE() {
   try {
+    const { error: authError } = await getAuthUser();
+    if (authError) return authError;
+
     // Collect delete counts
     const counts: Record<string, number> = {};
 

@@ -3,6 +3,11 @@ import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
 import { getAuthUser } from '@/lib/api-auth'
 
+function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
+  if (!str) return fallback
+  try { return JSON.parse(str) } catch { return fallback }
+}
+
 // ========================================
 // Behavioral Analysis System Prompt
 // ========================================
@@ -102,7 +107,7 @@ export async function POST(request: NextRequest) {
       trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
     }
 
-    const lookbackDays = days || 7
+    const lookbackDays = Math.min(days || 7, 90)
     const sinceDate = new Date()
     sinceDate.setDate(sinceDate.getDate() - lookbackDays)
 
@@ -144,8 +149,8 @@ export async function POST(request: NextRequest) {
       emotionBefore: trade.emotionBefore,
       emotionAfter: trade.emotionAfter,
       planNotes: trade.planNotes,
-      tags: trade.tags ? JSON.parse(trade.tags) : [],
-      behavioralTags: trade.behavioralTags ? JSON.parse(trade.behavioralTags) : [],
+      tags: safeJsonParse(trade.tags, []),
+      behavioralTags: safeJsonParse(trade.behavioralTags, []),
       hasReflected: trade.hasReflected,
       processScore: trade.processScore,
     }))

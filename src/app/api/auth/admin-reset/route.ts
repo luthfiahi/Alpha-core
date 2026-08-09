@@ -76,8 +76,7 @@ export async function POST(request: NextRequest) {
         const user = users.find(u => u.email?.toLowerCase() === normalizedEmail)
 
         if (!user) {
-          console.error('[ADMIN RESET] User not in list but create said exists:', normalizedEmail)
-          console.error('[ADMIN RESET] User emails in DB:', users.map(u => u.email))
+          console.error('[ADMIN RESET] User not found. Total users in DB:', users.length)
           return NextResponse.json(
             { error: 'Email tidak ditemukan di database. Coba daftar akun baru.' },
             { status: 404 }

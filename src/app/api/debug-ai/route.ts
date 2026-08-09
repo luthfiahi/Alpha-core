@@ -4,6 +4,10 @@ import { NextResponse } from 'next/server'
  * GET /api/debug-ai — Diagnose AI Coach connection via OpenRouter.
  */
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not available in production' }, { status: 404 })
+  }
+
   const results: Record<string, unknown> = {}
 
   // 1. Check env variables

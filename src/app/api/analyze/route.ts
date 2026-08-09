@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
+import { getAuthUser } from '@/lib/api-auth'
 
 const ANALYSIS_PROMPT = `Analyze this trading chart screenshot. Extract the following information in JSON format:
 {
@@ -45,6 +46,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    const { error: authError } = await getAuthUser()
+    if (authError) return authError
 
     const validMime = mimeType || 'image/png'
     const dataUrl = `data:${validMime};base64,${image}`

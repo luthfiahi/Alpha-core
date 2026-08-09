@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { user, session } = data
+    const { user } = data
 
     return NextResponse.json({
       user: {
@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
         email: user.email,
         name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Trader',
       },
-      session,
     })
   } catch {
     return NextResponse.json(
