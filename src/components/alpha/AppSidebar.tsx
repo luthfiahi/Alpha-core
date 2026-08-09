@@ -57,7 +57,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, shortcut: '⌘1' },
       { id: 'journal', label: 'Journal', icon: BookOpen, shortcut: '⌘2' },
-      { id: 'coaching', label: 'AI Coach', icon: Brain, badge: true, shortcut: '⌘3' },
+      { id: 'coaching', label: 'AI Coach', icon: Brain, badge: false, shortcut: '⌘3' },
     ],
   },
   {

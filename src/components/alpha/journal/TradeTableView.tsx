@@ -1,5 +1,7 @@
 'use client';
 
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale/id';
 import { MoreHorizontal, Pencil, Trash2, Eye, CheckCircle2 } from 'lucide-react';
 import {
   Table,
@@ -36,6 +38,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
             <TableRow className="border-[#232636] hover:bg-transparent">
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 pl-4 pr-0 w-1"></TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 px-3 uppercase tracking-wider">Pair</TableHead>
+              <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 uppercase tracking-wider">Date</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 uppercase tracking-wider">Direction</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 text-right uppercase tracking-wider">Entry</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 text-right uppercase tracking-wider">P/L</TableHead>
@@ -67,6 +70,15 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                   <TableCell className="px-3 py-3">
                     <span className="font-financial text-sm font-semibold text-[#F3F4F6]">
                       {trade.pair}
+                    </span>
+                  </TableCell>
+
+                  {/* Date */}
+                  <TableCell className="py-3">
+                    <span className="text-xs text-[#9CA3AF]">
+                      {trade.entryTime
+                        ? format(new Date(trade.entryTime), 'd MMM', { locale: idLocale })
+                        : '—'}
                     </span>
                   </TableCell>
 

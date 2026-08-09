@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Dna, Lightbulb, Sparkles, AlertTriangle, RefreshCw } from 'lucide-react'
+import { Dna, Lightbulb, Sparkles, AlertTriangle, RefreshCw, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { IdentityCard } from './IdentityCard'
 import { StrengthsWeaknesses } from './StrengthsWeaknesses'
@@ -93,6 +94,7 @@ export function TradingDNAPage() {
       }
     } catch (err) {
       console.error('Failed to generate DNA:', err)
+      toast.error('Gagal generate DNA')
     } finally {
       setIsGenerating(false)
     }
@@ -193,6 +195,7 @@ export function TradingDNAPage() {
             disabled={isGenerating}
             className="gap-2.5 bg-[#6366F1] text-white hover:bg-[#4F46E5] alpha-press px-8 py-6 text-sm font-medium shadow-lg shadow-[#6366F1]/30 hover:shadow-[#6366F1]/40 transition-all duration-300"
           >
+            {isGenerating && <Loader2 size={16} className="animate-spin" />}
             <Dna size={16} />
             {isGenerating ? 'Menganalisis...' : 'Generate DNA'}
           </Button>
@@ -207,19 +210,15 @@ export function TradingDNAPage() {
               dominantEmotion={dna?.dominantEmotion || null}
               totalTradesAnalyzed={dna?.totalTradesAnalyzed || 0}
               analysisPeriod={dna?.analysisPeriod || null}
-              isLoading={isLoading}
             />
           </div>
 
-          {/* Strengths / Weaknesses — side by side on desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="alpha-animate-in alpha-stagger-2">
-              <StrengthsWeaknesses
-                strengths={strengths}
-                weaknesses={weaknesses}
-                isLoading={isLoading}
-              />
-            </div>
+          {/* Strengths / Weaknesses */}
+          <div className="alpha-animate-in alpha-stagger-2">
+            <StrengthsWeaknesses
+              strengths={strengths}
+              weaknesses={weaknesses}
+            />
           </div>
 
           {/* Behavioral Profile */}
@@ -231,7 +230,6 @@ export function TradingDNAPage() {
               bestPair={dna?.bestPair || null}
               worstSetup={dna?.worstSetup || null}
               worstSession={dna?.worstSession || null}
-              isLoading={isLoading}
             />
           </div>
 
@@ -242,7 +240,6 @@ export function TradingDNAPage() {
               updatedAt={dna?.updatedAt || null}
               isGenerating={isGenerating}
               onRegenerate={handleGenerate}
-              isLoading={isLoading}
               totalTrades={dna?.totalTradesAnalyzed || 0}
             />
           </div>

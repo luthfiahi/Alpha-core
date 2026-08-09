@@ -183,7 +183,7 @@ export function JournalPage() {
   const endItem = Math.min(page * PAGE_SIZE, total);
 
   return (
-    <div className='space-y-5 alpha-animate-in'>
+    <div className='space-y-5 alpha-animate-in pb-8'>
       {/* Header */}
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
         <div>
@@ -263,6 +263,64 @@ export function JournalPage() {
         <EmptyState onNavigate={() => navigate('journal-new')} />
       ) : (
         <>
+          {/* Performance Summary Row */}
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Total Trades</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>{total}</p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Win Rate</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>
+                {trades.length > 0 ? (trades.filter((t) => t.profitLoss >= 0).length / trades.length * 100).toFixed(0) + '%' : '—'}
+              </p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Cumulative P/L</p>
+              <p className={'font-financial text-lg font-semibold mt-0.5 ' + (trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]')}>
+                {trades.length > 0 ? (trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0) >= 0 ? '+' : '') + trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0).toFixed(2) : '—'}
+              </p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Avg Process Score</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>
+                {(() => {
+                  const scored = trades.filter((t) => t.processScore !== null && t.processScore !== undefined)
+                  return scored.length > 0 ? (scored.reduce((sum, t) => sum + (t.processScore ?? 0), 0) / scored.length).toFixed(1) : '—'
+                })()}
+              </p>
+            </div>
+          </div>
+
+          {/* Performance Summary Row */}
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Total Trades</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>{total}</p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Win Rate</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>
+                {trades.length > 0 ? (trades.filter((t) => t.profitLoss >= 0).length / trades.length * 100).toFixed(0) + '%' : '—'}
+              </p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Cumulative P/L</p>
+              <p className={'font-financial text-lg font-semibold mt-0.5 ' + (trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]')}>
+                {trades.length > 0 ? (trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0) >= 0 ? '+' : '') + trades.reduce((sum, t) => sum + (t.profitLoss ?? 0), 0).toFixed(2) : '—'}
+              </p>
+            </div>
+            <div className='alpha-stat-card'>
+              <p className='alpha-label text-[#9CA3AF]'>Avg Process Score</p>
+              <p className='font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5'>
+                {(() => {
+                  const scored = trades.filter((t) => t.processScore !== null && t.processScore !== undefined)
+                  return scored.length > 0 ? (scored.reduce((sum, t) => sum + (t.processScore ?? 0), 0) / scored.length).toFixed(1) : '—'
+                })()}
+              </p>
+            </div>
+          </div>
+
           {/* Trade Count Summary */}
           <div className='flex items-center justify-between'>
             <p className='alpha-caption'>

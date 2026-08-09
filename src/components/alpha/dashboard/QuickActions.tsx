@@ -1,8 +1,7 @@
 'use client'
 
-import { Plus, BookOpen, Brain, BarChart3 } from 'lucide-react'
+import { Plus, BookOpen, Brain, BarChart3, PenLine } from 'lucide-react'
 import { useNavigationStore, type AppPage } from '@/stores'
-import { useRef } from 'react'
 
 interface ActionItem {
   label: string
@@ -10,6 +9,7 @@ interface ActionItem {
   icon: React.ReactNode
   primary: boolean
   description: string
+  ariaLabel: string
 }
 
 const actions: ActionItem[] = [
@@ -19,6 +19,7 @@ const actions: ActionItem[] = [
     icon: <Plus className="h-5 w-5" />,
     primary: true,
     description: 'Catat transaksi baru',
+    ariaLabel: 'Log Trade — Catat transaksi baru',
   },
   {
     label: 'Buka Journal',
@@ -26,6 +27,7 @@ const actions: ActionItem[] = [
     icon: <BookOpen className="h-4 w-4" />,
     primary: false,
     description: 'Lihat riwayat trade',
+    ariaLabel: 'Buka Journal — Lihat riwayat trade',
   },
   {
     label: 'Tanya AI Coach',
@@ -33,6 +35,7 @@ const actions: ActionItem[] = [
     icon: <Brain className="h-4 w-4" />,
     primary: false,
     description: 'Konsultasi dengan AI',
+    ariaLabel: 'Tanya AI Coach — Konsultasi dengan AI',
   },
   {
     label: 'Lihat Analitik',
@@ -40,12 +43,29 @@ const actions: ActionItem[] = [
     icon: <BarChart3 className="h-4 w-4" />,
     primary: false,
     description: 'Analisis performa',
+    ariaLabel: 'Lihat Analitik — Analisis performa',
   },
 ]
 
-export function QuickActions() {
+const reflectionAction: ActionItem = {
+  label: 'Start Reflection',
+  page: 'journal',
+  icon: <PenLine className="h-4 w-4" />,
+  primary: false,
+  description: 'Refleksi trade',
+  ariaLabel: 'Start Reflection — Refleksi trade yang belum di-refleksi',
+}
+
+interface QuickActionsProps {
+  unreflectedCount?: number
+}
+
+export function QuickActions({ unreflectedCount }: QuickActionsProps) {
   const navigate = useNavigationStore((s) => s.navigate)
-  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const allActions = unreflectedCount !== undefined && unreflectedCount > 0
+    ? [...actions, reflectionAction]
+    : actions
 
   return (
     <div className="alpha-card p-5">
@@ -53,23 +73,22 @@ export function QuickActions() {
         <span className="alpha-label" style={{ color: '#6B7280' }}>QUICK ACTIONS</span>
       </div>
       <div
-        ref={scrollRef}
         className="flex gap-3 overflow-x-auto pb-1 scrollbar-none lg:overflow-visible"
         style={{ scrollbarWidth: 'none' }}
       >
-        {actions.map((action) => (
+        {allActions.map((action) => (
           <button
-            key={action.page}
+            key={action.page + action.label}
             onClick={() => navigate(action.page)}
+            aria-label={action.ariaLabel}
             className={
               action.primary
-                ? 'alpha-press flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-6 py-4 text-center transition-all duration-200 hover:-translate-y-[2px] active:translate-y-0 min-w-[110px]'
-                : 'alpha-press flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-5 py-4 text-center transition-all duration-200 hover:-translate-y-[2px] active:translate-y-0 min-w-[110px]'
+                ? 'alpha-press alpha-hover-lift flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-6 py-4 text-center transition-all duration-200 min-w-[110px]'
+                : 'alpha-press alpha-hover-lift flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-5 py-4 text-center transition-all duration-200 min-w-[110px]'
             }
             style={
               action.primary
                 ? {
-                    backgroundColor: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.08) 100%)',
                     background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.08) 100%)',
                     border: '1px solid rgba(99,102,241,0.3)',
                     boxShadow: '0 0 20px rgba(99,102,241,0.15)',

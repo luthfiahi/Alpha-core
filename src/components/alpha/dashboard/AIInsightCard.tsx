@@ -1,5 +1,7 @@
 'use client'
 
+import { useNavigationStore } from '@/stores'
+
 interface TraderContext {
   todayTradesCount: number
   processScore: number | null
@@ -68,14 +70,16 @@ function getDefaultMessage(ctx?: TraderContext): { title: string; content: strin
 }
 
 export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
+  const navigate = useNavigationStore((s) => s.navigate)
   const defaultMsg = getDefaultMessage(traderContext)
   const title = insight?.title ?? defaultMsg.title
   const content = insight?.content ?? defaultMsg.content
   const time = insight?.createdAt ? timeAgo(insight.createdAt) : 'Sekarang'
+  const category = insight?.category ?? null
 
   return (
     <div className="alpha-card p-5 h-full flex flex-col justify-between relative overflow-hidden">
-      {/* Gradient left border — more visible (2px) */}
+      {/* Gradient left border */}
       <div
         className="absolute left-0 top-0 bottom-0 w-0.5"
         style={{
@@ -84,7 +88,7 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
       />
       <div className="pl-4">
         <div className="flex items-center gap-3 mb-3">
-          {/* AI Avatar — larger with ring/glow and shimmer */}
+          {/* AI Avatar — with ring/glow, shimmer via globals.css class */}
           <div className="relative flex-shrink-0">
             {/* Outer glow ring */}
             <div
@@ -94,32 +98,10 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
                 filter: 'blur(4px)',
               }}
             />
-            {/* Shimmer animation overlay */}
-            <style>{`
-              @keyframes ai-shimmer {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .ai-avatar-shimmer::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                border-radius: 50%;
-                background: linear-gradient(
-                  90deg,
-                  transparent 0%,
-                  rgba(255,255,255,0.15) 50%,
-                  transparent 100%
-                );
-                background-size: 200% 100%;
-                animation: ai-shimmer 3s ease-in-out infinite;
-              }
-            `}</style>
             <div
               className="ai-avatar-shimmer relative w-9 h-9 rounded-full flex items-center justify-center"
               style={{
                 background: 'linear-gradient(135deg, #6366F1 0%, #A78BFA 100%)',
-                animation: 'alpha-subtle-pulse 3s ease-in-out infinite',
               }}
             >
               <svg
@@ -139,9 +121,23 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-semibold tracking-wide text-[#6366F1]">
-              ✦ ALPHA INSIGHT
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold tracking-wide text-[#6366F1]">
+                ✦ ALPHA INSIGHT
+              </span>
+              {category && (
+                <span
+                  className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold tracking-wide uppercase"
+                  style={{
+                    color: '#818CF8',
+                    backgroundColor: 'rgba(99,102,241,0.1)',
+                    border: '1px solid rgba(99,102,241,0.15)',
+                  }}
+                >
+                  {category}
+                </span>
+              )}
+            </div>
             <span className="text-[10px] text-[#6B7280] -mt-0.5">
               Based on your recent behavior
             </span>
@@ -156,12 +152,13 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
       </div>
       <div className="mt-3 pl-4 flex items-center justify-between">
         <span className="alpha-caption">{time}</span>
-        <span
-          className="alpha-link text-[11px] font-medium"
+        <button
+          className="alpha-link text-[11px] font-medium hover:underline"
           style={{ color: '#818CF8' }}
+          onClick={() => navigate('coaching')}
         >
           Read more →
-        </span>
+        </button>
       </div>
     </div>
   )

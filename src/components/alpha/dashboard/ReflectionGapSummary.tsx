@@ -6,16 +6,25 @@ import { useNavigationStore } from '@/stores'
 
 interface ReflectionGapSummaryProps {
   unreflectedCount: number
+  totalWeeklyTrades?: number
+  reflectedCount?: number
 }
 
-export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryProps) {
+export function ReflectionGapSummary({ unreflectedCount, totalWeeklyTrades, reflectedCount }: ReflectionGapSummaryProps) {
   const hasGaps = unreflectedCount > 0
   const navigate = useNavigationStore((s) => s.navigate)
 
-  // Total trades this week — we derive from unreflectedCount for the progress indicator
-  // Since we only have unreflectedCount, we show it as a fraction of estimated weekly trades
-  const estimatedWeeklyTotal = Math.max(unreflectedCount + Math.max(0, 5 - unreflectedCount), unreflectedCount)
-  const reflectedCount = Math.max(0, estimatedWeeklyTotal - unreflectedCount)
+  // Use provided values when available, otherwise fall back to estimated logic
+  // NOTE: When totalWeeklyTrades and reflectedCount are not provided, we estimate
+  // the total from unreflectedCount. This is an approximation — prefer passing
+  // real values from the API for accuracy.
+  const isRealData = totalWeeklyTrades !== undefined && reflectedCount !== undefined
+  const resolvedTotal = isRealData
+    ? totalWeeklyTrades!
+    : Math.max(unreflectedCount + Math.max(0, 5 - unreflectedCount), unreflectedCount)
+  const resolvedReflected = isRealData
+    ? reflectedCount!
+    : Math.max(0, resolvedTotal - unreflectedCount)
 
   return (
     <div className="alpha-card p-5 flex flex-col justify-between">
@@ -74,15 +83,15 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
                   Progress refleksi minggu ini
                 </span>
                 <span className="text-[11px] font-financial font-medium" style={{ color: '#9CA3AF' }}>
-                  {reflectedCount} of {estimatedWeeklyTotal} trades
+                  {resolvedReflected} of {resolvedTotal} trades
                 </span>
               </div>
               <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#232636' }}>
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
-                    width: estimatedWeeklyTotal > 0
-                      ? `${(reflectedCount / estimatedWeeklyTotal) * 100}%`
+                    width: resolvedTotal > 0
+                      ? `${(resolvedReflected / resolvedTotal) * 100}%`
                       : '0%',
                     backgroundColor: '#F59E0B',
                     boxShadow: '0 0 8px rgba(245,158,11,0.3)',
@@ -95,9 +104,30 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
             </p>
           </>
         ) : (
-          <p className="alpha-body text-[#22C55E]">
-            Semua trade sudah di-reflection minggu ini. Pertahankan!
-          </p>
+          <div className="flex items-center gap-3">
+            {/* Subtle checkmark animation */}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{
+                backgroundColor: 'rgba(34,197,94,0.08)',
+                border: '1.5px solid rgba(34,197,94,0.15)',
+                animation: 'alpha-subtle-pulse 3s ease-in-out infinite',
+              }}
+            >
+              <CheckCircle2
+                className="h-5 w-5"
+                style={{ color: '#22C55E' }}
+              />
+            </div>
+            <div>
+              <p className="alpha-body text-[#22C55E]">
+                Semua trade sudah di-reflection minggu ini.
+              </p>
+              <p className="alpha-caption mt-0.5" style={{ color: '#6B7280' }}>
+                Pertahankan streak konsistensimu!
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
@@ -116,7 +146,7 @@ export function ReflectionGapSummary({ unreflectedCount }: ReflectionGapSummaryP
           }}
         >
           <PenLine className="h-4 w-4" />
-          Review Reflection
+          Lihat Refleksi
         </Button>
       )}
     </div>

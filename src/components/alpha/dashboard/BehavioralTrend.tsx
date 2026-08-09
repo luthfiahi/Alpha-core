@@ -98,7 +98,8 @@ function MiniSparkline({
 }
 
 export function BehavioralTrend({ tags }: BehavioralTrendProps) {
-  const displayTags = tags.length > 0 ? tags : defaultTags
+  const isUsingDefaults = tags.length === 0
+  const displayTags = isUsingDefaults ? defaultTags : tags
 
   return (
     <div className="alpha-card p-5 h-full">
@@ -107,6 +108,18 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
           <h3 className="alpha-heading-sm">Behavioral Trend</h3>
           <p className="alpha-caption mt-0.5">Pola perilaku mingguan</p>
         </div>
+        {isUsingDefaults && (
+          <span
+            className="text-[9px] font-medium px-2 py-0.5 rounded-full"
+            style={{
+              color: '#6B7280',
+              backgroundColor: 'rgba(107,114,128,0.08)',
+              border: '1px solid rgba(107,114,128,0.1)',
+            }}
+          >
+            Based on sample data
+          </span>
+        )}
       </div>
       <div className="space-y-2">
         {displayTags.map((tag) => {
@@ -121,7 +134,7 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
           return (
             <div
               key={tag.name}
-              className="flex items-center justify-between py-2.5 px-3 rounded-xl transition-all duration-200 hover:bg-white/[0.04] group"
+              className="flex items-center justify-between py-2.5 px-3 rounded-xl transition-all duration-200 hover:bg-white/[0.04] group cursor-pointer"
               style={{ backgroundColor: 'rgba(255,255,255,0.015)' }}
             >
               <div className="flex items-center gap-3">

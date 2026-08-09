@@ -8,9 +8,11 @@ import { WeeklyReviewTab } from './WeeklyReviewTab'
 import { BehavioralInsights } from './BehavioralInsights'
 import { cn } from '@/lib/utils'
 
+const TAB_TRIGGER_CLASS = 'gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold'
+
 // ========================================
 // Types (mirrors GrowthTimeline — no new packages)
-// ========================================
+// ===========================================
 interface QuickGrowthData {
   currentScores: {
     emotion: number | null
@@ -69,6 +71,29 @@ function MetricsRow() {
   const scores = data?.currentScores
   const trends = data?.trends
 
+  // Skeleton loading state
+  if (!ready) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {METRICS_CONFIG.map((m) => (
+          <div
+            key={m.key}
+            className="alpha-card px-4 py-3 flex items-center gap-3"
+          >
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 alpha-skeleton"
+              style={{ backgroundColor: m.color + '15' }}
+            />
+            <div className="min-w-0 space-y-2">
+              <div className="alpha-skeleton h-3 w-16 rounded" />
+              <div className="alpha-skeleton h-5 w-10 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {METRICS_CONFIG.map((m) => {
@@ -89,7 +114,7 @@ function MetricsRow() {
               <p className="alpha-label text-[#9CA3AF]">{m.label}</p>
               <div className="flex items-center gap-1.5">
                 <span className="font-financial text-lg font-semibold text-[#F3F4F6]">
-                  {ready ? (value !== null ? value : '—') : '—'}
+                  {value !== null ? value : '—'}
                 </span>
                 <TrendArrow trend={trend} />
               </div>
@@ -106,7 +131,7 @@ function MetricsRow() {
 // ========================================
 export function AnalyticsPage() {
   return (
-    <div className="space-y-6 alpha-animate-in">
+    <div className="space-y-6 alpha-animate-in pb-8">
       {/* Page Header */}
       <div>
         <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">ANALYTICS</h1>
@@ -121,26 +146,17 @@ export function AnalyticsPage() {
       {/* Tabbed Interface */}
       <Tabs defaultValue="growth" className="w-full">
         <TabsList className="bg-[#151827] border border-[#232636] rounded-xl p-1 gap-1 h-auto">
-          <TabsTrigger
-            value="growth"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
-          >
+          <TabsTrigger value="growth" className={TAB_TRIGGER_CLASS}>
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Growth</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="weekly"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
-          >
+          <TabsTrigger value="weekly" className={TAB_TRIGGER_CLASS}>
             <BarChart3 className="w-3.5 h-3.5" />
-            <span>Weekly Review</span>
+            <span className="hidden sm:inline">Weekly Review</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="behavioral"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
-          >
+          <TabsTrigger value="behavioral" className={TAB_TRIGGER_CLASS}>
             <Brain className="w-3.5 h-3.5" />
-            <span>Behavioral</span>
+            <span className="hidden sm:inline">Behavioral</span>
           </TabsTrigger>
         </TabsList>
 

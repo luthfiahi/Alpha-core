@@ -321,10 +321,8 @@ export function PlaybookPage() {
     onError: () => toast.error('Gagal menghapus playbook'),
   });
 
-  const handleOpen = useCallback((id: string) => setSelectedId(id), []);
+  const handleSelect = useCallback((id: string) => setSelectedId(id), []);
   const handleBack = useCallback(() => setSelectedId(null), []);
-  const handleEdit = useCallback((id: string) => setSelectedId(id), []);
-  const handleCreated = useCallback((id: string) => setSelectedId(id), []);
 
   // Filter playbooks
   const filteredPlaybooks = (data || []).filter((pb) => {
@@ -373,7 +371,14 @@ export function PlaybookPage() {
   }
 
   if (selectedId && isDetailLoading) {
-    return <LoadingSkeleton />;
+    return (
+      <div className="space-y-6">
+        <div className="alpha-skeleton h-8 w-48 rounded-lg" />
+        <div className="alpha-skeleton h-32 w-full rounded-xl" />
+        <div className="alpha-skeleton h-64 w-full rounded-xl" />
+        <div className="alpha-skeleton h-48 w-full rounded-xl" />
+      </div>
+    );
   }
 
   return (
@@ -382,7 +387,7 @@ export function PlaybookPage() {
       <CreatePlaybookDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
-        onCreated={handleCreated}
+        onCreated={handleSelect}
       />
 
       {/* Delete dialog */}
@@ -503,8 +508,8 @@ export function PlaybookPage() {
             <PlaybookCard
               key={pb.id}
               playbook={pb}
-              onOpen={handleOpen}
-              onEdit={handleEdit}
+              onOpen={handleSelect}
+              onEdit={handleSelect}
               onDelete={(id) => setDeleteId(id)}
               onToggleActive={(id, active) =>
                 toggleActiveMutation.mutate({ id, isActive: active })
@@ -539,13 +544,13 @@ function EmptyState({
       </div>
       <h3 className="alpha-heading-sm text-[#F3F4F6] mb-2 mt-5">
         {hasPlaybooks
-          ? 'No matching playbooks'
-          : 'No playbooks yet'}
+          ? 'Tidak ada playbook yang cocok'
+          : 'Belum ada playbook'}
       </h3>
       <p className="alpha-body text-[#6B7280] max-w-xs mb-6">
         {hasPlaybooks
-          ? 'Try adjusting your filters or search query.'
-          : 'Create your first playbook to start documenting your trading setups.'}
+          ? 'Coba ubah filter atau kata pencarian.'
+          : 'Buat playbook pertamamu untuk mulai mendokumentasikan setup trading.'}
       </p>
       <div className="flex items-center gap-2">
         {hasPlaybooks && (
@@ -555,7 +560,7 @@ function EmptyState({
             className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
             onClick={onClear}
           >
-            Reset Filter
+            Atur Ulang
           </Button>
         )}
         <Button

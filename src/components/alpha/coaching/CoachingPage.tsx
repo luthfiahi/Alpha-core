@@ -11,10 +11,6 @@ import {
   Sparkles,
   ChevronDown,
   X,
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight,
   Activity,
   Dna,
   Zap,
@@ -141,14 +137,22 @@ function TradeSelector({
   onSelect,
   onStartReflection,
   disabled,
+  open,
+  onOpenChange,
+  dropdownRef,
 }: {
   trades: TradeOption[]
   selectedTradeId: string | null
   onSelect: (id: string) => void
   onStartReflection: () => void
   disabled: boolean
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  dropdownRef: React.RefObject<HTMLDivElement | null>
 }) {
-  const [open, setOpen] = useState(false)
+  const [localOpen, setLocalOpen] = useState(false)
+  const isOpen = open ?? localOpen
+  const setIsOpen = onOpenChange ?? setLocalOpen
   const selectedTrade = trades.find((t) => t.id === selectedTradeId)
 
   return (
@@ -159,7 +163,7 @@ function TradeSelector({
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <button
-            onClick={() => setOpen(!open)}
+            onClick={() => setIsOpen(!isOpen)}
             disabled={disabled || trades.length === 0}
             className={cn(
               'w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-xs transition-all duration-150',
@@ -207,19 +211,19 @@ function TradeSelector({
             <ChevronDown
               className={cn(
                 'w-3.5 h-3.5 text-alpha-text-muted ml-auto flex-shrink-0 transition-transform duration-200',
-                open && 'rotate-180'
+                isOpen && 'rotate-180'
               )}
             />
           </button>
 
-          {open && trades.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-alpha-surface border border-alpha-border rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+          {isOpen && trades.length > 0 && (
+            <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-1 bg-alpha-surface border border-alpha-border rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
               {trades.map((trade) => (
                 <button
                   key={trade.id}
                   onClick={() => {
                     onSelect(trade.id)
-                    setOpen(false)
+                    setIsOpen(false)
                   }}
                   className={cn(
                     'w-full flex items-center gap-2 px-3 py-2.5 text-xs transition-all duration-100',
@@ -293,6 +297,7 @@ export function CoachingPage() {
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [tradeDropdownOpen, setTradeDropdownOpen] = useState(false)
 
   // Reflection mode state
   const [mode, setMode] = useState<CoachingMode>('free_chat')
@@ -352,7 +357,7 @@ export function CoachingPage() {
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (tradeListRef.current && !tradeListRef.current.contains(e.target as Node)) {
-        // This is handled by the component's own state
+        setTradeDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClick)
@@ -892,7 +897,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
             <div className="relative flex-shrink-0">
               <div
                 className="w-9 h-9 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+                style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)', animation: 'alpha-breathe 4s ease-in-out infinite' }}
               >
                 <span className="text-sm font-bold text-white leading-none">α</span>
               </div>
@@ -1116,6 +1121,9 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
               }}
               onStartReflection={handleStartReflection}
               disabled={isStreaming || tradesLoading}
+              open={tradeDropdownOpen}
+              onOpenChange={setTradeDropdownOpen}
+              dropdownRef={tradeListRef}
             />
           </div>
         </div>

@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format, formatDistanceToNow, differenceInMinutes } from 'date-fns';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 import {
-  X,
+  ChevronLeft,
+  PenLine,
   Pencil,
   Trash2,
   Save,
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -45,6 +47,22 @@ import {
   formatPnL,
   parseTags,
 } from './types';
+
+function formatDuration(entryTime: string | null, exitTime: string | null): string {
+  if (!entryTime || !exitTime) return '—'
+  const entry = new Date(entryTime)
+  const exit = new Date(exitTime)
+  const diffMs = exit.getTime() - entry.getTime()
+  if (diffMs < 0) return '—'
+  const minutes = Math.floor(diffMs / 60000)
+  if (minutes < 60) return minutes + 'm'
+  const hours = Math.floor(minutes / 60)
+  const remMin = minutes % 60
+  if (hours < 24) return remMin > 0 ? hours + 'j ' + remMin + 'm' : hours + 'j'
+  const days = Math.floor(hours / 24)
+  const remHours = hours % 24
+  return remHours > 0 ? days + 'h ' + remHours + 'j' : days + 'h'
+}
 
 function ScoreRing({ score, size = 80 }: { score: number | null; size?: number }) {
   const strokeWidth = 5;
@@ -263,12 +281,7 @@ export function JournalDetailPage() {
 
   const pnlPositive = Number(trade.profitLoss) >= 0;
   const tags = parseTags(trade.tags);
-  const duration =
-    trade.entryTime && trade.exitTime
-      ? formatDistanceToNow(new Date(trade.exitTime), { addSuffix: false })
-      : trade.entryTime
-      ? formatDistanceToNow(new Date(trade.entryTime), { addSuffix: false })
-      : '—';
+  const duration = formatDuration(trade.entryTime, trade.exitTime);
 
   const entryDate = trade.entryTime
     ? format(new Date(trade.entryTime), 'dd MMM yyyy, HH:mm')
@@ -285,8 +298,9 @@ export function JournalDetailPage() {
               size='icon'
               className='alpha-press size-9 hover:bg-[#1E2030]'
               onClick={handleClose}
+              aria-label='Kembali'
             >
-              <X className='size-4 text-[#9CA3AF]' />
+              <ChevronLeft className='size-4 text-[#9CA3AF]' />
             </Button>
             <div className='flex items-center gap-2.5'>
               <span className='alpha-heading-lg font-financial text-2xl font-bold text-[#F3F4F6]'>
@@ -310,6 +324,11 @@ export function JournalDetailPage() {
               >
                 {trade.status}
               </span>
+              {trade.processScore != null && (
+                <Badge variant='secondary' className='bg-[rgba(99,102,241,0.15)] text-[#818CF8] border-0 text-[11px] font-semibold px-2 py-0.5 font-financial'>
+                  PS {trade.processScore}
+                </Badge>
+              )}
             </div>
           </div>
 
@@ -351,7 +370,7 @@ export function JournalDetailPage() {
         </div>
 
         {/* Trade Data Card */}
-        <div className='alpha-card alpha-animate-in alpha-stagger-1 p-5'>
+        <div className='alpha-card alpha-animate-in alpha-stagger-1 alpha-gradient-border overflow-hidden p-5'>
           <h3 className='alpha-heading-sm uppercase tracking-wider mb-4'>
             Data Trade
           </h3>
@@ -589,7 +608,7 @@ export function JournalDetailPage() {
           ) : (
             <>
               {/* Existing Reflection (read-only) */}
-              {(trade.reflectionNotes || trade.lessonLearned) && (
+              {(trade.reflectionNotes || trade.lessonLearned) ? (
                 <div className='space-y-3'>
                   {trade.emotionAfter && (
                     <div className='flex items-center gap-2'>
@@ -616,6 +635,13 @@ export function JournalDetailPage() {
                       </div>
                     </div>
                   )}
+                </div>
+              ) : (
+                <div className='flex flex-col items-center gap-3 py-6 text-center'>
+                  <div className='w-12 h-12 rounded-full bg-[#6366F1]/10 flex items-center justify-center'>
+                    <PenLine className='size-5 text-[#818CF8]' />
+                  </div>
+                  <p className='alpha-body text-[#9CA3AF]'>Mulai refleksi untuk trade ini</p>
                 </div>
               )}
               <Button

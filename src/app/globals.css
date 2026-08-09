@@ -7,16 +7,8 @@
 /* ========================================
    PROJECT ALPHA — Design System
    AI Trading Coach | Dark-First Premium
-   Ref: UI/UX Redesign Specification
+   Sprint 7.2 — Premium UX Layer
    ======================================== */
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-}
 
 @theme inline {
   --color-background: var(--background);
@@ -73,16 +65,6 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
 
-  /* Spacing system (8px grid) */
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-3: 12px;
-  --spacing-4: 16px;
-  --spacing-6: 24px;
-  --spacing-8: 32px;
-  --spacing-12: 48px;
-  --spacing-16: 64px;
-
   /* Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -97,6 +79,8 @@
    ======================================== */
 :root,
 .dark {
+  color-scheme: dark;
+
   /* Alpha Custom Colors */
   --alpha-primary: #6366F1;
   --alpha-primary-hover: #818CF8;
@@ -106,6 +90,7 @@
   --alpha-error: #EF4444;
   --alpha-surface: #151827;
   --alpha-border: #232636;
+  --alpha-elevated: #1E2030;
   --alpha-text-primary: #F3F4F6;
   --alpha-text-secondary: #9CA3AF;
   --alpha-text-muted: #6B7280;
@@ -148,9 +133,12 @@
   --sidebar-ring: #6366F1;
 }
 
+/* ========================================
+   Base Layer — Foundation
+   ======================================== */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -181,6 +169,31 @@
 }
 
 /* ========================================
+   Smooth Scroll + Selection + Focus
+   ======================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus: only show ring for keyboard navigation (focus-visible) */
+  *:focus {
+    outline: none;
+  }
+  *:focus-visible {
+    outline: 2px solid var(--alpha-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Global selection color */
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: #F3F4F6;
+  }
+}
+
+/* ========================================
    Financial Numbers (JetBrains Mono)
    ======================================== */
 .font-financial {
@@ -190,27 +203,37 @@
 }
 
 /* ========================================
-   Alpha Card Variants
+   Alpha Card System (Single Definition)
    ======================================== */
 .alpha-card {
   background: var(--alpha-surface);
   border: 1px solid var(--alpha-border);
   border-radius: var(--radius-lg);
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .alpha-card-interactive {
   background: var(--alpha-surface);
   border: 1px solid var(--alpha-border);
   border-radius: var(--radius-lg);
-  transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .alpha-card-interactive:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.1),
-              0 8px 24px rgba(0, 0, 0, 0.28);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.08),
+              0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Card with accent glow on hover */
+.alpha-card-glow:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.08),
+              0 8px 32px rgba(0, 0, 0, 0.25);
   transform: translateY(-2px);
 }
 
@@ -226,16 +249,18 @@
    ======================================== */
 .alpha-chat-bubble-ai {
   background: var(--alpha-surface);
+  border: 1px solid var(--alpha-border);
   border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) 4px;
 }
 
 .alpha-chat-bubble-user {
   background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: var(--radius-xl) var(--radius-xl) 4px var(--radius-xl);
 }
 
 /* ========================================
-   Skeleton Shimmer
+   Skeleton Shimmer System
    ======================================== */
 .alpha-skeleton {
   background: linear-gradient(
@@ -248,9 +273,43 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+.alpha-skeleton-subtle {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.02) 0%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0.02) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   AI Avatar Shimmer (moved from inline)
+   ======================================== */
+@keyframes ai-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.ai-avatar-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.15) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: ai-shimmer 3s ease-in-out infinite;
 }
 
 /* ========================================
@@ -317,7 +376,7 @@
 }
 
 /* ========================================
-   P2: Smooth Animations
+   Animation Keyframes
    ======================================== */
 @keyframes alpha-fade-in {
   from { opacity: 0; }
@@ -349,6 +408,26 @@
   50% { opacity: 0.7; }
 }
 
+@keyframes alpha-glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(99,102,241,0.2); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+}
+
+@keyframes alpha-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes alpha-score-count {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes alpha-border-glow {
+  0%, 100% { border-color: rgba(99,102,241,0.2); }
+  50% { border-color: rgba(99,102,241,0.5); }
+}
+
 /* Animation utility classes */
 .alpha-animate-in {
   animation: alpha-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -374,9 +453,10 @@
 .alpha-stagger-5 { animation-delay: 0.25s; }
 .alpha-stagger-6 { animation-delay: 0.30s; }
 .alpha-stagger-7 { animation-delay: 0.35s; }
+.alpha-stagger-8 { animation-delay: 0.40s; }
 
 /* ========================================
-   P2: Typography System
+   Typography System
    ======================================== */
 .alpha-heading-xl {
   font-size: 1.5rem;
@@ -431,7 +511,7 @@
 }
 
 /* ========================================
-   P2: Micro-interactions
+   Micro-interactions
    ======================================== */
 
 /* Subtle press effect for buttons and cards */
@@ -478,48 +558,77 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Hover lift — subtle elevation on hover */
+.alpha-hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.alpha-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover glow — border glow effect */
+.alpha-hover-glow {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.alpha-hover-glow:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.1);
+}
+
 /* ========================================
-   P2: Enhanced Card Styles
+   Premium Stat Card (Sprint 7.2)
    ======================================== */
-.alpha-card {
+.alpha-stat-card {
   background: var(--alpha-surface);
   border: 1px solid var(--alpha-border);
   border-radius: var(--radius-lg);
-  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-
-.alpha-card-interactive:hover {
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.08),
-              0 4px 16px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
-}
-
-/* Card with accent glow on hover */
-.alpha-card-glow:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.08),
-              0 8px 32px rgba(0, 0, 0, 0.25);
-  transform: translateY(-2px);
+.alpha-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ========================================
-   P2: Smooth Scroll Behavior
+   Premium Gradient Accents (Sprint 7.2)
    ======================================== */
-@layer base {
-  html {
-    scroll-behavior: smooth;
+.alpha-gradient-border {
+  position: relative;
+}
+.alpha-gradient-border::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(to bottom, #6366F1, #8B5CF6, #A78BFA);
+}
+
+/* ========================================
+   Reduced Motion Support
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  /* Remove default focus outlines, use alpha-focus-ring instead */
-  *:focus {
-    outline: none;
+  .alpha-skeleton,
+  .alpha-skeleton-subtle {
+    animation: none;
+    background: var(--alpha-border);
   }
 
-  /* Global selection color */
-  ::selection {
-    background: rgba(99, 102, 241, 0.3);
-    color: #F3F4F6;
+  .process-score-ring circle {
+    transition: none;
   }
 }

@@ -174,16 +174,11 @@ export function DashboardPage() {
   const score = data?.processScore ?? null
   const prevScore = data?.processScorePrevious ?? null
   const todayCount = data?.todayTradesCount ?? 0
+  const unreflected = data?.unreflectedCount ?? 0
 
   return (
     <main className="flex-1 overflow-y-auto">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Row 0: Page Heading with subtitle */}
-        <div className="alpha-animate-in alpha-stagger-0">
-          <h1 className="alpha-heading-xl text-[#F3F4F6]">Dashboard</h1>
-          <p className="alpha-caption mt-1" style={{ color: '#6B7280' }}>Command Center</p>
-        </div>
-
+      <div className="max-w-7xl mx-auto space-y-6 pb-8">
         {/* Row 1: Welcome Hero */}
         <div className="alpha-animate-in alpha-stagger-1">
           <WelcomeHero
@@ -205,7 +200,7 @@ export function DashboardPage() {
 
         {/* Row 3: Quick Actions */}
         <div className="alpha-animate-in alpha-stagger-3">
-          <QuickActions />
+          <QuickActions unreflectedCount={unreflected} />
         </div>
 
         {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
@@ -227,7 +222,7 @@ export function DashboardPage() {
         {/* Row 5: Reflection Gap */}
         <div className="alpha-animate-in alpha-stagger-5">
           <ReflectionGapSummary
-            unreflectedCount={data?.unreflectedCount ?? 0}
+            unreflectedCount={unreflected}
           />
         </div>
       </div>

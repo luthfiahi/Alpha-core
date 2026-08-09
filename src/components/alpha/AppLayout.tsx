@@ -24,14 +24,14 @@ export function AppLayout({ children }: AppLayoutProps) {
       {!isMobile && <AppSidebar />}
 
       {/* Main content area */}
-      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div role="main" className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Mobile header bar */}
         {isMobile && (
           <MobileHeader />
         )}
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pb-12">
           <div
             className={cn(
               'mx-auto w-full px-4 py-6',
@@ -43,7 +43,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             {children}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }
@@ -115,8 +115,9 @@ function MobileHeader() {
 
   return (
     <header
-      className="alpha-animate-fade flex h-14 shrink-0 items-center gap-3 px-4 relative"
+      className="flex h-14 shrink-0 items-center gap-3 px-4 relative"
       style={{
+        opacity: 1,
         borderBottom: '1px solid #232636',
         boxShadow: '0 1px 8px rgba(0,0,0,0.2)',
       }}

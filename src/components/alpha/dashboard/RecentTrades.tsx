@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ArrowRight, FileText } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useNavigationStore } from '@/stores'
 import { format } from 'date-fns'
 import { id as localeId } from 'date-fns/locale/id'
@@ -125,6 +125,7 @@ function SkeletonRows() {
 
 export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
   const navigate = useNavigationStore((s) => s.navigate)
+  const displayCount = Math.min(trades.length, 5)
 
   return (
     <div className="alpha-card p-0 overflow-hidden flex flex-col">
@@ -132,17 +133,19 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
       <div className="flex items-center justify-between px-5 py-4 border-b border-[#232636]">
         <div>
           <h3 className="alpha-heading-sm">Recent Trades</h3>
-          <p className="alpha-caption mt-0.5">5 transaksi terakhir</p>
+          <p className="alpha-caption mt-0.5">{displayCount} transaksi terakhir</p>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('journal')}
-          className="alpha-link text-xs gap-1 h-auto p-0 hover:bg-transparent"
-        >
-          View all
-          <ArrowRight className="h-3 w-3" />
-        </Button>
+        {trades.length > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('journal')}
+            className="alpha-link text-xs gap-1 h-auto p-0 hover:bg-transparent"
+          >
+            View all ({trades.length})
+            <ArrowRight className="h-3 w-3" />
+          </Button>
+        )}
       </div>
 
       {/* Table */}
@@ -165,7 +168,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               <TableHead className="alpha-caption font-medium h-9">
                 Status
               </TableHead>
-              {/* Hidden columns: Date and Time (kept for data but hidden) */}
+              {/* Hidden columns: Date and Time */}
               <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell">
                 Date
               </TableHead>
@@ -180,7 +183,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
             ) : trades.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   className="h-auto py-12"
                 >
                   <div className="flex flex-col items-center gap-3">
@@ -219,30 +222,22 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               trades.map((trade) => (
                 <TableRow
                   key={trade.id}
-                  className="border-b border-[#232636]/50 cursor-pointer transition-colors duration-150 hover:bg-[rgba(255,255,255,0.02)] relative"
+                  className="border-b border-[#232636]/50 cursor-pointer transition-colors duration-150 hover:bg-[rgba(255,255,255,0.02)]"
                   onClick={() => {
                     useNavigationStore.getState().selectTrade(trade.id)
                     navigate('journal-detail')
                   }}
                 >
-                  {/* Color bar on left */}
+                  {/* Pair cell with color border-left */}
                   <TableCell
-                    className="p-0 w-0.5"
+                    className="text-sm font-medium text-[#F3F4F6] py-3 pl-5"
                     style={{
-                      padding: 0,
-                      border: 'none',
-                      position: 'relative' as const,
+                      borderLeft: `3px solid ${trade.profitLoss >= 0
+                        ? (trade.profitLoss === 0 ? 'rgba(34,197,94,0.3)' : 'rgba(34,197,94,0.7)')
+                        : 'rgba(239,68,68,0.7)'
+                      }`,
                     }}
                   >
-                    <div
-                      className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full"
-                      style={{
-                        backgroundColor: trade.profitLoss >= 0 ? '#22C55E' : '#EF4444',
-                        opacity: trade.profitLoss === 0 ? 0.3 : 0.7,
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell className="text-sm font-medium text-[#F3F4F6] py-3 pl-5">
                     {trade.pair}
                     {/* Show process score badge if available */}
                     {trade.processScore !== undefined && trade.processScore !== null && (

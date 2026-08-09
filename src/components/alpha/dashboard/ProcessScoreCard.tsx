@@ -28,6 +28,13 @@ function getScoreGlow(score: number): string {
   return '0 0 24px rgba(34,197,94,0.3)'
 }
 
+function getRingGradient(score: number): { start: string; end: string } {
+  if (score <= 40) return { start: '#EF4444', end: '#F87171' }
+  if (score <= 60) return { start: '#F59E0B', end: '#FBBF24' }
+  if (score <= 80) return { start: '#6366F1', end: '#818CF8' }
+  return { start: '#22C55E', end: '#4ADE80' }
+}
+
 function getRatingText(score: number): string {
   if (score > 80) return 'Excellent'
   if (score > 60) return 'Good'
@@ -55,14 +62,25 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
   const color = getScoreColor(displayScore)
   const bgColor = getScoreBg(displayScore)
   const glow = getScoreGlow(displayScore)
+  const ringGrad = getRingGradient(displayScore)
 
-  // Ring math — 160px diameter → radius = 80 - strokeWidth/2 = 74
+  // Ring math — 160px diameter -> radius = 80 - strokeWidth/2 = 74
   const ringSize = 160
   const strokeWidth = 12
   const radius = (ringSize - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const progress = displayScore / 100
   const strokeDashoffset = circumference * (1 - progress)
+
+  // 7-day trend diff
+  let trendDiff: string | null = null
+  if (previousScore !== null && score !== null) {
+    const diff = score - previousScore
+    if (diff !== 0) {
+      const sign = diff > 0 ? '\u2191 +' : '\u2193 '
+      trendDiff = `${sign}${Math.abs(diff)}`
+    }
+  }
 
   // Trend
   let trendLabel: string | null = null
@@ -155,8 +173,8 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
             >
               <defs>
                 <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6366F1" />
-                  <stop offset="100%" stopColor="#8B5CF6" />
+                  <stop offset="0%" stopColor={ringGrad.start} />
+                  <stop offset="100%" stopColor={ringGrad.end} />
                 </linearGradient>
               </defs>
               {/* Background ring */}
@@ -168,7 +186,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
                 stroke="#232636"
                 strokeWidth={strokeWidth}
               />
-              {/* Progress ring with gradient */}
+              {/* Progress ring with dynamic gradient */}
               <motion.circle
                 cx={ringSize / 2}
                 cy={ringSize / 2}
@@ -183,7 +201,7 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
                 transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
               />
             </svg>
-            {/* Score in center */}
+            {/* Score in center with 7-day trend */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span
                 className="font-financial text-[44px] font-bold leading-none"
@@ -191,6 +209,17 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
               >
                 {displayScore}
               </span>
+              {trendDiff && (
+                <span
+                  className="text-[11px] font-financial font-semibold mt-1"
+                  style={{
+                    color: score! > previousScore! ? '#22C55E' : '#EF4444',
+                    opacity: 0.8,
+                  }}
+                >
+                  {trendDiff}
+                </span>
+              )}
             </div>
           </div>
           {/* Mini stat chips below ring */}
@@ -224,21 +253,6 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
           <p className="alpha-body leading-relaxed">
             {getInsightText(displayScore)}
           </p>
-          <div
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium w-fit mt-3"
-            style={{
-              color,
-              backgroundColor: bgColor,
-            }}
-          >
-            {displayScore <= 40
-              ? 'Fokus pada disiplin proses'
-              : displayScore <= 60
-                ? 'Proses cukup baik'
-                : displayScore <= 80
-                  ? 'Proses trading baik'
-                  : 'Pertahankan konsistensi'}
-          </div>
         </div>
       </div>
     </div>

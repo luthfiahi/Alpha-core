@@ -1,6 +1,5 @@
 'use client'
 
-import { TrendingUp } from 'lucide-react'
 import {
   AreaChart,
   Area,
@@ -32,10 +31,18 @@ function getFullDayLabel(dateStr: string): string {
   }
 }
 
-function PremiumTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+function getScoreColor(score: number): string {
+  if (score > 80) return '#22C55E'
+  if (score > 60) return '#6366F1'
+  if (score > 40) return '#F59E0B'
+  return '#EF4444'
+}
+
+function PremiumTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload?: { fullLabel?: string } }> }) {
   if (!active || !payload?.length) return null
   const value = payload[0].value
-  const color = value > 80 ? '#22C55E' : value > 60 ? '#6366F1' : value > 40 ? '#F59E0B' : '#EF4444'
+  const fullLabel = payload[0].payload?.fullLabel
+  const color = getScoreColor(value)
   return (
     <div
       className="rounded-xl px-4 py-3 shadow-2xl"
@@ -45,7 +52,7 @@ function PremiumTooltip({ active, payload, label }: { active?: boolean; payload?
         boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
       }}
     >
-      <p className="text-[10px] font-medium mb-1.5" style={{ color: '#6B7280' }}>{label}</p>
+      <p className="text-[10px] font-medium mb-1.5" style={{ color: '#6B7280' }}>{fullLabel}</p>
       <div className="flex items-baseline gap-2">
         <span className="font-financial text-xl font-bold" style={{ color: '#F3F4F6' }}>
           {value}
@@ -101,7 +108,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
 
   // Get the latest (current) score
   const currentScore = chartData[chartData.length - 1]?.score ?? 0
-  const currentColor = currentScore > 80 ? '#22C55E' : currentScore > 60 ? '#6366F1' : currentScore > 40 ? '#F59E0B' : '#EF4444'
+  const currentColor = getScoreColor(currentScore)
 
   return (
     <div className="alpha-card p-5 flex flex-col h-full relative">
@@ -126,8 +133,8 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
           >
             <defs>
               <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366F1" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
+                <stop offset="0%" stopColor={currentColor} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={currentColor} stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
@@ -149,7 +156,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
             <Tooltip
               content={<PremiumTooltip />}
               cursor={{
-                stroke: 'rgba(99,102,241,0.3)',
+                stroke: currentColor + '4D',
                 strokeWidth: 1,
                 strokeDasharray: '4 4',
               }}
@@ -157,13 +164,13 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
             <Area
               type="monotone"
               dataKey="score"
-              stroke="#6366F1"
+              stroke={currentColor}
               strokeWidth={2.5}
               fill="url(#scoreGradient)"
               dot={false}
               activeDot={{
                 r: 5,
-                fill: '#6366F1',
+                fill: currentColor,
                 stroke: '#151827',
                 strokeWidth: 3,
               }}
