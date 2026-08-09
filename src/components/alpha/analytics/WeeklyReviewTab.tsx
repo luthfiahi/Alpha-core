@@ -350,7 +350,7 @@ export function WeeklyReviewTab() {
         <Button
           onClick={handleGenerate}
           disabled={generating || !!review}
-          className="gap-2 bg-[#6366F1] hover:bg-[#5558E6] text-white alpha-press"
+          className="gap-2 bg-[#6366F1] hover:bg-[#4F46E5] text-white alpha-press shadow-lg shadow-[#6366F1]/25 hover:shadow-[#6366F1]/35 transition-all duration-300"
           size="sm"
         >
           {generating ? (
@@ -365,11 +365,13 @@ export function WeeklyReviewTab() {
       {/* Current week summary */}
       {review ? (
         <motion.div
-          className="bg-[#151827] border border-[#232636] rounded-[14px] p-6"
+          className="bg-[#151827] border border-[#232636] rounded-[14px] p-6 relative overflow-hidden"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex flex-col md:flex-row gap-6">
+          {/* Subtle gradient accent */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#6366F1]/30 to-transparent" />
+          <div className="relative flex flex-col md:flex-row gap-6">
             {/* Left: Process Ring + Stats */}
             <div className="flex flex-row md:flex-col items-center md:items-start gap-6 md:gap-4 md:min-w-[160px]">
               <MiniProcessRing score={review.processScore ?? 0} />
@@ -599,12 +601,15 @@ export function WeeklyReviewTab() {
           <Skeleton className="h-[400px] rounded-[14px]" />
         ) : reportGenerating ? (
           <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-12 text-center">
-            <div className="relative w-16 h-16 mx-auto mb-4">
-              <Loader2 className="w-16 h-16 text-[#818CF8] animate-spin" />
-              <Sparkles className="w-5 h-5 text-[#F59E0B] absolute top-0 right-0" />
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#6366F1]/20 to-[#8B5CF6]/10 blur-xl animate-pulse" />
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-[#6366F1]/15 to-[#8B5CF6]/10 border border-[#6366F1]/20 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-[#818CF8] animate-spin" />
+              </div>
+              <Sparkles className="w-5 h-5 text-[#F59E0B] absolute -top-1 -right-1" />
             </div>
-            <h4 className="alpha-heading-sm text-[#F3F4F6] mb-1">Menganalisis Periode Ini...</h4>
-            <p className="alpha-caption max-w-xs mx-auto">
+            <h4 className="alpha-heading-sm text-[#F3F4F6] mb-2">Menganalisis Periode Ini...</h4>
+            <p className="alpha-body max-w-xs mx-auto">
               AI sedang menganalisis trade, perilaku, dan compliance untuk menghasilkan laporan pertumbuhan
             </p>
           </div>

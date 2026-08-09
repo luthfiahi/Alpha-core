@@ -43,6 +43,7 @@ interface NavItem {
   label: string
   icon: React.ElementType
   badge?: boolean
+  shortcut?: string
 }
 
 interface NavGroup {
@@ -54,23 +55,23 @@ const NAV_GROUPS: NavGroup[] = [
   {
     title: 'Utama',
     items: [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { id: 'journal', label: 'Journal', icon: BookOpen },
-      { id: 'coaching', label: 'AI Coach', icon: Brain, badge: true },
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, shortcut: '⌘1' },
+      { id: 'journal', label: 'Journal', icon: BookOpen, shortcut: '⌘2' },
+      { id: 'coaching', label: 'AI Coach', icon: Brain, badge: true, shortcut: '⌘3' },
     ],
   },
   {
     title: 'Analitik',
     items: [
-      { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-      { id: 'playbook', label: 'Playbook', icon: FileText },
-      { id: 'trading-dna', label: 'Trading DNA', icon: Dna },
+      { id: 'analytics', label: 'Analytics', icon: BarChart3, shortcut: '⌘4' },
+      { id: 'playbook', label: 'Playbook', icon: FileText, shortcut: '⌘5' },
+      { id: 'trading-dna', label: 'Trading DNA', icon: Dna, shortcut: '⌘6' },
     ],
   },
   {
     title: 'Pengaturan',
     items: [
-      { id: 'settings', label: 'Settings', icon: Settings },
+      { id: 'settings', label: 'Settings', icon: Settings, shortcut: '⌘7' },
     ],
   },
 ]
@@ -175,11 +176,12 @@ function NavItemButton({
           ? {
               background: 'linear-gradient(90deg, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0.06) 100%)',
               color: '#6366F1',
+              boxShadow: '0 0 20px rgba(99,102,241,0.08), inset 0 0 20px rgba(99,102,241,0.03)',
             }
           : undefined
       }
     >
-      {/* Active indicator — 4px wide */}
+      {/* Active indicator — 4px wide with pronounced glow */}
       <div
         className={cn(
           'absolute left-0 top-1/2 h-6 w-[4px] -translate-x-1 rounded-full bg-[#6366F1] transition-all duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]',
@@ -187,7 +189,7 @@ function NavItemButton({
         )}
         style={
           isActive
-            ? { boxShadow: '0 0 8px rgba(99,102,241,0.4)' }
+            ? { boxShadow: '0 0 12px rgba(99,102,241,0.6), 0 0 4px rgba(99,102,241,0.8)' }
             : undefined
         }
       />
@@ -205,14 +207,27 @@ function NavItemButton({
       <Icon
         className={cn(
           'shrink-0 transition-colors duration-[220ms]',
-          isActive ? 'text-[#6366F1]' : 'text-[#6B7280] group-hover:text-[#9CA3AF]'
+          isActive ? 'text-[#818CF8]' : 'text-[#6B7280] group-hover:text-[#9CA3AF]'
         )}
         size={18}
       />
 
       {!collapsed && (
-        <span className={cn('truncate', !isActive && 'text-[#9CA3AF] group-hover:text-[#F3F4F6]')}>
+        <span className={cn('truncate flex-1', !isActive && 'text-[#9CA3AF] group-hover:text-[#F3F4F6]')}>
           {item.label}
+        </span>
+      )}
+
+      {/* Keyboard shortcut hint — only visible when expanded and not active */}
+      {!collapsed && item.shortcut && (
+        <span
+          className={cn(
+            'text-[10px] font-mono transition-opacity duration-200',
+            isActive ? 'opacity-0' : 'opacity-0 group-hover:opacity-40'
+          )}
+          style={{ color: '#9CA3AF' }}
+        >
+          {item.shortcut}
         </span>
       )}
 
@@ -237,7 +252,12 @@ function NavItemButton({
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent side="right" sideOffset={8}>
-          <p className="text-xs font-medium">{item.label}</p>
+          <div className="flex flex-col items-end gap-0.5">
+            <p className="text-xs font-medium">{item.label}</p>
+            {item.shortcut && (
+              <p className="text-[10px] font-mono" style={{ color: '#6B7280' }}>{item.shortcut}</p>
+            )}
+          </div>
         </TooltipContent>
       </Tooltip>
     )
@@ -265,6 +285,14 @@ function SidebarContent({
   const { logout } = useAuth()
   return (
     <div className="flex h-full flex-col">
+      {/* Gradient accent line at top */}
+      <div
+        className="h-[3px] w-full flex-shrink-0"
+        style={{
+          background: 'linear-gradient(90deg, #6366F1 0%, rgba(99,102,241,0.1) 60%, transparent 100%)',
+        }}
+      />
+
       {/* Header with logo + collapse toggle */}
       <div className="flex h-14 items-center justify-between border-b border-[#232636] px-3">
         {!collapsed && (
@@ -326,11 +354,14 @@ function SidebarContent({
         </div>
       </nav>
 
-      {/* User profile (sticky bottom) */}
+      {/* User profile (sticky bottom) — refined with subtle background */}
       <div className="border-t border-[#232636] p-3">
         {!collapsed ? (
           <div className="space-y-1">
-            <div className="group/item flex items-center gap-3 rounded-[10px] px-2 py-2 transition-colors duration-[220ms] hover:bg-[rgba(255,255,255,0.04)]">
+            <div
+              className="group/item flex items-center gap-3 rounded-[10px] px-2 py-2.5 transition-colors duration-[220ms]"
+              style={{ backgroundColor: 'rgba(255,255,255,0.02)' }}
+            >
               <div className="relative shrink-0">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-[#6366F1]/20 text-xs font-semibold text-[#6366F1]">

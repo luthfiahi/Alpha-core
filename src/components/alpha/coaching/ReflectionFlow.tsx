@@ -74,8 +74,8 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
   return (
     <TooltipProvider delayDuration={300}>
       <div className={cn('alpha-animate-in w-full', className)}>
-        {/* Step indicators */}
-        <div className="flex items-center justify-center gap-0">
+        {/* Step indicators with progress bar */}
+        <div className="flex items-center justify-center">
           {REFLECTION_STEPS.map((step, index) => {
             const isCompleted = completedSteps.includes(step.id)
             const isCurrent = step.id === currentStep
@@ -91,12 +91,12 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                       <motion.div
                         className={cn(
                           'alpha-press relative w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer',
-                          isCompleted && 'bg-alpha-primary shadow-lg shadow-alpha-primary/30',
+                          isCompleted && 'bg-[#22C55E] shadow-lg shadow-[#22C55E]/30',
                           isCurrent &&
-                            'bg-alpha-primary/20 border-2 border-alpha-primary',
+                            'bg-[#6366F1]/20 border-2 border-[#6366F1]',
                           isCurrent && !isCompleted &&
-                            'shadow-lg shadow-alpha-primary/20',
-                          isFuture && 'bg-alpha-border/50 border-2 border-alpha-border/60'
+                            'shadow-lg shadow-[#6366F1]/20',
+                          isFuture && 'bg-[#232636]/50 border-2 border-[#232636]/60'
                         )}
                         animate={
                           isCurrent && !isCompleted
@@ -136,8 +136,8 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                           <Icon
                             className={cn(
                               'w-4 h-4',
-                              isCurrent && 'text-alpha-primary',
-                              isFuture && 'text-alpha-text-muted'
+                              isCurrent && 'text-[#6366F1]',
+                              isFuture && 'text-[#6B7280]'
                             )}
                           />
                         )}
@@ -146,10 +146,10 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                         <span
                           className={cn(
                             'absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center',
-                            isCompleted && 'bg-alpha-primary-active text-white',
+                            isCompleted && 'bg-[#16A34A] text-white',
                             isCurrent &&
-                              'bg-alpha-primary text-white',
-                            isFuture && 'bg-alpha-border text-alpha-text-muted'
+                              'bg-[#6366F1] text-white',
+                            isFuture && 'bg-[#232636] text-[#6B7280]'
                           )}
                         >
                           {step.id}
@@ -160,9 +160,9 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                       <span
                         className={cn(
                           'alpha-caption mt-2 whitespace-nowrap hidden sm:block',
-                          isCompleted && 'text-alpha-primary',
-                          isCurrent && 'text-alpha-primary',
-                          isFuture && 'text-alpha-text-muted'
+                          isCompleted && 'text-[#22C55E]',
+                          isCurrent && 'text-[#6366F1]',
+                          isFuture && 'text-[#6B7280]'
                         )}
                       >
                         {step.title}
@@ -171,7 +171,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                   </TooltipTrigger>
                   <TooltipContent
                     side="bottom"
-                    className="bg-alpha-surface border-alpha-border text-alpha-text-primary text-xs"
+                    className="bg-[#151827] border-[#232636] text-[#F3F4F6] text-xs"
                   >
                     <div className="text-center">
                       <p className="font-medium">{step.title}</p>
@@ -183,16 +183,17 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
                   </TooltipContent>
                 </Tooltip>
 
-                {/* Connector line */}
+                {/* Connector line — progress bar style */}
                 {index < REFLECTION_STEPS.length - 1 && (
-                  <div className="flex-shrink-0 mx-1 sm:mx-2">
-                    <div
-                      className={cn(
-                        'w-8 sm:w-12 h-0.5 rounded-full transition-all duration-500',
-                        completedSteps.includes(step.id) && 'bg-alpha-primary',
-                        !completedSteps.includes(step.id) && 'bg-alpha-border/50'
-                      )}
-                    />
+                  <div className="flex-shrink-0 mx-1 sm:mx-2 w-8 sm:w-12">
+                    <div className="relative h-1 rounded-full bg-[#232636]/50 overflow-hidden">
+                      <motion.div
+                        className={cn(
+                          'absolute inset-y-0 left-0 rounded-full transition-all duration-500',
+                          isCompleted ? 'bg-[#22C55E] w-full' : 'bg-[#6366F1] w-1/3'
+                        )}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -204,7 +205,7 @@ export function ReflectionFlow({ progress, className }: ReflectionFlowProps) {
         <div className="flex items-center justify-center mt-1 sm:mt-2">
           <span className="alpha-caption">
             Refleksi Trade — Langkah{' '}
-            <span className="text-alpha-primary font-semibold">{currentStep}</span>/{' '}
+            <span className="text-[#6366F1] font-semibold">{currentStep}</span>/{' '}
             {totalSteps}
           </span>
         </div>

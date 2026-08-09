@@ -68,7 +68,7 @@ function ProgressBar({ metric, delay }: { metric: BehavioralMetric; delay: numbe
       </div>
       <div
         ref={ref}
-        className="h-2 w-full overflow-hidden rounded-full"
+        className="h-2.5 w-full overflow-hidden rounded-full"
         style={{ backgroundColor: getBarBgColor(metric.value) }}
       >
         <div
@@ -163,16 +163,17 @@ export function PerformancePatterns({
               transition={{ duration: 0.3, delay: 0.5 + i * 0.05, ease: [0.4, 0, 0.2, 1] }}
               className={`rounded-xl border px-3 py-3 transition-all duration-200 hover:-translate-y-0.5 ${
                 card.isWorst
-                  ? 'border-red-500/10 bg-[#0B0D17]/50 hover:border-red-500/20 hover:bg-red-500/[0.03]'
-                  : 'border-emerald-500/10 bg-[#0B0D17]/50 hover:border-emerald-500/20 hover:bg-emerald-500/[0.03]'
+                  ? 'border-red-500/15 bg-[#0B0D17]/60 hover:border-red-500/25 hover:bg-red-500/[0.04]'
+                  : 'border-emerald-500/15 bg-[#0B0D17]/60 hover:border-emerald-500/25 hover:bg-emerald-500/[0.04]'
               }`}
+              style={{ borderLeftWidth: 2, borderLeftColor: card.isWorst ? 'rgba(239, 68, 68, 0.4)' : 'rgba(34, 197, 94, 0.4)' }}
             >
               <Icon
                 size={13}
                 className={card.isWorst ? 'mb-2 text-red-400/50' : 'mb-2 text-emerald-500/70'}
               />
               <p className="alpha-caption mb-0.5 text-[#6B7280]">{card.label}</p>
-              <p className={`alpha-label font-semibold ${
+              <p className={`alpha-heading-xs font-semibold ${
                 card.isWorst
                   ? card.value ? 'text-red-400' : 'text-[#4B5563]'
                   : card.value ? 'text-emerald-400' : 'text-[#4B5563]'

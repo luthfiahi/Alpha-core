@@ -111,7 +111,7 @@ export function AnalyticsPage() {
       <div>
         <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">ANALYTICS</h1>
         <p className="alpha-body mt-1.5">
-          Track your trading progress and behavioral patterns.
+          Pantau emosi, konsistensi, proses dan perilaku tradingmu
         </p>
       </div>
 
@@ -123,21 +123,21 @@ export function AnalyticsPage() {
         <TabsList className="bg-[#151827] border border-[#232636] rounded-xl p-1 gap-1 h-auto">
           <TabsTrigger
             value="growth"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/15 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/30 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2 alpha-label transition-all data-[state=active]:shadow-[0_0_12px_rgba(99,102,241,0.1)]"
+            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
           >
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Growth</span>
           </TabsTrigger>
           <TabsTrigger
             value="weekly"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/15 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/30 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2 alpha-label transition-all data-[state=active]:shadow-[0_0_12px_rgba(99,102,241,0.1)]"
+            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
           >
             <BarChart3 className="w-3.5 h-3.5" />
             <span>Weekly Review</span>
           </TabsTrigger>
           <TabsTrigger
             value="behavioral"
-            className="gap-1.5 data-[state=active]:bg-[#6366F1]/15 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/30 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2 alpha-label transition-all data-[state=active]:shadow-[0_0_12px_rgba(99,102,241,0.1)]"
+            className="gap-1.5 data-[state=active]:bg-[#6366F1]/20 data-[state=active]:text-[#F3F4F6] data-[state=active]:border data-[state=active]:border-[#6366F1]/40 text-[#6B7280] data-[state=active]:shadow-none rounded-lg px-4 py-2.5 alpha-label transition-all data-[state=active]:shadow-[0_0_16px_rgba(99,102,241,0.15)] data-[state=active]:font-semibold"
           >
             <Brain className="w-3.5 h-3.5" />
             <span>Behavioral</span>

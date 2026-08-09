@@ -78,14 +78,14 @@ function ActiveFilterChip({
   onRemove: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/25 px-2 py-1 text-xs text-[#818CF8]">
+    <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/25 px-2 py-1 text-xs text-[#818CF8]">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        className="hover:text-[#F3F4F6] transition-colors duration-150 alpha-press"
+        className="hover:text-[#F3F4F6] transition-colors duration-150 alpha-press w-4 h-4 rounded-full hover:bg-[#6366F1]/20 flex items-center justify-center"
       >
-        <X className="size-3" />
+        <X className="size-2.5" />
       </button>
     </span>
   );
@@ -118,6 +118,11 @@ export function JournalFilters({
 
   return (
     <div className="space-y-2.5 alpha-animate-in-fast">
+      {/* Filter label */}
+      <div className="flex items-center gap-2">
+        <span className="alpha-label text-[#9CA3AF] uppercase tracking-wider text-[10px]">Filter</span>
+        <div className="flex-1 h-px bg-[#232636]" />
+      </div>
       {/* Filter Controls — compact single row, scrollable on mobile */}
       <div className="flex flex-wrap items-center gap-2 overflow-x-auto scrollbar-none">
         {/* Date Range */}
@@ -125,7 +130,7 @@ export function JournalFilters({
           value={filters.dateRange}
           onValueChange={(v) => updateFilter('dateRange', v)}
         >
-          <SelectTrigger className="w-[100px] h-8 text-xs bg-[#151827] border-[#232636] rounded-lg alpha-focus-ring">
+          <SelectTrigger className="w-[100px] h-8 text-xs bg-[#151827] border-[#232636] rounded-lg alpha-focus-ring hover:border-[#6366F1]/30 hover:shadow-[0_0_8px_rgba(99,102,241,0.08)] transition-all duration-150">
             <SelectValue placeholder="Period" />
           </SelectTrigger>
           <SelectContent className="bg-[#151827] border-[#232636]">
@@ -142,7 +147,7 @@ export function JournalFilters({
           value={filters.pair}
           onValueChange={(v) => updateFilter('pair', v)}
         >
-          <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636] rounded-lg alpha-focus-ring">
+          <SelectTrigger className="w-[130px] h-8 text-xs bg-[#151827] border-[#232636] rounded-lg alpha-focus-ring hover:border-[#6366F1]/30 hover:shadow-[0_0_8px_rgba(99,102,241,0.08)] transition-all duration-150">
             <SelectValue placeholder="Pair" />
           </SelectTrigger>
           <SelectContent className="bg-[#151827] border-[#232636]">

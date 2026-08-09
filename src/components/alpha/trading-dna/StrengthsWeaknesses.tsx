@@ -53,6 +53,9 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
             <h4 className="alpha-heading-xs text-emerald-500">
               STRENGTHS
             </h4>
+            <span className="ml-1.5 inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-emerald-500/15 border border-emerald-500/25 px-1.5 text-[10px] font-bold text-emerald-400">
+              {strengths.length}
+            </span>
           </div>
           {strengths.length > 0 ? (
             <div className="flex flex-wrap gap-2">
@@ -62,10 +65,10 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.25, delay: 0.15 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
-                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-emerald-500/15 bg-emerald-500/[0.06] px-3 py-1.5 transition-colors hover:border-emerald-500/30 hover:bg-emerald-500/[0.1]"
+                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/[0.08] px-3.5 py-1.5 transition-colors hover:border-emerald-500/35 hover:bg-emerald-500/[0.12]"
                 >
-                  <CheckCircle2 size={12} className="text-emerald-500/70" />
-                  <span className="alpha-label text-emerald-400">{s}</span>
+                  <CheckCircle2 size={12} className="text-emerald-400" />
+                  <span className="alpha-label text-emerald-300">{s}</span>
                 </motion.div>
               ))}
             </div>
@@ -83,6 +86,9 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
             <h4 className="alpha-heading-xs text-red-400">
               WEAKNESSES
             </h4>
+            <span className="ml-1.5 inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-red-500/15 border border-red-500/25 px-1.5 text-[10px] font-bold text-red-400">
+              {weaknesses.length}
+            </span>
           </div>
           {weaknesses.length > 0 ? (
             <div className="flex flex-wrap gap-2">
@@ -92,10 +98,10 @@ export function StrengthsWeaknesses({ strengths, weaknesses, isLoading }: Streng
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.25, delay: 0.2 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
-                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-red-500/15 bg-red-500/[0.06] px-3 py-1.5 transition-colors hover:border-red-500/30 hover:bg-red-500/[0.1]"
+                  className="alpha-badge-interactive group inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/[0.08] px-3.5 py-1.5 transition-colors hover:border-red-500/35 hover:bg-red-500/[0.12]"
                 >
-                  <AlertTriangle size={12} className="text-red-500/70" />
-                  <span className="alpha-label text-red-400">{w}</span>
+                  <AlertTriangle size={12} className="text-red-400" />
+                  <span className="alpha-label text-red-300">{w}</span>
                 </motion.div>
               ))}
             </div>

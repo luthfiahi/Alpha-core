@@ -140,7 +140,7 @@ export function TradingDNAPage() {
           TRADING DNA
         </h1>
         <p className="mt-1.5 alpha-body text-[#9CA3AF]">
-          Your trading identity, based on behavior.
+          Profil trading unik berbasis AI
         </p>
       </div>
 
@@ -174,11 +174,12 @@ export function TradingDNAPage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center justify-center rounded-[14px] border border-[#232636] bg-[#151827] px-6 py-24"
         >
-          {/* Hexagonal DNA icon */}
+          {/* Animated gradient DNA icon */}
           <div className="relative mb-6">
-            <div className="absolute inset-0 rounded-2xl bg-[#6366F1]/20 blur-xl" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6366F1]/20 to-[#8B5CF6]/10 border border-[#6366F1]/20">
-              <Sparkles size={32} className="text-[#6366F1]" />
+            <div className="absolute inset-0 rounded-2xl bg-[#6366F1]/30 blur-2xl animate-pulse" />
+            <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-[#6366F1]/20 via-[#8B5CF6]/15 to-[#A78BFA]/10 blur-xl animate-pulse" style={{ animationDuration: '3s' }} />
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6366F1]/25 to-[#8B5CF6]/15 border border-[#6366F1]/30 shadow-lg shadow-[#6366F1]/20">
+              <Sparkles size={32} className="text-[#818CF8]" />
             </div>
           </div>
           <h2 className="mb-2 alpha-heading-lg text-[#F3F4F6]">
@@ -190,7 +191,7 @@ export function TradingDNAPage() {
           <Button
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="gap-2.5 bg-[#6366F1] text-white hover:bg-[#4F46E5] alpha-press px-6 py-5 text-sm font-medium"
+            className="gap-2.5 bg-[#6366F1] text-white hover:bg-[#4F46E5] alpha-press px-8 py-6 text-sm font-medium shadow-lg shadow-[#6366F1]/30 hover:shadow-[#6366F1]/40 transition-all duration-300"
           >
             <Dna size={16} />
             {isGenerating ? 'Menganalisis...' : 'Generate DNA'}
@@ -211,7 +212,7 @@ export function TradingDNAPage() {
           </div>
 
           {/* Strengths / Weaknesses — side by side on desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="alpha-animate-in alpha-stagger-2">
               <StrengthsWeaknesses
                 strengths={strengths}

@@ -402,11 +402,11 @@ export function PlaybookPage() {
         <div>
           <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">PLAYBOOK</h1>
           <p className="alpha-body mt-1.5">
-            Your trading knowledge system.
+            Aturan dan checklist untuk setiap setup trading
           </p>
         </div>
         <Button
-          className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
+          className="bg-[#6366F1] hover:bg-[#4F46E5] text-white alpha-press shadow-lg shadow-[#6366F1]/25 hover:shadow-[#6366F1]/35 transition-all duration-300"
           onClick={() => setCreateDialogOpen(true)}
         >
           <Plus className="size-4 mr-1.5" />
@@ -530,16 +530,19 @@ function EmptyState({
   onClear: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="size-16 rounded-2xl bg-[#1E2030] flex items-center justify-center mb-4">
-        <BookOpen className="size-7 text-[#6B7280]" />
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="relative">
+        <div className="absolute inset-0 rounded-2xl bg-[#6366F1]/15 blur-xl animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="relative size-16 rounded-2xl bg-gradient-to-br from-[#6366F1]/20 to-[#8B5CF6]/10 border border-[#6366F1]/20 flex items-center justify-center">
+          <BookOpen className="size-7 text-[#818CF8]" />
+        </div>
       </div>
-      <h3 className="alpha-heading-sm text-[#F3F4F6] mb-1">
+      <h3 className="alpha-heading-sm text-[#F3F4F6] mb-2 mt-5">
         {hasPlaybooks
           ? 'No matching playbooks'
           : 'No playbooks yet'}
       </h3>
-      <p className="alpha-body text-[#6B7280] max-w-xs mb-4">
+      <p className="alpha-body text-[#6B7280] max-w-xs mb-6">
         {hasPlaybooks
           ? 'Try adjusting your filters or search query.'
           : 'Create your first playbook to start documenting your trading setups.'}

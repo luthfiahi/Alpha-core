@@ -231,8 +231,8 @@ export function JournalNewPage() {
           <ArrowLeft className='size-4 text-[#9CA3AF]' />
         </Button>
         <div>
-          <h1 className='text-xl font-semibold text-[#F3F4F6]'>Trade Baru</h1>
-          <p className='alpha-caption'>Catat trade kamu dengan detail lengkap</p>
+          <h1 className='alpha-heading-lg text-[#F3F4F6]'>Trade Baru</h1>
+          <p className='alpha-caption text-[#9CA3AF]'>Catat trade kamu dengan detail lengkap</p>
         </div>
       </div>
 
@@ -242,7 +242,10 @@ export function JournalNewPage() {
           <div className='lg:col-span-3 space-y-6'>
             {/* Pair & Direction */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='alpha-heading-sm mb-1'>Info Trade</h3>
+              <h3 className='alpha-heading-sm mb-1 flex items-center gap-2'>
+                <div className='w-1.5 h-4 rounded-full bg-[#6366F1]' />
+                Info Trade
+              </h3>
 
               <FormField
                 control={form.control}
@@ -254,7 +257,7 @@ export function JournalNewPage() {
                       <Input
                         {...field}
                         placeholder='EURUSD'
-                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                         onChange={(e) =>
                           field.onChange(e.target.value.toUpperCase())
                         }
@@ -301,7 +304,7 @@ export function JournalNewPage() {
                         onValueChange={field.onChange}
                       >
                         <FormControl>
-                          <SelectTrigger className='alpha-focus-ring bg-[#0B0D17] border-[#232636] h-9 text-sm'>
+                          <SelectTrigger className='alpha-focus-ring bg-[#0B0D17] border-[#232636] h-9 text-sm focus:border-[#6366F1]/50'>
                             <SelectValue placeholder='Pilih' />
                           </SelectTrigger>
                         </FormControl>
@@ -327,7 +330,7 @@ export function JournalNewPage() {
                         <Input
                           {...field}
                           placeholder='Breakout, Pullback...'
-                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                         />
                       </FormControl>
                     </FormItem>
@@ -338,7 +341,10 @@ export function JournalNewPage() {
 
             {/* Price Data */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='alpha-heading-sm mb-1'>Harga & Posisi</h3>
+              <h3 className='alpha-heading-sm mb-1 flex items-center gap-2'>
+                <div className='w-1.5 h-4 rounded-full bg-[#6366F1]' />
+                Harga & Posisi
+              </h3>
 
               <FormField
                 control={form.control}
@@ -352,7 +358,7 @@ export function JournalNewPage() {
                         step='any'
                         {...field}
                         placeholder='1.08500'
-                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                       />
                     </FormControl>
                     <FormMessage />
@@ -377,7 +383,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='—'
-                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                         />
                       </FormControl>
                     </FormItem>
@@ -400,7 +406,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='—'
-                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                         />
                       </FormControl>
                     </FormItem>
@@ -423,7 +429,7 @@ export function JournalNewPage() {
                             field.onChange(e.target.value ? Number(e.target.value) : null)
                           }
                           placeholder='0.1'
-                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280]'
+                          className='alpha-focus-ring bg-[#0B0D17] border-[#232636] font-financial text-sm h-9 placeholder:text-[#6B7280] focus:border-[#6366F1]/50'
                         />
                       </FormControl>
                     </FormItem>
@@ -434,7 +440,10 @@ export function JournalNewPage() {
 
             {/* Psychology & Tags */}
             <div className='alpha-card p-5 space-y-5'>
-              <h3 className='alpha-heading-sm mb-1'>Psikologi & Tag</h3>
+              <h3 className='alpha-heading-sm mb-1 flex items-center gap-2'>
+                <div className='w-1.5 h-4 rounded-full bg-[#6366F1]' />
+                Psikologi & Tag
+              </h3>
 
               <FormField
                 control={form.control}
@@ -447,7 +456,7 @@ export function JournalNewPage() {
                         {...field}
                         placeholder='Apa rencana trade kamu sebelum entry?'
                         rows={3}
-                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none'
+                        className='alpha-focus-ring bg-[#0B0D17] border-[#232636] text-sm placeholder:text-[#6B7280] resize-none focus:border-[#6366F1]/50'
                       />
                     </FormControl>
                   </FormItem>
@@ -498,7 +507,10 @@ export function JournalNewPage() {
 
             {/* Screenshot Upload */}
             <div className='alpha-card p-5 space-y-3'>
-              <h3 className='alpha-heading-sm mb-1'>Screenshot Chart</h3>
+              <h3 className='alpha-heading-sm mb-1 flex items-center gap-2'>
+                <div className='w-1.5 h-4 rounded-full bg-[#6366F1]' />
+                Screenshot Chart
+              </h3>
 
               <input
                 ref={fileInputRef}
@@ -560,7 +572,7 @@ export function JournalNewPage() {
               <Button
                 type='submit'
                 disabled={createMutation.isPending}
-                className='alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-6'
+                className='alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white h-10 px-6 shadow-lg shadow-[#6366F1]/20 hover:shadow-[#6366F1]/30 transition-shadow duration-200'
               >
                 {createMutation.isPending ? (
                   <span className='inline-flex items-center gap-2'>

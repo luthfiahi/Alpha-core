@@ -38,14 +38,17 @@ export function PlaybookTradeCompliance({
 }: PlaybookTradeComplianceProps) {
   if (trades.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="size-12 rounded-xl bg-[#1E2030] border border-[#232636] flex items-center justify-center mb-3">
-          <TrendingUp className="size-5 text-[#4B5563]" />
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="relative">
+          <div className="absolute inset-0 rounded-xl bg-[#6366F1]/10 blur-lg" />
+          <div className="relative size-12 rounded-xl bg-[#10121E] border border-[#232636] flex items-center justify-center">
+            <TrendingUp className="size-5 text-[#4B5563]" />
+          </div>
         </div>
-        <h4 className="text-sm font-medium text-[#9CA3AF] mb-1">
+        <h4 className="alpha-heading-sm text-[#9CA3AF] mt-4 mb-1.5">
           Belum ada trade terhubung
         </h4>
-        <p className="text-xs text-[#6B7280] max-w-[240px]">
+        <p className="alpha-body text-[#6B7280] max-w-[260px] leading-relaxed">
           Hubungkan trade dari journal ke playbook ini untuk melihat kepatuhan.
         </p>
       </div>
@@ -64,29 +67,29 @@ export function PlaybookTradeCompliance({
     <div className="space-y-4">
       {/* Summary stats */}
       <div className="flex items-center gap-4">
-        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3">
-          <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-1">
+        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3.5">
+          <p className="alpha-caption uppercase tracking-wider text-[#6B7280]">
             Total Trade
           </p>
-          <p className="text-lg font-semibold text-[#F3F4F6]">
+          <p className="font-financial text-xl font-semibold text-[#F3F4F6] mt-1">
             {trades.length}
           </p>
         </div>
-        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3">
-          <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-1">
+        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3.5">
+          <p className="alpha-caption uppercase tracking-wider text-[#6B7280]">
             Rata-rata Compliance
           </p>
           <p
-            className={`text-lg font-semibold ${getComplianceColor(avgCompliance)}`}
+            className={`font-financial text-xl font-semibold mt-1 ${getComplianceColor(avgCompliance)}`}
           >
             {getComplianceLabel(avgCompliance)}
           </p>
         </div>
-        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3">
-          <p className="text-[10px] text-[#6B7280] uppercase tracking-wider mb-1">
+        <div className="flex-1 bg-[#151827] border border-[#232636] rounded-xl p-3.5">
+          <p className="alpha-caption uppercase tracking-wider text-[#6B7280]">
             High Compliance
           </p>
-          <p className="text-lg font-semibold text-emerald-400">
+          <p className="font-financial text-xl font-semibold text-emerald-400 mt-1">
             {
               trades.filter((t) => (t.playbookCompliance ?? 0) >= 0.8)
                 .length
@@ -101,7 +104,7 @@ export function PlaybookTradeCompliance({
           {trades.map((trade) => (
             <div
               key={trade.id}
-              className="flex items-center gap-3 bg-[#151827] border border-[#232636] rounded-lg px-3 py-2.5 hover:bg-[#1E2030] transition-colors"
+              className="flex items-center gap-3 bg-[#151827] border border-[#232636] rounded-lg px-3 py-2.5 hover:bg-[#1E2030] transition-colors alpha-row-hover"
             >
               {/* Direction badge */}
               <Badge

@@ -36,11 +36,20 @@ export function AISummary({ aiSummary, updatedAt, isGenerating, onRegenerate, is
   if (isLoading) {
     return (
       <div className="rounded-[14px] border border-[#232636] bg-[#151827] p-6">
-        <Skeleton className="mb-4 h-5 w-40 bg-[#1E2030]" />
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="h-7 w-7 animate-pulse rounded-lg bg-gradient-to-br from-[#6366F1]/20 to-[#8B5CF6]/10" />
+          <Skeleton className="h-5 w-36 bg-[#1E2030]" />
+        </div>
         <div className="space-y-2.5">
           <Skeleton className="h-4 w-full bg-[#1E2030]" />
           <Skeleton className="h-4 w-full bg-[#1E2030]" />
           <Skeleton className="h-4 w-3/4 bg-[#1E2030]" />
+          <Skeleton className="h-4 w-5/6 bg-[#1E2030]" />
+        </div>
+        <div className="mt-4 h-px bg-gradient-to-r from-[#232636] to-transparent" />
+        <div className="mt-3 flex justify-between">
+          <Skeleton className="h-3 w-24 bg-[#1E2030]" />
+          <Skeleton className="h-3 w-20 bg-[#1E2030]" />
         </div>
       </div>
     )
@@ -53,7 +62,9 @@ export function AISummary({ aiSummary, updatedAt, isGenerating, onRegenerate, is
       transition={{ duration: 0.4, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className="alpha-animate-in relative overflow-hidden rounded-[14px] border border-[#232636] bg-[#151827]"
     >
-      {/* Subtle indigo left border accent */}
+      {/* Gradient top border accent */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#A78BFA]" />
+      {/* Gradient left border accent */}
       <div className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-[#6366F1] via-[#818CF8] to-[#6366F1]/30" />
 
       {/* Subtle gradient overlay */}
@@ -69,6 +80,10 @@ export function AISummary({ aiSummary, updatedAt, isGenerating, onRegenerate, is
             <h3 className="alpha-heading-sm uppercase tracking-wider text-[#F3F4F6]">
               ALPHA SUMMARY
             </h3>
+            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#6366F1]/15 border border-[#6366F1]/25 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#818CF8] animate-pulse">
+              <Sparkles size={8} className="text-[#818CF8]" />
+              Alpha AI
+            </span>
           </div>
           <Button
             variant="ghost"

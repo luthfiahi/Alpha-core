@@ -160,9 +160,10 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           </div>
         )}
 
-        {/* Stats Row */}
+        {/* P/L summary */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
+          <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3 relative overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#6366F1]/20 to-transparent" />
             <p className="alpha-caption uppercase tracking-wider">Trade</p>
             <p className="font-financial text-lg font-semibold text-[#F3F4F6] mt-0.5">
               {report.totalTrades}
@@ -185,7 +186,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           </div>
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
             <p className="alpha-caption uppercase tracking-wider">P/L</p>
-            <p className={`font-financial text-lg font-semibold mt-0.5 ${(report.totalPnL ?? 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
+            <p className={`font-financial text-lg font-semibold mt-0.5 ${(report.totalPnL ?? 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'} shadow-sm ${(report.totalPnL ?? 0) >= 0 ? 'shadow-emerald-500/20' : 'shadow-red-500/20'}`}>
               ${(report.totalPnL ?? 0).toFixed(0)}
             </p>
           </div>
@@ -236,11 +237,16 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {/* Behaviors Improved */}
         {behaviorsImproved.length > 0 && (
           <div>
-            <div className="flex items-center gap-2 mb-2.5">
-              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+            <div className="flex items-center gap-2.5 mb-2.5">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#22C55E]/10">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E]" />
+              </div>
               <h4 className="alpha-heading-xs text-[#22C55E] uppercase tracking-wider">
                 Perilaku yang Membaik
               </h4>
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#22C55E]/15 border border-[#22C55E]/25 px-1.5 text-[10px] font-bold text-[#22C55E]">
+                {behaviorsImproved.length}
+              </span>
             </div>
             <div className="space-y-1.5">
               {behaviorsImproved.map((item, i) => (
@@ -256,11 +262,16 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {/* Behaviors To Improve */}
         {behaviorsToImprove.length > 0 && (
           <div>
-            <div className="flex items-center gap-2 mb-2.5">
-              <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+            <div className="flex items-center gap-2.5 mb-2.5">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#F59E0B]/10">
+                <AlertTriangle className="w-3.5 h-3.5 text-[#F59E0B]" />
+              </div>
               <h4 className="alpha-heading-xs text-[#F59E0B] uppercase tracking-wider">
                 Masih Perlu Diperbaiki
               </h4>
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#F59E0B]/15 border border-[#F59E0B]/25 px-1.5 text-[10px] font-bold text-[#F59E0B]">
+                {behaviorsToImprove.length}
+              </span>
             </div>
             <div className="space-y-1.5">
               {behaviorsToImprove.map((item, i) => (
@@ -276,11 +287,16 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {/* Next Period Targets */}
         {nextTargets.length > 0 && (
           <div>
-            <div className="flex items-center gap-2 mb-2.5">
-              <Target className="w-4 h-4 text-[#818CF8]" />
+            <div className="flex items-center gap-2.5 mb-2.5">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#818CF8]/10">
+                <Target className="w-3.5 h-3.5 text-[#818CF8]" />
+              </div>
               <h4 className="alpha-heading-xs text-[#818CF8] uppercase tracking-wider">
                 Target {isMonthly ? 'Bulan' : 'Minggu'} Depan
               </h4>
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#818CF8]/15 border border-[#818CF8]/25 px-1.5 text-[10px] font-bold text-[#818CF8]">
+                {nextTargets.length}
+              </span>
             </div>
             <div className="space-y-1.5">
               {nextTargets.map((item, i) => (

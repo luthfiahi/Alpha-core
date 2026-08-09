@@ -108,7 +108,7 @@ function ModeToggle({
         className={cn(
           'alpha-badge-interactive alpha-press flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
           mode === 'free_chat'
-            ? 'bg-alpha-surface text-alpha-text-primary shadow-sm'
+            ? 'bg-alpha-surface text-alpha-text-primary shadow-sm shadow-[#6366F1]/10 ring-1 ring-[#6366F1]/20'
             : 'text-alpha-text-muted hover:text-alpha-text-secondary'
         )}
       >
@@ -120,7 +120,7 @@ function ModeToggle({
         className={cn(
           'alpha-badge-interactive alpha-press flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
           mode === 'reflection'
-            ? 'bg-alpha-surface text-alpha-text-primary shadow-sm'
+            ? 'bg-alpha-surface text-alpha-text-primary shadow-sm shadow-[#6366F1]/10 ring-1 ring-[#6366F1]/20'
             : 'text-alpha-text-muted hover:text-alpha-text-secondary'
         )}
       >
@@ -887,7 +887,17 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
       <header className="flex-shrink-0 px-4 sm:px-6 pt-5 pb-3">
         <div className="flex items-start justify-between">
           {/* Left: Branding */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* AI Avatar with pulsing ring */}
+            <div className="relative flex-shrink-0">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }}
+              >
+                <span className="text-sm font-bold text-white leading-none">α</span>
+              </div>
+              <div className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ background: 'linear-gradient(135deg, #6366F1, #8B5CF6)' }} />
+            </div>
             <div>
               <h1 className="alpha-heading-xl">ALPHA</h1>
               <p className="alpha-caption mt-0.5">AI Trading Coach</p>
@@ -1034,7 +1044,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
                   key={idx}
                   className="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-alpha-surface/60 border border-[#232636]/60"
                 >
-                  <Icon className="w-3 h-3 text-alpha-text-muted" />
+                  <Icon className="w-3 h-3 text-[#6366F1]" />
                   <span className="text-[11px] text-alpha-text-muted font-medium">
                     {chip.label}
                   </span>
@@ -1057,11 +1067,11 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
 
       {/* Reflection Completed Banner */}
       {isReflectionCompleted && activeSession && (
-        <div className="flex-shrink-0 px-4 sm:px-6 py-3 border-b border-alpha-border bg-green-500/5">
+        <div className="flex-shrink-0 px-4 sm:px-6 py-3 border-b border-alpha-border bg-[#22C55E]/5">
           <div className="max-w-3xl mx-auto flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#22C55E]/10 flex items-center justify-center flex-shrink-0">
               <svg
-                className="w-4 h-4 text-green-400"
+                className="w-4 h-4 text-[#22C55E]"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -1073,7 +1083,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-green-400">
+              <p className="text-sm font-medium text-[#22C55E]">
                 Refleksi Selesai!
               </p>
               <p className="text-[11px] text-alpha-text-muted">
@@ -1112,7 +1122,9 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
       )}
 
       {/* Chat Messages Area — flex-1 takes all remaining space */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
+        {/* Top gradient fade for depth */}
+        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0B0D17] to-transparent z-10 pointer-events-none" />
         <ScrollArea className="h-full">
           <div className="alpha-animate-in-fast px-4 sm:px-6 py-6 space-y-6 max-w-3xl mx-auto">
             {activeSession?.turns.map((turn) => (
@@ -1132,7 +1144,9 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
       </div>
 
       {/* Input Area */}
-      <div className="flex-shrink-0 border-t border-alpha-border bg-[#0B0D17]">
+      <div className="flex-shrink-0 border-t border-alpha-border bg-[#0B0D17] relative">
+        {/* Subtle top glow line */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-[#6366F1]/40 to-transparent" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3">
           {/* Prompt Suggestions — only in free chat mode */}
           {mode === 'free_chat' && (

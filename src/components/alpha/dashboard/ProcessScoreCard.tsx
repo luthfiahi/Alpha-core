@@ -22,10 +22,10 @@ function getScoreBg(score: number): string {
 }
 
 function getScoreGlow(score: number): string {
-  if (score <= 40) return '0 0 20px rgba(239,68,68,0.25)'
-  if (score <= 60) return '0 0 20px rgba(245,158,11,0.25)'
-  if (score <= 80) return '0 0 20px rgba(99,102,241,0.25)'
-  return '0 0 20px rgba(34,197,94,0.25)'
+  if (score <= 40) return '0 0 24px rgba(239,68,68,0.3)'
+  if (score <= 60) return '0 0 24px rgba(245,158,11,0.3)'
+  if (score <= 80) return '0 0 24px rgba(99,102,241,0.3)'
+  return '0 0 24px rgba(34,197,94,0.3)'
 }
 
 function getRatingText(score: number): string {
@@ -42,6 +42,13 @@ function getInsightText(score: number): string {
   return 'Perlu perhatian ekstra pada proses trading. Fokus kembali pada trading plan dan disiplin eksekusi.'
 }
 
+function getConsistencyLabel(score: number): string {
+  if (score > 80) return 'Sangat Konsisten'
+  if (score > 60) return 'Konsisten'
+  if (score > 40) return 'Perlu Diperbaiki'
+  return 'Tidak Konsisten'
+}
+
 export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps) {
   const hasData = score !== null
   const displayScore = score ?? 0
@@ -49,9 +56,9 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
   const bgColor = getScoreBg(displayScore)
   const glow = getScoreGlow(displayScore)
 
-  // Ring math — 140px diameter → radius = 70 - strokeWidth/2 = 56
-  const ringSize = 140
-  const strokeWidth = 10
+  // Ring math — 160px diameter → radius = 80 - strokeWidth/2 = 74
+  const ringSize = 160
+  const strokeWidth = 12
   const radius = (ringSize - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const progress = displayScore / 100
@@ -74,9 +81,16 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
   if (!hasData) {
     return (
       <div className="alpha-card p-6">
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col sm:flex-row items-center gap-8">
           {/* SVG Ring — dashed, static */}
           <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
+            {/* Radial glow background */}
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)',
+              }}
+            />
             <svg
               width={ringSize}
               height={ringSize}
@@ -95,20 +109,21 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
             </svg>
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="alpha-label mb-1">PROCESS SCORE</span>
+              <span className="alpha-label mb-1" style={{ color: '#6B7280' }}>PROCESS SCORE</span>
               <span
-                className="font-financial text-[36px] font-bold leading-none"
+                className="font-financial text-[42px] font-bold leading-none"
                 style={{ color: '#4B5563' }}
               >
                 —
               </span>
-              <span className="text-xs text-[#4B5563] mt-1.5">Belum cukup data</span>
+              <span className="text-xs mt-1.5" style={{ color: '#4B5563' }}>Belum cukup data</span>
             </div>
           </div>
 
           {/* Insight area */}
-          <div className="flex flex-col justify-center min-w-0">
-            <p className="alpha-body text-[#9CA3AF]">
+          <div className="flex flex-col justify-center min-w-0 flex-1">
+            <span className="alpha-label mb-2" style={{ color: '#6B7280' }}>INSIGHT</span>
+            <p className="alpha-body text-[#9CA3AF] leading-relaxed">
               Catat trade pertamamu untuk mulai melihat Process Score dan rekomendasi dari Alpha.
             </p>
           </div>
@@ -119,11 +134,18 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
 
   return (
     <div className="alpha-card p-6">
-      <div className="flex items-center gap-8">
+      <div className="flex flex-col sm:flex-row items-center gap-8">
         {/* Left: Ring + labels */}
         <div className="flex flex-col items-center flex-shrink-0">
-          <span className="alpha-label mb-2">PROCESS SCORE</span>
+          <span className="alpha-label mb-3" style={{ color: '#6B7280' }}>PROCESS SCORE</span>
           <div className="relative" style={{ width: ringSize, height: ringSize }}>
+            {/* Radial glow background */}
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${bgColor} 0%, transparent 70%)`,
+              }}
+            />
             <svg
               className="process-score-ring"
               width={ringSize}
@@ -131,6 +153,12 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
               viewBox={`0 0 ${ringSize} ${ringSize}`}
               style={{ filter: `drop-shadow(${glow})` }}
             >
+              <defs>
+                <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#6366F1" />
+                  <stop offset="100%" stopColor="#8B5CF6" />
+                </linearGradient>
+              </defs>
               {/* Background ring */}
               <circle
                 cx={ringSize / 2}
@@ -140,13 +168,13 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
                 stroke="#232636"
                 strokeWidth={strokeWidth}
               />
-              {/* Progress ring */}
+              {/* Progress ring with gradient */}
               <motion.circle
                 cx={ringSize / 2}
                 cy={ringSize / 2}
                 r={radius}
                 fill="none"
-                stroke={color}
+                stroke="url(#ring-gradient)"
                 strokeWidth={strokeWidth}
                 strokeLinecap="round"
                 strokeDasharray={circumference}
@@ -158,31 +186,41 @@ export function ProcessScoreCard({ score, previousScore }: ProcessScoreCardProps
             {/* Score in center */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span
-                className="font-financial text-[36px] font-bold leading-none"
+                className="font-financial text-[44px] font-bold leading-none"
                 style={{ color }}
               >
                 {displayScore}
               </span>
             </div>
           </div>
-          {/* Below ring: rating + trend */}
-          <div className="mt-3 flex flex-col items-center">
+          {/* Mini stat chips below ring */}
+          <div className="mt-4 flex items-center gap-2 flex-wrap justify-center">
             <span
-              className="text-sm font-semibold"
-              style={{ color }}
+              className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold"
+              style={{ color, backgroundColor: bgColor }}
             >
               {getRatingText(displayScore)}
             </span>
             {trendLabel && (
-              <span className="alpha-caption mt-0.5">
+              <span
+                className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium"
+                style={{ color: '#9CA3AF', backgroundColor: 'rgba(156,163,175,0.08)' }}
+              >
                 {trendLabel}
               </span>
             )}
+            <span
+              className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium"
+              style={{ color: '#9CA3AF', backgroundColor: 'rgba(156,163,175,0.08)' }}
+            >
+              {getConsistencyLabel(displayScore)}
+            </span>
           </div>
         </div>
 
         {/* Right: Insight text */}
         <div className="flex flex-col justify-center min-w-0 flex-1">
+          <span className="alpha-label mb-2" style={{ color: '#6B7280' }}>INSIGHT</span>
           <p className="alpha-body leading-relaxed">
             {getInsightText(displayScore)}
           </p>

@@ -202,14 +202,16 @@ export function SettingsPage() {
           <div className="space-y-1.5">
             <h1 className="alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]">SETTINGS</h1>
             <p className="alpha-body">
-              Kelola profil dan preferensi trading-mu.
+              Kelola akun dan preferensi tradingmu
             </p>
           </div>
 
           {/* ─────────── 1. Profile Section ─────────── */}
           <section className="alpha-card alpha-animate-in alpha-stagger-1 p-6">
-            <div className="flex items-center gap-2.5 mb-5">
-              <User className="w-4.5 h-4.5 text-[#6366F1]" />
+            <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[#232636]/60">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/15">
+                <User className="w-4 h-4 text-[#6366F1]" />
+              </div>
               <h2 className="alpha-heading-sm">
                 Profil
               </h2>
@@ -320,8 +322,10 @@ export function SettingsPage() {
 
           {/* ─────────── 2. Trading Preferences ─────────── */}
           <section className="alpha-card alpha-animate-in alpha-stagger-2 p-6">
-            <div className="flex items-center gap-2.5 mb-5">
-              <Clock className="w-4.5 h-4.5 text-[#6366F1]" />
+            <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[#232636]/60">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/15">
+                <Clock className="w-4 h-4 text-[#6366F1]" />
+              </div>
               <h2 className="alpha-heading-sm">
                 Preferensi Trading
               </h2>
@@ -437,8 +441,10 @@ export function SettingsPage() {
 
           {/* ─────────── 3. Notifications ─────────── */}
           <section className="alpha-card alpha-animate-in alpha-stagger-3 p-6">
-            <div className="flex items-center gap-2.5 mb-5">
-              <Bell className="w-4.5 h-4.5 text-[#6366F1]" />
+            <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-[#232636]/60">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/15">
+                <Bell className="w-4 h-4 text-[#6366F1]" />
+              </div>
               <h2 className="alpha-heading-sm">
                 Notifikasi
               </h2>
@@ -458,7 +464,7 @@ export function SettingsPage() {
                 <Switch
                   checked={weeklyReview}
                   onCheckedChange={(v) => { setWeeklyReview(v); localStorage.setItem('alpha:notif:weekly-review', String(v)) }}
-                  className="shrink-0"
+                  className="shrink-0 data-[state=checked]:bg-[#6366F1]"
                 />
               </div>
 
@@ -477,7 +483,7 @@ export function SettingsPage() {
                 <Switch
                   checked={behavioralAlert}
                   onCheckedChange={(v) => { setBehavioralAlert(v); localStorage.setItem('alpha:notif:behavioral-alert', String(v)) }}
-                  className="shrink-0"
+                  className="shrink-0 data-[state=checked]:bg-[#6366F1]"
                 />
               </div>
 
@@ -496,7 +502,7 @@ export function SettingsPage() {
                 <Switch
                   checked={growthReport}
                   onCheckedChange={(v) => { setGrowthReport(v); localStorage.setItem('alpha:notif:growth-report', String(v)) }}
-                  className="shrink-0"
+                  className="shrink-0 data-[state=checked]:bg-[#6366F1]"
                 />
               </div>
             </div>
@@ -504,8 +510,10 @@ export function SettingsPage() {
 
           {/* ─────────── 4. Danger Zone ─────────── */}
           <section className="alpha-card alpha-animate-in alpha-stagger-4 p-6 border-[#EF4444]/30">
-            <div className="flex items-center gap-2.5 mb-4">
-              <AlertTriangle className="w-4.5 h-4.5 text-[#EF4444]" />
+            <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-[#EF4444]/20">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/20">
+                <AlertTriangle className="w-4 h-4 text-[#EF4444]" />
+              </div>
               <h2 className="alpha-heading-sm text-[#EF4444]">
                 Zona Berbahaya
               </h2>

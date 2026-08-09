@@ -209,6 +209,12 @@ export function BehavioralInsights() {
             {data?.unresolvedCount ?? 0} event belum diselesaikan
           </p>
         </div>
+        {data?.unresolvedCount ? data.unresolvedCount > 0 : false && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 border border-amber-400/25 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-400">
+            <AlertOctagon size={10} />
+            Needs Attention
+          </span>
+        )}
       </div>
 
       {/* Filters */}
@@ -443,9 +449,15 @@ export function BehavioralInsights() {
                   </div>
                 ))
               ) : (
-                <div className="py-8 text-center">
-                  <AlertOctagon className="w-8 h-8 text-[#232636] mx-auto mb-2" />
-                  <p className="alpha-body text-[#6B7280]">Tidak ada event ditemukan</p>
+                <div className="py-12 text-center">
+                  <div className="relative w-14 h-14 mx-auto mb-3">
+                    <div className="absolute inset-0 rounded-xl bg-[#6366F1]/10 blur-lg" />
+                    <div className="relative w-14 h-14 rounded-xl bg-[#10121E] border border-[#232636] flex items-center justify-center">
+                      <AlertOctagon className="w-7 h-7 text-[#4B5563]" />
+                    </div>
+                  </div>
+                  <p className="alpha-heading-sm text-[#6B7280]">Tidak ada event ditemukan</p>
+                  <p className="alpha-caption mt-1">Event perilaku akan muncul setelah AI mendeteksi pola trading</p>
                 </div>
               )}
             </div>

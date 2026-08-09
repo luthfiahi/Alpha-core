@@ -25,6 +25,7 @@ export interface TradeRow {
   entryTime: string | null
   createdAt: string
   status: string
+  [key: string]: unknown
 }
 
 interface RecentTradesProps {
@@ -92,6 +93,10 @@ function formatTime(dateStr: string | null): string {
   }
 }
 
+function isSignificantPnL(val: number): boolean {
+  return Math.abs(val) >= 50
+}
+
 function SkeletonRows() {
   return (
     <>
@@ -145,7 +150,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#232636] hover:bg-transparent">
-              <TableHead className="alpha-caption font-medium h-9">
+              <TableHead className="alpha-caption font-medium h-9 pl-5">
                 Pair
               </TableHead>
               <TableHead className="alpha-caption font-medium h-9">
@@ -176,14 +181,23 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="h-auto py-8"
+                  className="h-auto py-12"
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <FileText className="h-6 w-6 text-[#6B7280] alpha-animate-fade" />
+                  <div className="flex flex-col items-center gap-3">
+                    {/* CSS illustration: abstract chart shape */}
+                    <svg width="64" height="48" viewBox="0 0 64 48" fill="none" className="opacity-30">
+                      <rect x="8" y="32" width="4" height="12" rx="2" fill="#6B7280" />
+                      <rect x="18" y="24" width="4" height="20" rx="2" fill="#6B7280" />
+                      <rect x="28" y="16" width="4" height="28" rx="2" fill="#6B7280" />
+                      <rect x="38" y="20" width="4" height="24" rx="2" fill="#6B7280" />
+                      <rect x="48" y="8" width="4" height="36" rx="2" fill="#6B7280" />
+                      <circle cx="30" cy="18" r="10" stroke="#6366F1" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
+                      <path d="M12 28 L20 20 L30 14 L40 18 L50 10" stroke="#6366F1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                    </svg>
                     <p className="text-sm font-medium text-[#9CA3AF]">
                       Belum ada trade tercatat
                     </p>
-                    <p className="alpha-caption">
+                    <p className="alpha-caption text-center max-w-[220px]">
                       Mulai catat trade pertamamu untuk melacak performa
                     </p>
                     <Button
@@ -205,14 +219,43 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
               trades.map((trade) => (
                 <TableRow
                   key={trade.id}
-                  className="border-b border-[#232636]/50 cursor-pointer transition-colors duration-150 hover:bg-[rgba(255,255,255,0.02)]"
+                  className="border-b border-[#232636]/50 cursor-pointer transition-colors duration-150 hover:bg-[rgba(255,255,255,0.02)] relative"
                   onClick={() => {
                     useNavigationStore.getState().selectTrade(trade.id)
                     navigate('journal-detail')
                   }}
                 >
-                  <TableCell className="text-sm font-medium text-[#F3F4F6] py-3">
+                  {/* Color bar on left */}
+                  <TableCell
+                    className="p-0 w-0.5"
+                    style={{
+                      padding: 0,
+                      border: 'none',
+                      position: 'relative' as const,
+                    }}
+                  >
+                    <div
+                      className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full"
+                      style={{
+                        backgroundColor: trade.profitLoss >= 0 ? '#22C55E' : '#EF4444',
+                        opacity: trade.profitLoss === 0 ? 0.3 : 0.7,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell className="text-sm font-medium text-[#F3F4F6] py-3 pl-5">
                     {trade.pair}
+                    {/* Show process score badge if available */}
+                    {trade.processScore !== undefined && trade.processScore !== null && (
+                      <span
+                        className="ml-2 text-[10px] font-financial font-medium px-1.5 py-0.5 rounded-full"
+                        style={{
+                          color: trade.processScore > 60 ? '#22C55E' : trade.processScore > 40 ? '#F59E0B' : '#EF4444',
+                          backgroundColor: trade.processScore > 60 ? 'rgba(34,197,94,0.1)' : trade.processScore > 40 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
+                        }}
+                      >
+                        PS {trade.processScore}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell className="py-3">
                     <Badge
@@ -233,11 +276,18 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                   </TableCell>
                   <TableCell className="text-right py-3">
                     <span
-                      className={`font-financial text-sm font-medium ${
+                      className={`font-financial text-sm ${
+                        isSignificantPnL(trade.profitLoss) ? 'font-bold' : 'font-medium'
+                      } ${
                         trade.profitLoss >= 0
                           ? 'text-[#22C55E]'
                           : 'text-[#EF4444]'
                       }`}
+                      style={
+                        isSignificantPnL(trade.profitLoss)
+                          ? { textShadow: trade.profitLoss >= 0 ? '0 0 8px rgba(34,197,94,0.3)' : '0 0 8px rgba(239,68,68,0.3)' }
+                          : undefined
+                      }
                     >
                       {formatPnL(trade.profitLoss)}
                     </span>

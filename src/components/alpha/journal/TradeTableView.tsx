@@ -1,6 +1,6 @@
 'use client';
 
-import { MoreHorizontal, Pencil, Trash2, Eye } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2, Eye, CheckCircle2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -34,7 +34,8 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
         <Table>
           <TableHeader>
             <TableRow className="border-[#232636] hover:bg-transparent">
-              <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 px-4 uppercase tracking-wider">Pair</TableHead>
+              <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 pl-4 pr-0 w-1"></TableHead>
+              <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 px-3 uppercase tracking-wider">Pair</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 uppercase tracking-wider">Direction</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 text-right uppercase tracking-wider">Entry</TableHead>
               <TableHead className="text-[#6B7280] text-[11px] font-medium h-9 text-right uppercase tracking-wider">P/L</TableHead>
@@ -50,11 +51,20 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
               return (
                 <TableRow
                   key={trade.id}
-                  className="border-[#232636]/60 cursor-pointer hover:bg-[#1E2030]/60 transition-all duration-150 alpha-row-hover"
+                  className="border-[#232636]/60 cursor-pointer hover:bg-[#6366F1]/5 transition-all duration-150 alpha-row-hover"
                   onClick={() => onSelectTrade(trade.id)}
                 >
+                  {/* Left color bar */}
+                  <TableCell className="pl-4 pr-0 w-1 p-0">
+                    <div
+                      className={`w-1 rounded-full my-1.5 ${
+                        pnlPositive ? 'bg-[#22C55E]/50' : 'bg-[#EF4444]/50'
+                      }`}
+                    />
+                  </TableCell>
+
                   {/* Pair */}
-                  <TableCell className="px-4 py-3">
+                  <TableCell className="px-3 py-3">
                     <span className="font-financial text-sm font-semibold text-[#F3F4F6]">
                       {trade.pair}
                     </span>
@@ -98,7 +108,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                     {trade.processScore !== null && trade.processScore !== undefined ? (
                       <span
                         className={
-                          `inline-flex items-center justify-center rounded-lg px-2 py-0.5 text-xs font-bold ` +
+                          `inline-flex items-center justify-center rounded-lg px-2 py-0.5 text-xs font-bold ring-1 ring-inset ` +
                           getScoreBgColor(trade.processScore)
                         }
                       >
@@ -112,7 +122,8 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
                   {/* Reflection Status Badge */}
                   <TableCell className="py-3 text-center">
                     {trade.hasReflected ? (
-                      <span className="inline-flex items-center rounded-lg bg-[#22C55E]/15 px-2 py-0.5 text-[11px] font-medium text-[#22C55E]">
+                      <span className="inline-flex items-center gap-1 rounded-lg bg-[#22C55E]/15 px-2 py-0.5 text-[11px] font-medium text-[#22C55E]">
+                        <CheckCircle2 className="size-3" />
                         Reflected
                       </span>
                     ) : trade.reflectionNotes ? (

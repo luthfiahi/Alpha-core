@@ -97,7 +97,7 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="text-[#9CA3AF] hover:text-[#F3F4F6] alpha-press"
+            className="text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#1E2030] alpha-press border border-[#232636]"
             onClick={onBack}
           >
             <X className="size-4 mr-1" />
@@ -105,7 +105,7 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
           </Button>
           <Button
             size="sm"
-            className="bg-[#6366F1] hover:bg-[#818CF8] text-white alpha-press"
+            className="bg-[#6366F1] hover:bg-[#4F46E5] text-white alpha-press shadow-lg shadow-[#6366F1]/25 hover:shadow-[#6366F1]/35 transition-all duration-300"
             onClick={handleSave}
             disabled={!hasChanges || updateMutation.isPending}
           >
@@ -116,7 +116,17 @@ export function PlaybookEditor({ playbook, onBack }: PlaybookEditorProps) {
       </div>
 
       {/* Form fields */}
-      <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-5 space-y-4">
+      <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-5 space-y-5">
+        {/* Form section header */}
+        <div className="flex items-center gap-2.5 pb-3 border-b border-[#232636]/60">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#6366F1]/10">
+            <Save className="size-3 text-[#6366F1]" />
+          </div>
+          <h3 className="alpha-heading-xs uppercase tracking-wider text-[#9CA3AF]">
+            Detail Playbook
+          </h3>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <label className="block alpha-label text-[#9CA3AF] mb-1.5">

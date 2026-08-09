@@ -36,12 +36,13 @@ const PAGE_SIZE = 15;
 function EmptyState({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className='flex flex-col items-center justify-center py-24 text-center'>
-      <div className='size-16 rounded-2xl bg-[#151827] border border-[#232636] flex items-center justify-center mb-5'>
-        <BookOpen className='size-7 text-[#4B5563]' />
+      <div className='size-20 rounded-2xl flex items-center justify-center mb-5 relative overflow-hidden'>
+        <div className='absolute inset-0 animate-pulse' style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))' }} />
+        <BookOpen className='size-9 text-[#818CF8] relative z-10' />
       </div>
       <h3 className='text-base font-semibold text-[#F3F4F6] mb-1.5'>No trades yet</h3>
-      <p className='alpha-caption max-w-xs'>
-        Belum ada trade yang dicatat.
+      <p className='alpha-caption max-w-xs text-[#9CA3AF]'>
+        Belum ada trade yang dicatat. Mulai catat trade pertamamu untuk membangun disiplin dan jejak refleksi.
       </p>
       <Button
         onClick={onNavigate}
@@ -185,11 +186,14 @@ export function JournalPage() {
     <div className='space-y-5 alpha-animate-in'>
       {/* Header */}
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-        <div className='flex items-baseline gap-3'>
-          <h1 className='alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]'>JOURNAL</h1>
-          <span className='alpha-caption text-[#6B7280]'>
-            {isLoading ? '…' : `${total} trades`}
-          </span>
+        <div>
+          <div className='flex items-baseline gap-3'>
+            <h1 className='alpha-heading-xl uppercase tracking-wider text-[#F3F4F6]'>JOURNAL</h1>
+            <span className='alpha-caption text-[#6B7280]'>
+              {isLoading ? '…' : `${total} trades`}
+            </span>
+          </div>
+          <p className='alpha-caption text-[#9CA3AF] mt-0.5'>Catat, refleksi, dan tingkatkan proses tradingmu</p>
         </div>
         <div className='flex items-center gap-2'>
           {/* View Toggle */}
@@ -197,9 +201,9 @@ export function JournalPage() {
             <button
               type='button'
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-md transition-colors duration-150 alpha-press ${
+              className={`p-1.5 rounded-md transition-all duration-150 alpha-press ${
                 viewMode === 'table'
-                  ? 'bg-[#6366F1]/15 text-[#818CF8]'
+                  ? 'bg-[#6366F1]/20 text-[#818CF8] shadow-sm shadow-[#6366F1]/10'
                   : 'text-[#6B7280] hover:text-[#9CA3AF]'
               }`}
             >
@@ -208,9 +212,9 @@ export function JournalPage() {
             <button
               type='button'
               onClick={() => setViewMode('card')}
-              className={`p-1.5 rounded-md transition-colors duration-150 alpha-press ${
+              className={`p-1.5 rounded-md transition-all duration-150 alpha-press ${
                 viewMode === 'card'
-                  ? 'bg-[#6366F1]/15 text-[#818CF8]'
+                  ? 'bg-[#6366F1]/20 text-[#818CF8] shadow-sm shadow-[#6366F1]/10'
                   : 'text-[#6B7280] hover:text-[#9CA3AF]'
               }`}
             >
@@ -227,11 +231,6 @@ export function JournalPage() {
           </Button>
         </div>
       </div>
-
-      {/* Subtitle */}
-      <p className='alpha-caption -mt-3'>
-        Catat dan refleksi setiap trade.
-      </p>
 
       {/* Filters — Sticky */}
       {!isLoading && (total > 0 || Object.entries(filters).some(([k, v]) => v !== DEFAULT_FILTERS[k as keyof TradeFiltersType])) && (
@@ -295,7 +294,7 @@ export function JournalPage() {
                 <Button
                   variant='ghost'
                   size='icon'
-                  className='size-8 hover:bg-[#1E2030] alpha-press'
+                  className='size-8 hover:bg-[#1E2030] alpha-press rounded-lg'
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                 >
@@ -318,9 +317,9 @@ export function JournalPage() {
                       key={pageNum}
                       type='button'
                       onClick={() => setPage(pageNum)}
-                      className={`size-8 rounded-md text-xs font-medium transition-colors duration-150 alpha-press ${
+                      className={`size-8 rounded-lg text-xs font-medium transition-all duration-150 alpha-press ${
                         page === pageNum
-                          ? 'bg-[#6366F1]/15 text-[#818CF8]'
+                          ? 'bg-[#6366F1]/20 text-[#818CF8] shadow-sm shadow-[#6366F1]/10'
                           : 'text-[#9CA3AF] hover:bg-[#1E2030]'
                       }`}
                     >
@@ -331,7 +330,7 @@ export function JournalPage() {
                 <Button
                   variant='ghost'
                   size='icon'
-                  className='size-8 hover:bg-[#1E2030] alpha-press'
+                  className='size-8 hover:bg-[#1E2030] alpha-press rounded-lg'
                   disabled={page >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 >

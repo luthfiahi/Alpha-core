@@ -192,10 +192,12 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="alpha-card-glow alpha-press relative overflow-hidden rounded-[14px] border border-[#232636] bg-[#151827]"
     >
+      {/* Gradient header strip */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#A78BFA]" />
       {/* Subtle gradient overlay */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#6366F1]/[0.04] via-transparent to-[#8B5CF6]/[0.03]" />
-      {/* Top accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#6366F1]/40 to-transparent" />
+      {/* Subtle diamond pattern background decoration */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(99,102,241,1) 35px, rgba(99,102,241,1) 36px), repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(99,102,241,1) 35px, rgba(99,102,241,1) 36px)' }} />
 
       <div className="relative p-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-center">
@@ -219,9 +221,9 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
                 <span className="alpha-caption uppercase tracking-wider">Dominant Trait</span>
               </div>
               {emotionConfig ? (
-                <div className={`inline-flex items-center gap-2.5 rounded-full border px-4 py-1.5 alpha-badge-interactive ${emotionConfig.bg} ${emotionConfig.border}`}>
-                  <div className={`h-2 w-2 rounded-full ${emotionConfig.color}`} style={{ backgroundColor: 'currentColor' }} />
-                  <span className={`alpha-body font-semibold ${emotionConfig.color}`}>
+                <div className={`inline-flex items-center gap-2.5 rounded-full border px-5 py-2 alpha-badge-interactive ${emotionConfig.bg} ${emotionConfig.border}`}>
+                  <div className={`h-2.5 w-2.5 rounded-full ${emotionConfig.color}`} style={{ backgroundColor: 'currentColor' }} />
+                  <span className={`alpha-heading-xs font-semibold ${emotionConfig.color}`}>
                     {emotionConfig.label}
                   </span>
                 </div>
@@ -230,8 +232,8 @@ export function IdentityCard({ tradingStyle, dominantEmotion, totalTradesAnalyze
               )}
             </div>
 
-            {/* Stats row: Total Trades + Period */}
-            <div className="flex items-end gap-8 pt-2">
+            {/* Stats row: Total Trades + Period — with subtle divider */}
+            <div className="flex items-end gap-8 border-t border-[#232636]/50 mt-2 pt-4">
               <div>
                 <div className="flex items-center gap-2 mb-1.5">
                   <BarChart3 size={14} className="text-[#6B7280]" />

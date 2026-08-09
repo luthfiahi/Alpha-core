@@ -55,6 +55,9 @@ export function PlaybookCard({
       )}
       onClick={() => onOpen(playbook.id)}
     >
+      {/* Gradient strip at top */}
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#A78BFA]" />
+
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-2.5">
         <div className="flex items-center gap-3 min-w-0">
@@ -80,10 +83,10 @@ export function PlaybookCard({
               )}
               <span
                 className={cn(
-                  'inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-md',
+                  'inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-md',
                   playbook.isActive
-                    ? 'bg-emerald-400/10 text-emerald-400'
-                    : 'bg-amber-400/10 text-amber-400'
+                    ? 'bg-emerald-400/15 text-emerald-400 border border-emerald-400/25'
+                    : 'bg-amber-400/15 text-amber-400 border border-amber-400/25'
                 )}
               >
                 {playbook.isActive ? 'Active' : 'Draft'}
@@ -101,21 +104,38 @@ export function PlaybookCard({
         </p>
       )}
 
-      {/* Stats row */}
+      {/* Stats row — with visual progress indicator */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-1.5 alpha-caption text-[#9CA3AF]">
           <ListChecks className="size-3.5" />
           <span>{playbook._count.checklists} checklist</span>
         </div>
+        <div className="w-px h-3 bg-[#232636]" />
         <div className="flex items-center gap-1.5 alpha-caption text-[#9CA3AF]">
           <TrendingUp className="size-3.5" />
           <span>{playbook._count.trades} trade</span>
         </div>
+        <div className="ml-auto flex items-center gap-1.5">
+          <span className="alpha-caption text-[#4B5563]">Setup</span>
+          <span className="font-financial text-xs font-semibold text-[#818CF8]">{completeness}%</span>
+        </div>
+      </div>
+
+      {/* Visual progress bar for completeness */}
+      <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-[#232636]/50">
+        <div
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{
+            width: `${completeness}%`,
+            background: completeness >= 80 ? 'linear-gradient(to right, #6366F1, #818CF8)' : completeness >= 50 ? '#6366F1' : '#4B5563',
+            opacity: completeness > 0 ? 1 : 0,
+          }}
+        />
       </div>
 
       {/* Footer actions */}
       <div
-        className="flex items-center justify-between pt-3 border-t border-[#232636]"
+        className="flex items-center justify-between pt-3 border-t border-[#232636]/60"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2">

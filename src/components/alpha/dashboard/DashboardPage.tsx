@@ -13,6 +13,7 @@ import { QuickActions } from './QuickActions'
 import { RecentTrades, type TradeRow } from './RecentTrades'
 import { WeeklyProgress } from './WeeklyProgress'
 import { ReflectionGapSummary } from './ReflectionGapSummary'
+import { BehavioralTrend } from './BehavioralTrend'
 
 interface DashboardData {
   trader: { id: string; name: string; email: string }
@@ -51,28 +52,31 @@ function DashboardSkeleton() {
         {/* Row 2: Process Score + AI Insight */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-7">
-            <SkeletonBlock className="h-64 w-full rounded-xl" />
+            <SkeletonBlock className="h-72 w-full rounded-xl" />
           </div>
           <div className="md:col-span-5">
-            <SkeletonBlock className="h-64 w-full rounded-xl" />
+            <SkeletonBlock className="h-72 w-full rounded-xl" />
           </div>
         </div>
 
         {/* Row 3: Quick Actions skeleton */}
-        <SkeletonBlock className="h-16 w-full rounded-xl" />
+        <SkeletonBlock className="h-28 w-full rounded-xl" />
 
-        {/* Row 4: Recent Trades + Weekly Progress */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-7">
-            <SkeletonBlock className="h-80 w-full rounded-xl" />
+        {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-5">
+            <SkeletonBlock className="h-96 w-full rounded-xl" />
           </div>
-          <div className="md:col-span-5">
-            <SkeletonBlock className="h-80 w-full rounded-xl" />
+          <div className="lg:col-span-4">
+            <SkeletonBlock className="h-96 w-full rounded-xl" />
+          </div>
+          <div className="lg:col-span-3">
+            <SkeletonBlock className="h-96 w-full rounded-xl" />
           </div>
         </div>
 
         {/* Row 5: Reflection Gap */}
-        <SkeletonBlock className="h-28 w-full rounded-xl" />
+        <SkeletonBlock className="h-32 w-full rounded-xl" />
       </div>
     </main>
   )
@@ -174,6 +178,12 @@ export function DashboardPage() {
   return (
     <main className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-6">
+        {/* Row 0: Page Heading with subtitle */}
+        <div className="alpha-animate-in alpha-stagger-0">
+          <h1 className="alpha-heading-xl text-[#F3F4F6]">Dashboard</h1>
+          <p className="alpha-caption mt-1" style={{ color: '#6B7280' }}>Command Center</p>
+        </div>
+
         {/* Row 1: Welcome Hero */}
         <div className="alpha-animate-in alpha-stagger-1">
           <WelcomeHero
@@ -198,16 +208,19 @@ export function DashboardPage() {
           <QuickActions />
         </div>
 
-        {/* Row 4: Recent Trades + Weekly Progress */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-4">
-          <div className="md:col-span-7">
+        {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-4">
+          <div className="lg:col-span-5">
             <RecentTrades
               trades={data?.recentTrades ?? []}
               isLoading={false}
             />
           </div>
-          <div className="md:col-span-5">
+          <div className="lg:col-span-4">
             <WeeklyProgress data={data?.weeklyTrend ?? []} />
+          </div>
+          <div className="lg:col-span-3">
+            <BehavioralTrend tags={[]} />
           </div>
         </div>
 

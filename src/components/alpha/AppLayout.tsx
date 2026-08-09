@@ -52,6 +52,52 @@ export function AppLayout({ children }: AppLayoutProps) {
 // Mobile Header Bar
 // ========================================
 
+function AlphaLogoMarkSmall({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16 2L29 16L16 30L3 16L16 2Z"
+        fill="url(#mobile-alpha-gradient)"
+        stroke="rgba(129,140,248,0.3)"
+        strokeWidth="0.5"
+      />
+      <text
+        x="16"
+        y="17.5"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#FFFFFF"
+        fontSize="16"
+        fontWeight="700"
+        fontFamily="'Inter', system-ui, -apple-system, sans-serif"
+        style={{ letterSpacing: '-0.02em' }}
+      >
+        α
+      </text>
+      <defs>
+        <linearGradient
+          id="mobile-alpha-gradient"
+          x1="3"
+          y1="2"
+          x2="29"
+          y2="30"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#818CF8" />
+          <stop offset="0.5" stopColor="#6366F1" />
+          <stop offset="1" stopColor="#4F46E5" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
 function MobileHeader() {
   const currentPage = useNavigationStore((s) => s.currentPage)
 
@@ -68,8 +114,15 @@ function MobileHeader() {
   }
 
   return (
-    <header className="alpha-animate-fade flex h-14 shrink-0 items-center gap-3 border-b border-[#232636] px-4">
+    <header
+      className="alpha-animate-fade flex h-14 shrink-0 items-center gap-3 px-4 relative"
+      style={{
+        borderBottom: '1px solid #232636',
+        boxShadow: '0 1px 8px rgba(0,0,0,0.2)',
+      }}
+    >
       <AppSidebar />
+      <AlphaLogoMarkSmall size={24} />
       <h1 className="text-sm font-semibold text-[#F3F4F6]">
         {pageLabels[currentPage] || 'Project Alpha'}
       </h1>

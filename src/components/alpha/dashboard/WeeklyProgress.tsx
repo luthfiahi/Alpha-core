@@ -23,14 +23,37 @@ function formatDateLabel(dateStr: string): string {
   }
 }
 
-function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+function getFullDayLabel(dateStr: string): string {
+  try {
+    const d = new Date(dateStr + 'T00:00:00')
+    return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })
+  } catch {
+    return dateStr
+  }
+}
+
+function PremiumTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
   if (!active || !payload?.length) return null
+  const value = payload[0].value
+  const color = value > 80 ? '#22C55E' : value > 60 ? '#6366F1' : value > 40 ? '#F59E0B' : '#EF4444'
   return (
-    <div className="bg-[#151827] border border-[#232636] rounded-lg px-3 py-2 shadow-lg">
-      <p className="text-[10px] text-[#6B7280] mb-0.5">{label}</p>
-      <p className="text-sm font-financial font-semibold text-[#F3F4F6]">
-        {payload[0].value}
-      </p>
+    <div
+      className="rounded-xl px-4 py-3 shadow-2xl"
+      style={{
+        backgroundColor: '#1a1d2e',
+        border: '1px solid #2a2d40',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+      }}
+    >
+      <p className="text-[10px] font-medium mb-1.5" style={{ color: '#6B7280' }}>{label}</p>
+      <div className="flex items-baseline gap-2">
+        <span className="font-financial text-xl font-bold" style={{ color: '#F3F4F6' }}>
+          {value}
+        </span>
+        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ color, backgroundColor: `${color}18` }}>
+          {value > 80 ? 'Excellent' : value > 60 ? 'Good' : value > 40 ? 'Fair' : 'Needs Work'}
+        </span>
+      </div>
     </div>
   )
 }
@@ -45,7 +68,19 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
         </div>
         <div className="flex-1 min-h-[180px] flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <TrendingUp className="h-8 w-8 text-[#4B5563]" />
+            {/* Subtle SVG illustration */}
+            <svg width="80" height="56" viewBox="0 0 80 56" fill="none" className="opacity-25">
+              <path d="M8 44 L20 36 L32 40 L44 28 L56 32 L68 20 L80 16" stroke="#6366F1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M8 44 L20 36 L32 40 L44 28 L56 32 L68 20 L80 16 L80 56 L8 56 Z" fill="url(#weekly-empty-grad)" />
+              <circle cx="68" cy="20" r="4" fill="#6366F1" opacity="0.4" />
+              <circle cx="68" cy="20" r="7" stroke="#6366F1" strokeWidth="1" strokeDasharray="2 2" opacity="0.3" />
+              <defs>
+                <linearGradient id="weekly-empty-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#6366F1" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#6366F1" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+            </svg>
             <p className="text-sm font-medium text-[#9CA3AF]">
               Belum cukup data untuk membaca perkembangan minggu ini.
             </p>
@@ -61,15 +96,29 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
   const chartData = data.map((d) => ({
     ...d,
     label: formatDateLabel(d.date),
+    fullLabel: getFullDayLabel(d.date),
   }))
 
+  // Get the latest (current) score
+  const currentScore = chartData[chartData.length - 1]?.score ?? 0
+  const currentColor = currentScore > 80 ? '#22C55E' : currentScore > 60 ? '#6366F1' : currentScore > 40 ? '#F59E0B' : '#EF4444'
+
   return (
-    <div className="alpha-card p-5 flex flex-col h-full">
-      <div>
-        <h3 className="alpha-heading-sm">Weekly Progress</h3>
-        <p className="alpha-caption mt-0.5">Proses mingguan</p>
+    <div className="alpha-card p-5 flex flex-col h-full relative">
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="alpha-heading-sm">Weekly Progress</h3>
+          <p className="alpha-caption mt-0.5">Proses mingguan</p>
+        </div>
+        {/* Large current score overlay */}
+        <div className="flex flex-col items-end">
+          <span className="font-financial text-3xl font-bold leading-none" style={{ color: currentColor }}>
+            {currentScore}
+          </span>
+          <span className="alpha-caption mt-0.5" style={{ color: '#6B7280' }}>Today</span>
+        </div>
       </div>
-      <div className="flex-1 min-h-[180px] mt-4 alpha-animate-scale">
+      <div className="flex-1 min-h-[180px] mt-4 alpha-animate-scale relative">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
@@ -85,8 +134,9 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
               dataKey="label"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: '#6B7280' }}
+              tick={{ fontSize: 11, fill: '#9CA3AF', fontWeight: 500 }}
               dy={8}
+              interval={0}
             />
             <YAxis
               domain={[0, 100]}
@@ -96,13 +146,27 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
               ticks={[0, 50, 100]}
               dx={-4}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={<PremiumTooltip />}
+              cursor={{
+                stroke: 'rgba(99,102,241,0.3)',
+                strokeWidth: 1,
+                strokeDasharray: '4 4',
+              }}
+            />
             <Area
               type="monotone"
               dataKey="score"
               stroke="#6366F1"
-              strokeWidth={2}
+              strokeWidth={2.5}
               fill="url(#scoreGradient)"
+              dot={false}
+              activeDot={{
+                r: 5,
+                fill: '#6366F1',
+                stroke: '#151827',
+                strokeWidth: 3,
+              }}
             />
           </AreaChart>
         </ResponsiveContainer>

@@ -289,14 +289,14 @@ export function JournalDetailPage() {
               <X className='size-4 text-[#9CA3AF]' />
             </Button>
             <div className='flex items-center gap-2.5'>
-              <span className='alpha-heading-lg font-financial text-xl font-bold text-[#F3F4F6]'>
+              <span className='alpha-heading-lg font-financial text-2xl font-bold text-[#F3F4F6]'>
                 {trade.pair}
               </span>
               <span
-                className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ${
+                className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${
                   trade.direction === 'LONG'
-                    ? 'bg-[#22C55E]/15 text-[#22C55E]'
-                    : 'bg-[#EF4444]/15 text-[#EF4444]'
+                    ? 'bg-[#22C55E]/15 text-[#22C55E] ring-1 ring-[#22C55E]/30'
+                    : 'bg-[#EF4444]/15 text-[#EF4444] ring-1 ring-[#EF4444]/30'
                 }`}
               >
                 {trade.direction}
@@ -414,13 +414,13 @@ export function JournalDetailPage() {
             <div className='text-center'>
               <p className='alpha-caption mb-1'>P/L</p>
               <span
-                className={`font-financial text-2xl font-bold ${
+                className={`font-financial text-4xl font-bold tracking-tight ${
                   pnlPositive ? 'text-[#22C55E]' : 'text-[#EF4444]'
                 }`}
               >
                 {formatPnL(trade.profitLoss)}
               </span>
-              <p className='alpha-caption mt-0.5'>{trade.currency}</p>
+              <p className='alpha-caption mt-1 text-[#9CA3AF]'>{trade.currency}</p>
             </div>
             <Separator orientation='vertical' className='h-12 bg-[#232636]' />
             <div className='text-center'>
@@ -483,8 +483,8 @@ export function JournalDetailPage() {
           </div>
         </div>
 
-        {/* Reflection Section */}
-        <div className='alpha-card alpha-animate-in alpha-stagger-5 p-5 space-y-4'>
+        {/* Reflection Section — visually distinct */}
+        <div className='alpha-card alpha-animate-in alpha-stagger-5 p-5 space-y-4 border-l-2 border-l-[#6366F1]/40'>
           <div className='flex items-center justify-between'>
             <h3 className='alpha-heading-sm uppercase tracking-wider'>
               <BrainCircuit className='size-3.5 inline mr-1.5' />

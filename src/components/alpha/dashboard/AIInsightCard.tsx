@@ -75,38 +75,68 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
 
   return (
     <div className="alpha-card p-5 h-full flex flex-col justify-between relative overflow-hidden">
-      {/* Gradient left border via pseudo-element approach */}
+      {/* Gradient left border — more visible (2px) */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1"
+        className="absolute left-0 top-0 bottom-0 w-0.5"
         style={{
-          background: 'linear-gradient(to bottom, #6366F1, #A78BFA)',
+          background: 'linear-gradient(to bottom, #6366F1, #8B5CF6, #A78BFA)',
         }}
       />
-      <div className="pl-3">
-        <div className="flex items-center gap-2.5 mb-3">
-          {/* AI Avatar with subtle breathing animation */}
-          <div
-            className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{
-              background:
-                'linear-gradient(135deg, #6366F1 0%, #A78BFA 100%)',
-              animation: 'alpha-subtle-pulse 3s ease-in-out infinite',
-            }}
-          >
-            <svg
-              width={14}
-              height={14}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      <div className="pl-4">
+        <div className="flex items-center gap-3 mb-3">
+          {/* AI Avatar — larger with ring/glow and shimmer */}
+          <div className="relative flex-shrink-0">
+            {/* Outer glow ring */}
+            <div
+              className="absolute -inset-1 rounded-full opacity-40"
+              style={{
+                background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%)',
+                filter: 'blur(4px)',
+              }}
+            />
+            {/* Shimmer animation overlay */}
+            <style>{`
+              @keyframes ai-shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+              }
+              .ai-avatar-shimmer::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                background: linear-gradient(
+                  90deg,
+                  transparent 0%,
+                  rgba(255,255,255,0.15) 50%,
+                  transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: ai-shimmer 3s ease-in-out infinite;
+              }
+            `}</style>
+            <div
+              className="ai-avatar-shimmer relative w-9 h-9 rounded-full flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #6366F1 0%, #A78BFA 100%)',
+                animation: 'alpha-subtle-pulse 3s ease-in-out infinite',
+              }}
             >
-              <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4Z" />
-              <path d="M16 14H8a6 6 0 0 0-6 6v2h20v-2a6 6 0 0 0-6-6Z" />
-              <path d="M9 18h6" />
-            </svg>
+              <svg
+                width={16}
+                height={16}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4Z" />
+                <path d="M16 14H8a6 6 0 0 0-6 6v2h20v-2a6 6 0 0 0-6-6Z" />
+                <path d="M9 18h6" />
+              </svg>
+            </div>
           </div>
           <div className="flex flex-col">
             <span className="text-xs font-semibold tracking-wide text-[#6366F1]">
@@ -124,8 +154,14 @@ export function AIInsightCard({ insight, traderContext }: AIInsightCardProps) {
           {content}
         </p>
       </div>
-      <div className="mt-3 pl-3">
+      <div className="mt-3 pl-4 flex items-center justify-between">
         <span className="alpha-caption">{time}</span>
+        <span
+          className="alpha-link text-[11px] font-medium"
+          style={{ color: '#818CF8' }}
+        >
+          Read more →
+        </span>
       </div>
     </div>
   )

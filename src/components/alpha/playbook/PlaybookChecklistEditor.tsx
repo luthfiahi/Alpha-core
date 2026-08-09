@@ -309,9 +309,11 @@ export function PlaybookChecklistEditor({
                   {cl.items.map((item, itemIdx) => (
                     <div
                       key={item.id}
-                      className="group/item flex items-start gap-2 py-1.5 px-2 rounded-lg hover:bg-[#1E2030] transition-colors alpha-row-hover"
+                      className="group/item flex items-start gap-2.5 py-1.5 px-2 rounded-lg hover:bg-[#1E2030] transition-all alpha-row-hover"
                     >
-                      <CheckCircle2 className="size-3.5 text-[#4B5563] shrink-0 mt-0.5" />
+                      <div className="mt-0.5 shrink-0 flex h-[18px] w-[18px] items-center justify-center rounded border border-[#6366F1]/25 bg-[#6366F1]/5">
+                        <CheckCircle2 className="size-3 text-[#818CF8]/70" />
+                      </div>
                       <span className="flex-1 text-xs text-[#D1D5DB] leading-relaxed">
                         {item.text}
                       </span>
@@ -371,7 +373,9 @@ export function PlaybookChecklistEditor({
                 </div>
                 <div className="px-4 pb-3">
                   <div className="flex items-center gap-2">
-                    <Circle className="size-3.5 text-[#4B5563] shrink-0" />
+                    <div className="shrink-0 flex h-7 w-7 items-center justify-center rounded-md border border-dashed border-[#6366F1]/30 bg-[#6366F1]/5">
+                      <Circle className="size-3 text-[#4B5563]" />
+                    </div>
                     <Input
                       value={newItemText[cl.id] || ''}
                       onChange={(e) =>
@@ -391,7 +395,7 @@ export function PlaybookChecklistEditor({
                     />
                     <Button
                       size="icon"
-                      className="size-7 shrink-0 bg-[#1E2030] hover:bg-[#252840] text-[#9CA3AF] hover:text-[#F3F4F6] border border-[#232636] alpha-press"
+                      className="size-7 shrink-0 bg-[#6366F1]/15 hover:bg-[#6366F1]/25 text-[#818CF8] hover:text-[#F3F4F6] border border-[#6366F1]/25 alpha-press"
                       onClick={() => handleAddItem(cl.id)}
                       disabled={!newItemText[cl.id]?.trim()}
                     >

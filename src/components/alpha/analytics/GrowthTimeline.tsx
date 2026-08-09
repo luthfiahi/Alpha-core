@@ -196,8 +196,10 @@ export function GrowthTimeline() {
   return (
     <div className="space-y-4">
       {/* Chart Section */}
-      <div className="alpha-card p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+      <div className="alpha-card p-5 relative overflow-hidden">
+        {/* Subtle gradient accent line */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#6366F1]/30 to-transparent" />
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div>
             <h3 className="alpha-heading-sm text-[#F3F4F6]">Growth Timeline</h3>
             <p className="alpha-caption mt-0.5">Track dimension scores across time periods</p>
@@ -303,8 +305,14 @@ export function GrowthTimeline() {
           ) : (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <Target className="w-10 h-10 text-[#232636] mx-auto mb-2" />
-                <p className="alpha-body text-[#6B7280]">Belum ada data growth</p>
+                <div className="relative w-14 h-14 mx-auto mb-3">
+                  <div className="absolute inset-0 rounded-xl bg-[#6366F1]/10 blur-lg" />
+                  <div className="relative w-14 h-14 rounded-xl bg-[#10121E] border border-[#232636] flex items-center justify-center">
+                    <Target className="w-7 h-7 text-[#4B5563]" />
+                  </div>
+                </div>
+                <p className="alpha-heading-sm text-[#6B7280]">Belum ada data growth</p>
+                <p className="alpha-caption mt-1">Mulai trading dan review untuk melihat progress kamu</p>
               </div>
             </div>
           )}
