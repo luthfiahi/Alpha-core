@@ -19,7 +19,6 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -174,8 +173,7 @@ export function BehavioralInsights() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
-          <CardContent className="flex flex-col items-center justify-center py-8 px-6">
+        <div className="alpha-card p-6">
             <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
             <p className="alpha-body mb-4">{error}</p>
             <Button
@@ -187,8 +185,7 @@ export function BehavioralInsights() {
               <RefreshCw className="w-3.5 h-3.5" />
               Coba Lagi
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     )
   }
@@ -222,7 +219,7 @@ export function BehavioralInsights() {
           {activeFilters > 0 && (
             <button
               onClick={clearFilters}
-              className="ml-auto alpha-caption text-indigo-400 hover:text-indigo-300"
+              className="ml-auto alpha-caption text-[#818CF8] hover:text-[#A5B4FC]"
             >
               Hapus semua
             </button>
@@ -416,7 +413,7 @@ export function BehavioralInsights() {
                     {/* AI Analysis */}
                     {event.aiAnalysis && (
                       <div className="flex items-start gap-2 mt-2">
-                        <Brain className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0 mt-0.5" />
+                        <Brain className="w-3.5 h-3.5 text-[#818CF8] flex-shrink-0 mt-0.5" />
                         <p className="text-xs text-[#9CA3AF] leading-relaxed">{event.aiAnalysis}</p>
                       </div>
                     )}

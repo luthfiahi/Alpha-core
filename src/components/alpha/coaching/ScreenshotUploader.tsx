@@ -202,7 +202,7 @@ export function ScreenshotUploader({ onAnalyze, compact = false }: ScreenshotUpl
                 e.stopPropagation()
                 setShowPreview(!showPreview)
               }}
-              className="absolute bottom-2 right-2 px-2 py-1 text-[10px] bg-background/80 rounded-md text-alpha-text-secondary hover:text-alpha-text-primary"
+              className="absolute bottom-2 right-2 px-2 py-1 text-[10px] bg-[#0B0D17]/80 rounded-md text-alpha-text-secondary hover:text-alpha-text-primary"
             >
               {showPreview ? 'Minimize' : 'Expand'}
             </button>

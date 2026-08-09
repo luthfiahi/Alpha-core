@@ -29,7 +29,7 @@ export function TradeTableView({ trades, onSelectTrade, onDeleteTrade }: TradeTa
   if (trades.length === 0) return null;
 
   return (
-    <div className="rounded-[14px] border border-[#232636] bg-[#151827] overflow-hidden">
+    <div className="rounded-[14px] border border-[#232636] bg-[#151827] overflow-hidden alpha-card">
       <div className="max-h-[600px] overflow-y-auto">
         <Table>
           <TableHeader>

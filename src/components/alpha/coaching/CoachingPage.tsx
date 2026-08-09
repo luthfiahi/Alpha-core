@@ -882,7 +882,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
   const isReflectionCompleted = activeSession?.status === 'COMPLETED'
 
   return (
-    <div className="alpha-animate-in h-full flex flex-col bg-background">
+    <div className="alpha-animate-in h-full flex flex-col bg-[#0B0D17]">
       {/* ====== PREMIUM HEADER ====== */}
       <header className="flex-shrink-0 px-4 sm:px-6 pt-5 pb-3">
         <div className="flex items-start justify-between">
@@ -1132,7 +1132,7 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
       </div>
 
       {/* Input Area */}
-      <div className="flex-shrink-0 border-t border-alpha-border bg-background">
+      <div className="flex-shrink-0 border-t border-alpha-border bg-[#0B0D17]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3">
           {/* Prompt Suggestions — only in free chat mode */}
           {mode === 'free_chat' && (

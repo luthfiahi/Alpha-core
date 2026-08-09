@@ -27,7 +27,6 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
@@ -307,9 +306,8 @@ export function WeeklyReviewTab() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <Card className="rounded-xl border-[#1E2030] bg-[#151827] shadow-none py-0 gap-0">
-          <CardContent className="flex flex-col items-center justify-center py-8 px-6">
-            <AlertTriangle className="w-8 h-8 text-amber-400 mb-3" />
+        <div className="alpha-card p-6">
+            <AlertTriangle className="w-8 h-8 text-[#F59E0B] mb-3" />
             <p className="alpha-body mb-4">{error}</p>
             <Button
               variant="outline"
@@ -320,8 +318,7 @@ export function WeeklyReviewTab() {
               <RefreshCw className="w-3.5 h-3.5" />
               Coba Lagi
             </Button>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     )
   }
@@ -353,7 +350,7 @@ export function WeeklyReviewTab() {
         <Button
           onClick={handleGenerate}
           disabled={generating || !!review}
-          className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white alpha-press"
+          className="gap-2 bg-[#6366F1] hover:bg-[#5558E6] text-white alpha-press"
           size="sm"
         >
           {generating ? (
@@ -434,8 +431,8 @@ export function WeeklyReviewTab() {
               transition={{ delay: 0.1 }}
             >
               <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <h4 className="alpha-heading-sm text-amber-400">Kesalahan Terbesar</h4>
+                <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+                <h4 className="alpha-heading-sm text-[#F59E0B]">Kesalahan Terbesar</h4>
               </div>
               <p className="alpha-body leading-relaxed">{review.biggestMistake}</p>
             </motion.div>
@@ -444,15 +441,15 @@ export function WeeklyReviewTab() {
           {/* AI Recommendation */}
           {review.recommendation && (
             <motion.div
-              className="bg-[#151827] border border-indigo-500/20 rounded-[14px] p-5"
+              className="bg-[#151827] border border-[#6366F1]/20 rounded-[14px] p-5"
               style={{ borderLeftWidth: 3, borderLeftColor: '#6366F1' }}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
             >
               <div className="flex items-center gap-2 mb-3">
-                <Lightbulb className="w-4 h-4 text-indigo-400" />
-                <h4 className="alpha-heading-sm text-indigo-400">Rekomendasi AI</h4>
+                <Lightbulb className="w-4 h-4 text-[#818CF8]" />
+                <h4 className="alpha-heading-sm text-[#818CF8]">Rekomendasi AI</h4>
               </div>
               <p className="alpha-body leading-relaxed">{review.recommendation}</p>
             </motion.div>
@@ -470,7 +467,7 @@ export function WeeklyReviewTab() {
                 <TrendingUp className="w-4 h-4 text-[#EC4899]" />
                 <h4 className="alpha-heading-sm text-[#F3F4F6]">Isu Perilaku Teratas</h4>
               </div>
-              <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-pink-500/15 text-pink-400 border border-pink-500/30">
+              <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-[#EC4899]/15 text-[#EC4899] border border-[#EC4899]/30">
                 {review.topBehavioralIssue.replace(/_/g, ' ')}
               </span>
             </motion.div>
@@ -557,8 +554,8 @@ export function WeeklyReviewTab() {
         {/* Section Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-emerald-500/20 border border-indigo-500/20 flex items-center justify-center">
-              <FileText className="w-4 h-4 text-indigo-400" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366F1]/20 to-[#22C55E]/20 border border-[#6366F1]/20 flex items-center justify-center">
+              <FileText className="w-4 h-4 text-[#818CF8]" />
             </div>
             <div>
               <h3 className="alpha-heading-sm text-[#F3F4F6]">Laporan Pertumbuhan AI</h3>
@@ -583,7 +580,7 @@ export function WeeklyReviewTab() {
             <Button
               onClick={() => handleGenerateReport('WEEKLY')}
               disabled={reportGenerating}
-              className="gap-2 bg-indigo-600 hover:bg-indigo-500 text-white alpha-press"
+              className="gap-2 bg-[#6366F1] hover:bg-[#5558E6] text-white alpha-press"
               size="sm"
             >
               {reportGenerating ? (
@@ -603,8 +600,8 @@ export function WeeklyReviewTab() {
         ) : reportGenerating ? (
           <div className="bg-[#151827] border border-[#232636] rounded-[14px] p-12 text-center">
             <div className="relative w-16 h-16 mx-auto mb-4">
-              <Loader2 className="w-16 h-16 text-indigo-400 animate-spin" />
-              <Sparkles className="w-5 h-5 text-amber-400 absolute top-0 right-0" />
+              <Loader2 className="w-16 h-16 text-[#818CF8] animate-spin" />
+              <Sparkles className="w-5 h-5 text-[#F59E0B] absolute top-0 right-0" />
             </div>
             <h4 className="alpha-heading-sm text-[#F3F4F6] mb-1">Menganalisis Periode Ini...</h4>
             <p className="alpha-caption max-w-xs mx-auto">

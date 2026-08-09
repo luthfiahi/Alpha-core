@@ -452,7 +452,7 @@ export function PlaybookChecklistEditor({
       ) : (
         <Button
           variant="ghost"
-          className="w-full h-9 border border-dashed border-[#232636] text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#3E4158] hover:bg-transparent alpha-caption alpha-press"
+          className="w-full h-9 border border-dashed border-[#232636] text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#363A50] hover:bg-transparent alpha-caption alpha-press"
           onClick={() => setIsAddingChecklist(true)}
         >
           <Plus className="size-3.5 mr-1.5" />

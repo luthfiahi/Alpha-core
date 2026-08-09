@@ -79,7 +79,7 @@ function ScoreChangeIndicator({ change }: { change: number | null }) {
   if (change === null || change === undefined) return null
   if (change > 0) {
     return (
-      <span className="inline-flex items-center gap-0.5 text-emerald-400 text-xs font-financial font-medium">
+      <span className="inline-flex items-center gap-0.5 text-[#22C55E] text-xs font-financial font-medium">
         <ArrowUp className="w-3 h-3" />
         +{change}
       </span>
@@ -87,7 +87,7 @@ function ScoreChangeIndicator({ change }: { change: number | null }) {
   }
   if (change < 0) {
     return (
-      <span className="inline-flex items-center gap-0.5 text-red-400 text-xs font-financial font-medium">
+      <span className="inline-flex items-center gap-0.5 text-[#EF4444] text-xs font-financial font-medium">
         <ArrowDown className="w-3 h-3" />
         {change}
       </span>
@@ -121,14 +121,14 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
       animate={{ opacity: 1, y: 0 }}
     >
       {/* Gradient top border */}
-      <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
+      <div className="h-1 w-full bg-gradient-to-r from-[#6366F1] via-[#A78BFA] to-[#22C55E]" />
 
       <div className="p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-              <FileText className="w-4 h-4 text-indigo-400" />
+            <div className="w-9 h-9 rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/20 flex items-center justify-center">
+              <FileText className="w-4 h-4 text-[#818CF8]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -141,9 +141,9 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
             </div>
           </div>
           {report.highlight && (
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 max-w-[260px]">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-              <p className="alpha-caption text-amber-300 font-medium leading-tight line-clamp-2">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/20 max-w-[260px]">
+              <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] flex-shrink-0" />
+              <p className="alpha-caption text-[#FCD34D] font-medium leading-tight line-clamp-2">
                 {report.highlight}
               </p>
             </div>
@@ -152,9 +152,9 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
 
         {/* Highlight on mobile */}
         {report.highlight && (
-          <div className="sm:hidden flex items-start gap-1.5 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="alpha-caption text-amber-300 font-medium leading-tight">
+          <div className="sm:hidden flex items-start gap-1.5 px-3 py-2 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/20">
+            <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
+            <p className="alpha-caption text-[#FCD34D] font-medium leading-tight">
               {report.highlight}
             </p>
           </div>
@@ -185,7 +185,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
           </div>
           <div className="bg-[#10121E] border border-[#232636] rounded-lg p-3">
             <p className="alpha-caption uppercase tracking-wider">P/L</p>
-            <p className={`font-financial text-lg font-semibold mt-0.5 ${(report.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            <p className={`font-financial text-lg font-semibold mt-0.5 ${(report.totalPnL ?? 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
               ${(report.totalPnL ?? 0).toFixed(0)}
             </p>
           </div>
@@ -203,7 +203,7 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
               </div>
               <div className="h-1.5 bg-[#232636] rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full bg-indigo-500"
+                  className="h-full rounded-full bg-[#6366F1]"
                   initial={{ width: 0 }}
                   animate={{ width: `${report.ruleCompliance ?? 0}%` }}
                   transition={{ duration: 0.8, delay: 0.3 }}
@@ -237,15 +237,15 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {behaviorsImproved.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <h4 className="alpha-heading-xs text-emerald-400 uppercase tracking-wider">
+              <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+              <h4 className="alpha-heading-xs text-[#22C55E] uppercase tracking-wider">
                 Perilaku yang Membaik
               </h4>
             </div>
             <div className="space-y-1.5">
               {behaviorsImproved.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500/60 mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E]/60 mt-0.5 flex-shrink-0" />
                   <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
@@ -257,15 +257,15 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {behaviorsToImprove.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2.5">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <h4 className="alpha-heading-xs text-amber-400 uppercase tracking-wider">
+              <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+              <h4 className="alpha-heading-xs text-[#F59E0B] uppercase tracking-wider">
                 Masih Perlu Diperbaiki
               </h4>
             </div>
             <div className="space-y-1.5">
               {behaviorsToImprove.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400/60 mt-2 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]/60 mt-2 flex-shrink-0" />
                   <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
@@ -277,15 +277,15 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
         {nextTargets.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2.5">
-              <Target className="w-4 h-4 text-indigo-400" />
-              <h4 className="alpha-heading-xs text-indigo-400 uppercase tracking-wider">
+              <Target className="w-4 h-4 text-[#818CF8]" />
+              <h4 className="alpha-heading-xs text-[#818CF8] uppercase tracking-wider">
                 Target {isMonthly ? 'Bulan' : 'Minggu'} Depan
               </h4>
             </div>
             <div className="space-y-1.5">
               {nextTargets.map((item, i) => (
                 <div key={i} className="flex items-start gap-2.5 pl-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-indigo-500/60 mt-0.5 flex-shrink-0" />
+                  <ArrowUp className="w-3.5 h-3.5 text-[#6366F1]/60 mt-0.5 flex-shrink-0" />
                   <p className="alpha-body leading-relaxed">{item}</p>
                 </div>
               ))}
@@ -299,8 +299,8 @@ export function GrowthReportCard({ report }: { report: GrowthReportData }) {
             <Separator className="bg-[#232636]" />
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <h4 className="alpha-heading-xs text-purple-400 uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-[#A78BFA]" />
+                <h4 className="alpha-heading-xs text-[#A78BFA] uppercase tracking-wider">
                   AI Summary
                 </h4>
               </div>
@@ -389,7 +389,7 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
           </div>
           <div className="text-right hidden sm:block">
             <p className="alpha-caption">P/L</p>
-            <p className={`text-xs font-financial font-medium ${(report.totalPnL ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            <p className={`text-xs font-financial font-medium ${(report.totalPnL ?? 0) >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
               ${(report.totalPnL ?? 0).toFixed(0)}
             </p>
           </div>
@@ -438,9 +438,9 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
             {/* Improved behaviors */}
             {behaviorsImproved.length > 0 && (
               <div className="flex items-start gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E] mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="alpha-caption text-emerald-400 font-medium mb-0.5">Membaik:</p>
+                  <p className="alpha-caption text-[#22C55E] font-medium mb-0.5">Membaik:</p>
                   <p className="text-xs text-[#9CA3AF]">{behaviorsImproved.join(' • ')}</p>
                 </div>
               </div>
@@ -449,9 +449,9 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
             {/* To improve */}
             {behaviorsToImprove.length > 0 && (
               <div className="flex items-start gap-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
+                <AlertTriangle className="w-3.5 h-3.5 text-[#F59E0B] mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="alpha-caption text-amber-400 font-medium mb-0.5">Perlu diperbaiki:</p>
+                  <p className="alpha-caption text-[#F59E0B] font-medium mb-0.5">Perlu diperbaiki:</p>
                   <p className="text-xs text-[#9CA3AF]">{behaviorsToImprove.join(' • ')}</p>
                 </div>
               </div>
@@ -460,9 +460,9 @@ export function GrowthReportHistoryItem({ report, isExpanded, onToggle }: {
             {/* Targets */}
             {nextTargets.length > 0 && (
               <div className="flex items-start gap-2">
-                <Target className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
+                <Target className="w-3.5 h-3.5 text-[#818CF8] mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="alpha-caption text-indigo-400 font-medium mb-0.5">Target:</p>
+                  <p className="alpha-caption text-[#818CF8] font-medium mb-0.5">Target:</p>
                   <p className="text-xs text-[#9CA3AF]">{nextTargets.join(' • ')}</p>
                 </div>
               </div>
