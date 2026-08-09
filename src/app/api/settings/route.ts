@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // Allowed timezone values (matches frontend TIMEZONES list)
 const ALLOWED_TIMEZONES = [
@@ -27,6 +28,9 @@ interface SettingsPayload {
 
 // PUT /api/settings — Unified settings endpoint
 export async function PUT(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body: SettingsPayload = await request.json();
     const { type, data } = body;

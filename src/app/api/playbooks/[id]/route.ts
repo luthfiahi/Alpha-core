@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // GET /api/playbooks/[id] — Get single playbook with full checklist data
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const playbook = await db.playbook.findUnique({
@@ -49,6 +53,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -88,6 +95,9 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const existing = await db.playbook.findUnique({ where: { id } });

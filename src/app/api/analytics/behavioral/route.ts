@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/analytics/behavioral?type=FOMO&severity=HIGH&resolved=false
 export async function GET(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')

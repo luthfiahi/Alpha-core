@@ -315,8 +315,10 @@ export function PlaybookPage() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['playbooks'] });
-      toast.success('Playbook berhasil dihapus');
+      if (selectedId) qc.invalidateQueries({ queryKey: ['playbook', selectedId] });
+      setSelectedId(null);
       setDeleteId(null);
+      toast.success('Playbook berhasil dihapus');
     },
     onError: () => toast.error('Gagal menghapus playbook'),
   });

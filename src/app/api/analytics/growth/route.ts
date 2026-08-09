@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/analytics/growth?period=DAILY&from=2025-07-01&to=2025-08-01
 export async function GET(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || 'DAILY'

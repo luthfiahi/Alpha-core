@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
 
 // GET /api/playbooks — List all playbooks with checklist count and trade count
 export async function GET() {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const trader = await db.trader.findFirst();
     if (!trader) {
@@ -34,6 +38,9 @@ export async function GET() {
 
 // POST /api/playbooks — Create a new playbook
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json();
     const { name, description, sessionType } = body;

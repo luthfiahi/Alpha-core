@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // ========================================
 // Behavioral Analysis System Prompt
@@ -78,6 +79,9 @@ If no behavioral patterns are detected, return an empty array: []
 // ========================================
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { traderId, days } = body as {

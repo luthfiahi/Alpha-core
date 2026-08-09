@@ -68,17 +68,19 @@ function ScoreRing({ score, size = 80 }: { score: number | null; size?: number }
   const strokeWidth = 5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const displayScore = Number(score) || 0;
-  const offset = circumference - (displayScore / 100) * circumference;
+  const hasScore = score !== null && score !== undefined;
+  const displayScore = hasScore ? Number(score) : 0;
+  const offset = hasScore ? circumference - (displayScore / 100) * circumference : circumference;
 
-  const color =
-    displayScore >= 80
+  const color = hasScore
+    ? displayScore >= 80
       ? '#22C55E'
       : displayScore >= 60
       ? '#F59E0B'
       : displayScore >= 40
       ? '#F97316'
-      : '#EF4444';
+      : '#EF4444'
+    : '#4B5563';
 
   return (
     <div className='relative inline-flex items-center justify-center' style={{ width: size, height: size }}>
@@ -91,21 +93,23 @@ function ScoreRing({ score, size = 80 }: { score: number | null; size?: number }
           stroke='#232636'
           strokeWidth={strokeWidth}
         />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill='none'
-          stroke={color}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap='round'
-        />
+        {hasScore && (
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill='none'
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap='round'
+          />
+        )}
       </svg>
       <div className='absolute inset-0 flex flex-col items-center justify-center'>
         <span className='font-financial text-lg font-bold' style={{ color }}>
-          {displayScore}
+          {hasScore ? displayScore : '—'}
         </span>
         <span className='alpha-caption'>Score</span>
       </div>
@@ -579,7 +583,7 @@ export function JournalDetailPage() {
               <div className='flex items-center gap-2 pt-1'>
                 <Button
                   onClick={handleSaveReflection}
-                  disabled={updateMutation.isPending}
+                  disabled={updateMutation.isPending || (!editForm?.notes.trim() && !editForm?.lesson.trim() && !editForm?.emotion?.trim())}
                   size='sm'
                   className='alpha-press bg-[#6366F1] hover:bg-[#818CF8] text-white'
                 >

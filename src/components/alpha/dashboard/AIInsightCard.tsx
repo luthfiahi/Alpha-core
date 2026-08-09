@@ -63,6 +63,12 @@ function getDefaultMessage(ctx?: TraderContext): { title: string; content: strin
       content: 'Process Score-mu sudah sangat baik! Pertahankan konsistensi dan terus lakukan refleksi.',
     }
   }
+  if (ctx.processScore > 40 && ctx.processScore <= 80) {
+    return {
+      title: 'Terus Berkembang',
+      content: 'Proses tradingmu menunjukkan perkembangan positif. Terus tingkatkan konsistensi dan lakukan refleksi pada setiap trade.',
+    }
+  }
   return {
     title: 'Selamat Datang di Alpha',
     content: 'Mulai catat trade pertamamu untuk mendapatkan insight personal dari AI Coach.',

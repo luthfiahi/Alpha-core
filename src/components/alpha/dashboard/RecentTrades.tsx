@@ -240,7 +240,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                   >
                     {trade.pair}
                     {/* Show process score badge if available */}
-                    {trade.processScore !== undefined && trade.processScore !== null && (
+                    {typeof trade.processScore === 'number' && (
                       <span
                         className="ml-2 text-[10px] font-financial font-medium px-1.5 py-0.5 rounded-full"
                         style={{

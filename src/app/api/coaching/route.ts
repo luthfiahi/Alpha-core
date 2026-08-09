@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getAuthUser } from '@/lib/api-auth'
 
 // ========================================
 // Free Chat System Prompt
@@ -227,6 +228,9 @@ Apa komitmenmu?`
 // ========================================
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const {

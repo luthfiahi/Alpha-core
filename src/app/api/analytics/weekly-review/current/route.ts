@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/analytics/weekly-review/current — get current week's review
 export async function GET() {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     let trader = await db.trader.findFirst()
     if (!trader) {

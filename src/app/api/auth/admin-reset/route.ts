@@ -5,6 +5,11 @@ import { createClient } from '@supabase/supabase-js'
 // Uses Supabase Admin API (service_role key) — NOT exposed to client
 // Will create user if they don't exist, or update password if they do
 export async function POST(request: NextRequest) {
+  // Only allow in development/demo mode
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not available in production' }, { status: 403 })
+  }
+
   try {
     const { email, newPassword } = await request.json()
 

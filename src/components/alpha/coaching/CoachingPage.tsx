@@ -512,7 +512,12 @@ export function CoachingPage() {
   const selectSession = useCallback((sessionId: string) => {
     setActiveSessionId(sessionId)
     setSidebarOpen(false)
-  }, [])
+    // Sync mode to match session type
+    const session = sessions.find(s => s.id === sessionId)
+    if (session) {
+      setMode(session.sessionType === 'REFLECTION' ? 'reflection' : 'free_chat')
+    }
+  }, [sessions])
 
   // Start reflection on a specific trade
   const handleStartReflection = useCallback(async () => {
@@ -719,22 +724,41 @@ export function CoachingPage() {
         // If in REFLECTION mode, advance step after AI responds
         if (session.sessionType === 'REFLECTION' && session.reflectionStep) {
           const nextStep = session.reflectionStep + 1
+          const isCompleting = nextStep > 5
           setSessions((prev) =>
             prev.map((s) =>
               s.id === activeSessionId
                 ? ({
                     ...s,
-                    reflectionStep: nextStep > 5 ? 6 : nextStep,
+                    reflectionStep: isCompleting ? 6 : nextStep,
                     reflectionCompletedSteps: [
                       ...(s.reflectionCompletedSteps || []),
                       session.reflectionStep,
                     ],
                     // Mark session completed after step 5
-                    status: nextStep > 5 ? 'COMPLETED' : s.status,
+                    status: isCompleting ? 'COMPLETED' : s.status,
                   } as Session)
                 : s
             )
           )
+
+          // After reflection completion, save to trade
+          if (isCompleting && session.linkedTradeId) {
+            const lastAiTurn = [...session.turns].reverse().find((t) => t.role === 'AI_COACH' && t.content.length > 0)
+            const reflectionContent = lastAiTurn ? fullContent : ''
+            if (reflectionContent) {
+              fetch('/api/trades/' + session.linkedTradeId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reflectionNotes: reflectionContent.substring(0, 2000),
+                  hasReflected: true,
+                }),
+              }).catch((e: unknown) => {
+                console.error('Failed to save reflection:', e)
+              })
+            }
+          }
         }
 
         // Update session title from first user message
@@ -1107,8 +1131,8 @@ Bantu saya merefleksikan trade ini berdasarkan data yang terdeteksi dari chart.`
         </div>
       )}
 
-      {/* Trade Selector — shown when in reflection mode and no active reflection session */}
-      {mode === 'reflection' && !isReflectionActive && !isReflectionCompleted && (
+      {/* Trade Selector — shown when in reflection mode and no active reflection session or session has no linked trade */}
+      {mode === 'reflection' && (!isReflectionActive || !activeSession?.linkedTradeId) && !isReflectionCompleted && (
         <div className="flex-shrink-0 px-4 sm:px-6 py-4 border-b border-alpha-border bg-alpha-surface/30">
           <div className="max-w-3xl mx-auto">
             <TradeSelector

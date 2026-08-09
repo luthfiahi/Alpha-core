@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // ========================================
 // Gap Analysis System Prompt
@@ -85,6 +86,9 @@ If no gaps are found, return an empty array: []
 // ========================================
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { tradeId, traderId } = body as {
@@ -291,6 +295,9 @@ Identify all gaps between plan and execution. Return a JSON array of gap analyse
 // ========================================
 
 export async function GET(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const gapType = searchParams.get('gapType')

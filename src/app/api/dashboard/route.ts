@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/dashboard - Aggregated dashboard data
 export async function GET() {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     // Get first trader
     let trader = await db.trader.findFirst()
@@ -44,7 +48,7 @@ export async function GET() {
     })
 
     // 4. AI insight (latest insight card) — may not exist in early deployments
-    let latestInsight = null
+    let latestInsight: Record<string, unknown> | null = null
     try {
       latestInsight = await db.insightCard.findFirst({
         where: { traderId: trader.id },
@@ -83,10 +87,12 @@ export async function GET() {
       }
     }
 
-    const weeklyTrendData = Object.entries(dailyMap).map(([date, score]) => ({
-      date,
-      score: score ?? 0,
-    }))
+    const weeklyTrendData = Object.entries(dailyMap)
+      .filter(([, score]) => score !== null)
+      .map(([date, score]) => ({
+        date,
+        score: score as number,
+      }))
 
     // 6. Total trades count & win rate
     const totalTrades = await db.tradeEntry.count({
@@ -106,9 +112,14 @@ export async function GET() {
 
     // Today's trades count (use trader's timezone, default Asia/Makassar)
     const tz = trader.timezone || 'Asia/Makassar'
-    const nowTz = new Date().toLocaleString('en-US', { timeZone: tz })
-    const todayInTz = new Date(nowTz)
-    todayInTz.setHours(0, 0, 0, 0)
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date())
+    const month = Number(parts.find(p => p.type === 'month')?.value)
+    const day = Number(parts.find(p => p.type === 'day')?.value)
+    const year = Number(parts.find(p => p.type === 'year')?.value)
+    const todayInTz = new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
     const todayTradesCount = await db.tradeEntry.count({
       where: {
         traderId: trader.id,
@@ -146,6 +157,9 @@ export async function GET() {
 
 // POST /api/dashboard — Recalculate process score from existing trades
 export async function POST() {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const trader = await db.trader.findFirst()
     if (!trader) {

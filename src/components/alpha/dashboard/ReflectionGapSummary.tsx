@@ -26,6 +26,8 @@ export function ReflectionGapSummary({ unreflectedCount, totalWeeklyTrades, refl
     ? reflectedCount!
     : Math.max(0, resolvedTotal - unreflectedCount)
 
+  const showProgress = totalWeeklyTrades != null || unreflectedCount > 0
+
   return (
     <div className="alpha-card p-5 flex flex-col justify-between">
       <div>
@@ -76,29 +78,30 @@ export function ReflectionGapSummary({ unreflectedCount, totalWeeklyTrades, refl
               </span>{' '}
               trade membutuhkan refleksi
             </p>
-            {/* Progress indicator */}
-            <div className="mt-2 mb-2">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="alpha-caption" style={{ color: '#6B7280' }}>
-                  Progress refleksi minggu ini
-                </span>
-                <span className="text-[11px] font-financial font-medium" style={{ color: '#9CA3AF' }}>
-                  {resolvedReflected} of {resolvedTotal} trades
-                </span>
+            {showProgress && (
+              <div className="mt-2 mb-2">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="alpha-caption" style={{ color: '#6B7280' }}>
+                    Progress refleksi minggu ini
+                  </span>
+                  <span className="text-[11px] font-financial font-medium" style={{ color: '#9CA3AF' }}>
+                    {resolvedReflected} of {resolvedTotal} trades
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#232636' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: resolvedTotal > 0
+                        ? `${(resolvedReflected / resolvedTotal) * 100}%`
+                        : '0%',
+                      backgroundColor: '#F59E0B',
+                      boxShadow: '0 0 8px rgba(245,158,11,0.3)',
+                    }}
+                  />
+                </div>
               </div>
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#232636' }}>
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: resolvedTotal > 0
-                      ? `${(resolvedReflected / resolvedTotal) * 100}%`
-                      : '0%',
-                    backgroundColor: '#F59E0B',
-                    boxShadow: '0 0 8px rgba(245,158,11,0.3)',
-                  }}
-                />
-              </div>
-            </div>
+            )}
             <p className="alpha-caption">
               Alpha menemukan area yang layak kamu periksa.
             </p>

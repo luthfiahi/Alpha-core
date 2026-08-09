@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import ZAI from 'z-ai-web-dev-sdk'
+import { getAuthUser } from '@/lib/api-auth'
 
 // GET /api/analytics/weekly-review — list all weekly reviews
 export async function GET() {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     let trader = await db.trader.findFirst()
     if (!trader) {
@@ -29,6 +33,9 @@ export async function GET() {
 
 // POST /api/analytics/weekly-review — generate new weekly review via AI
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     let trader = await db.trader.findFirst()
     if (!trader) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // ========================================
 // Trading DNA Generation System Prompt
@@ -50,6 +51,9 @@ Respond ONLY with valid JSON. No markdown, no code blocks, no extra text.
 // ========================================
 
 export async function GET(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const traderId = searchParams.get('traderId')
@@ -83,6 +87,9 @@ export async function GET(request: NextRequest) {
 // ========================================
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { traderId } = body as { traderId?: string }
@@ -102,6 +109,13 @@ export async function POST(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
       take: 100,
     })
+
+    if (trades.length < 5) {
+      return NextResponse.json(
+        { error: 'Minimal 5 trade diperlukan untuk generate Trading DNA.' },
+        { status: 400 }
+      )
+    }
 
     const behavioralEvents = await db.behavioralEvent.findMany({
       where: { traderId: trader.id },

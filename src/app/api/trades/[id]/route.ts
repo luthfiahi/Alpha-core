@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getAuthUser } from "@/lib/api-auth";
+import { computeAndSaveProcessScore } from "@/lib/ai/process-score";
 
 // GET /api/trades/[id] — Fetch single trade
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const trade = await db.tradeEntry.findUnique({
@@ -31,6 +36,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -85,15 +93,16 @@ export async function PUT(
       }
     }
 
-    // Auto-set hasReflected if reflection notes provided
-    if (body.reflectionNotes || body.lessonLearned) {
-      updateData.hasReflected = true;
-    }
+    // Always set hasReflected based on reflection content
+    updateData.hasReflected = !!(body.reflectionNotes || body.lessonLearned);
 
     const trade = await db.tradeEntry.update({
       where: { id },
       data: updateData,
     });
+
+    // Recalculate process score (non-blocking)
+    computeAndSaveProcessScore(trade.traderId).catch(console.error);
 
     return NextResponse.json({ trade });
   } catch (error) {
@@ -110,12 +119,23 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { id } = await params;
     const existing = await db.tradeEntry.findUnique({ where: { id } });
     if (!existing || existing.deletedAt) {
       return NextResponse.json({ error: "Trade not found" }, { status: 404 });
     }
+
+    // Clean up related records before soft-deleting trade
+    await db.reflectionGapRecord.deleteMany({
+      where: { tradeId: id },
+    });
+    await db.behavioralEvent.deleteMany({
+      where: { tradeId: id },
+    });
 
     await db.tradeEntry.update({
       where: { id },

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
+import { getAuthUser } from '@/lib/api-auth'
 
 // ========================================
 // Growth Report Generation System Prompt
@@ -44,6 +45,9 @@ Respond ONLY with valid JSON. No markdown, no code blocks, no extra text.
 // ========================================
 
 export async function GET(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const traderId = searchParams.get('traderId')
@@ -83,6 +87,9 @@ export async function GET(request: NextRequest) {
 // ========================================
 
 export async function POST(request: NextRequest) {
+  const { error: authError } = await getAuthUser()
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { traderId, reportType, periodStart, periodEnd } = body as {

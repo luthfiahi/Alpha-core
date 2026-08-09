@@ -210,6 +210,7 @@ export function TradingDNAPage() {
               dominantEmotion={dna?.dominantEmotion || null}
               totalTradesAnalyzed={dna?.totalTradesAnalyzed || 0}
               analysisPeriod={dna?.analysisPeriod || null}
+              isLoading={false}
             />
           </div>
 
@@ -218,6 +219,7 @@ export function TradingDNAPage() {
             <StrengthsWeaknesses
               strengths={strengths}
               weaknesses={weaknesses}
+              isLoading={false}
             />
           </div>
 
@@ -230,6 +232,7 @@ export function TradingDNAPage() {
               bestPair={dna?.bestPair || null}
               worstSetup={dna?.worstSetup || null}
               worstSession={dna?.worstSession || null}
+              isLoading={false}
             />
           </div>
 
@@ -241,6 +244,7 @@ export function TradingDNAPage() {
               isGenerating={isGenerating}
               onRegenerate={handleGenerate}
               totalTrades={dna?.totalTradesAnalyzed || 0}
+              isLoading={false}
             />
           </div>
 
