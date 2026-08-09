@@ -30,8 +30,8 @@ export function AppLayout({ children }: AppLayoutProps) {
           <MobileHeader />
         )}
 
-        {/* Page content */}
-        <div className="flex-1 overflow-y-auto pb-12">
+        {/* Page content — overflow-x-hidden prevents any horizontal leak */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-12">
           <div
             className={cn(
               'mx-auto w-full px-4 py-6',

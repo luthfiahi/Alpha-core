@@ -44,16 +44,17 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
 
   return (
     <div className="alpha-animate-in-fast">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+        {/* Left: Greeting + meta */}
+        <div className="flex flex-col gap-2 min-w-0 flex-1">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="alpha-heading-xl">
+            <h1 className="alpha-heading-xl truncate">
               {greeting}, {name}
             </h1>
             {/* Process Score dot badge */}
             {processScore !== null && (
               <span
-                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold font-financial"
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold font-financial shrink-0"
                 style={{
                   color: scoreColor,
                   backgroundColor: scoreBgColor,
@@ -68,17 +69,17 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3 mt-0.5">
+          <div className="flex items-center gap-2 flex-wrap">
             <p className="alpha-caption" style={{ color: '#6B7280' }}>
               {dateStr}
             </p>
-            <span className="w-1 h-1 rounded-full bg-[#4B5563]" />
-            <p className="alpha-body text-[#9CA3AF]">
+            <span className="w-1 h-1 rounded-full bg-[#4B5563] hidden sm:block" />
+            <p className="alpha-body text-[#9CA3AF] hidden sm:block">
               Pantau proses trading-mu hari ini.
             </p>
           </div>
-          {/* Process Over Profit tagline badge + Today's trades chip */}
-          <div className="mt-2 flex items-center gap-2 flex-wrap">
+          {/* Tags row */}
+          <div className="flex items-center gap-2 flex-wrap">
             <span
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase"
               style={{
@@ -93,7 +94,6 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
               </svg>
               Process Over Profit
             </span>
-            {/* Today's trade count stat chip */}
             <span
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold font-financial"
               style={{
@@ -107,10 +107,10 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
           </div>
         </div>
 
-        {/* Right-side stats summary */}
-        <div className="flex items-center gap-4">
-          {/* Context-aware sparkline */}
-          <svg width="80" height="32" className="hidden sm:block opacity-50" viewBox="0 0 80 32">
+        {/* Right: Stat cards — more prominent than before */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Context-aware sparkline — only on sm+ */}
+          <svg width="72" height="28" className="hidden sm:block opacity-40" viewBox="0 0 72 28">
             <defs>
               <linearGradient id="hero-spark" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={todayTradesCount > 0 ? '#22C55E' : '#6366F1'} stopOpacity="0.3" />
@@ -119,15 +119,15 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
             </defs>
             <path
               d={todayTradesCount > 0
-                ? 'M0 28 L12 22 L24 24 L36 18 L48 20 L60 14 L72 10 L80 12 L80 32 L0 32 Z'
-                : 'M0 26 L10 24 L20 25 L30 22 L40 23 L50 20 L60 21 L70 18 L80 16 L80 32 L0 32 Z'
+                ? 'M0 24 L9 20 L18 22 L27 16 L36 18 L45 14 L54 10 L63 12 L72 14 L72 28 L0 28 Z'
+                : 'M0 22 L9 20 L18 21 L27 18 L36 19 L45 16 L54 17 L63 14 L72 12 L72 28 L0 28 Z'
               }
               fill="url(#hero-spark)"
             />
             <polyline
               points={todayTradesCount > 0
-                ? '0,28 12,22 24,24 36,18 48,20 60,14 72,10 80,12'
-                : '0,26 10,24 20,25 30,22 40,23 50,20 60,21 70,18 80,16'
+                ? '0,24 9,20 18,22 27,16 36,18 45,14 54,10 63,12 72,14'
+                : '0,22 9,20 18,21 27,18 36,19 45,16 54,17 63,14 72,12'
               }
               fill="none"
               stroke={todayTradesCount > 0 ? '#22C55E' : '#6366F1'}
@@ -137,19 +137,21 @@ export function WelcomeHero({ todayTradesCount, processScore, traderName }: Welc
             />
           </svg>
 
-          {/* Stats chips */}
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-end">
-              <span className="alpha-caption" style={{ color: '#6B7280' }}>Total Trades</span>
-              <span className="font-financial text-base font-bold text-[#F3F4F6]">{totalTrades}</span>
-            </div>
-            <span className="w-px h-8 bg-[#232636]" />
-            <div className="flex flex-col items-end">
-              <span className="alpha-caption" style={{ color: '#6B7280' }}>Win Rate</span>
-              <span className="font-financial text-base font-bold" style={{ color: winRate >= 50 ? '#22C55E' : '#F59E0B' }}>
-                {winRate}%
-              </span>
-            </div>
+          {/* Stat chip: Total Trades */}
+          <div className="alpha-stat-card flex flex-col items-center px-4 py-2 min-w-0">
+            <span className="alpha-caption" style={{ color: '#6B7280' }}>Total Trades</span>
+            <span className="font-financial text-lg font-bold text-[#F3F4F6] leading-tight">{totalTrades}</span>
+          </div>
+
+          {/* Divider */}
+          <span className="w-px h-10 bg-[#232636] hidden sm:block" />
+
+          {/* Stat chip: Win Rate */}
+          <div className="alpha-stat-card flex flex-col items-center px-4 py-2 min-w-0">
+            <span className="alpha-caption" style={{ color: '#6B7280' }}>Win Rate</span>
+            <span className="font-financial text-lg font-bold leading-tight" style={{ color: winRate >= 50 ? '#22C55E' : '#F59E0B' }}>
+              {winRate}%
+            </span>
           </div>
         </div>
       </div>

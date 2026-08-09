@@ -44,41 +44,39 @@ function SkeletonBlock({ className }: { className?: string }) {
 
 function DashboardSkeleton() {
   return (
-    <main className="flex-1 overflow-y-auto">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Row 1: Welcome Hero skeleton */}
-        <SkeletonBlock className="h-32 w-full" />
+    <div className="space-y-5">
+      {/* Row 1: Welcome Hero skeleton */}
+      <SkeletonBlock className="h-28 w-full" />
 
-        {/* Row 2: Process Score + AI Insight */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-7">
-            <SkeletonBlock className="h-72 w-full rounded-xl" />
-          </div>
-          <div className="md:col-span-5">
-            <SkeletonBlock className="h-72 w-full rounded-xl" />
-          </div>
+      {/* Row 2: Process Score + AI Insight */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="lg:col-span-7">
+          <SkeletonBlock className="h-64 w-full rounded-xl" />
         </div>
-
-        {/* Row 3: Quick Actions skeleton */}
-        <SkeletonBlock className="h-28 w-full rounded-xl" />
-
-        {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5">
-            <SkeletonBlock className="h-96 w-full rounded-xl" />
-          </div>
-          <div className="lg:col-span-4">
-            <SkeletonBlock className="h-96 w-full rounded-xl" />
-          </div>
-          <div className="lg:col-span-3">
-            <SkeletonBlock className="h-96 w-full rounded-xl" />
-          </div>
+        <div className="lg:col-span-5">
+          <SkeletonBlock className="h-64 w-full rounded-xl" />
         </div>
-
-        {/* Row 5: Reflection Gap */}
-        <SkeletonBlock className="h-32 w-full rounded-xl" />
       </div>
-    </main>
+
+      {/* Row 3: Quick Actions skeleton */}
+      <SkeletonBlock className="h-24 w-full rounded-xl" />
+
+      {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="lg:col-span-5">
+          <SkeletonBlock className="h-80 w-full rounded-xl" />
+        </div>
+        <div className="lg:col-span-4">
+          <SkeletonBlock className="h-80 w-full rounded-xl" />
+        </div>
+        <div className="lg:col-span-3">
+          <SkeletonBlock className="h-80 w-full rounded-xl" />
+        </div>
+      </div>
+
+      {/* Row 5: Reflection Gap */}
+      <SkeletonBlock className="h-28 w-full rounded-xl" />
+    </div>
   )
 }
 
@@ -94,36 +92,35 @@ function DashboardError({
   onRetry: () => void
 }) {
   return (
-    <main className="flex-1 overflow-y-auto">
-      <div className="max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
-        <Card className="bg-[#0B0D17] border border-[#1E2030] rounded-xl max-w-md w-full">
-          <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
-              <AlertTriangle className="h-7 w-7 text-red-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-white">
-              Gagal Memuat Dashboard
-            </h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              {message ?? 'Terjadi kesalahan saat mengambil data dashboard. Silakan coba lagi.'}
-            </p>
-            <Button
-              onClick={onRetry}
-              variant="outline"
-              className="mt-2 gap-2 border-[#1E2030] text-zinc-300 hover:bg-[#1E2030] hover:text-white"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Coba Lagi
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </main>
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <Card className="bg-[#0B0D17] border border-[#1E2030] rounded-xl max-w-md w-full">
+        <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
+            <AlertTriangle className="h-7 w-7 text-red-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-white">
+            Gagal Memuat Dashboard
+          </h3>
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            {message ?? 'Terjadi kesalahan saat mengambil data dashboard. Silakan coba lagi.'}
+          </p>
+          <Button
+            onClick={onRetry}
+            variant="outline"
+            className="mt-2 gap-2 border-[#1E2030] text-zinc-300 hover:bg-[#1E2030] hover:text-white"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Coba Lagi
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Dashboard Page                                                           */
+/*  Dashboard Page — No redundant <main> wrapper.
+     AppLayout already provides scroll context + max-w-[1280px].
 /* -------------------------------------------------------------------------- */
 
 export function DashboardPage() {
@@ -177,55 +174,53 @@ export function DashboardPage() {
   const unreflected = data?.unreflectedCount ?? 0
 
   return (
-    <main className="flex-1 overflow-y-auto">
-      <div className="max-w-7xl mx-auto space-y-6 pb-8">
-        {/* Row 1: Welcome Hero */}
-        <div className="alpha-animate-in alpha-stagger-1">
-          <WelcomeHero
-            todayTradesCount={todayCount}
-            processScore={score}
-            traderName={data?.trader?.name}
-          />
-        </div>
+    <div className="space-y-5 pb-8">
+      {/* Row 1: Welcome Hero */}
+      <div className="alpha-animate-in alpha-stagger-1">
+        <WelcomeHero
+          todayTradesCount={todayCount}
+          processScore={score}
+          traderName={data?.trader?.name}
+        />
+      </div>
 
-        {/* Row 2: Process Score + AI Insight */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-2">
-          <div className="md:col-span-7">
-            <ProcessScoreCard score={score} previousScore={prevScore} />
-          </div>
-          <div className="md:col-span-5">
-            <AIInsightCard insight={data?.latestInsight ?? null} traderContext={{ todayTradesCount: todayCount, processScore: score }} />
-          </div>
+      {/* Row 2: Process Score + AI Insight — min-w-0 prevents grid blowout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 alpha-animate-in alpha-stagger-2">
+        <div className="lg:col-span-7 min-w-0">
+          <ProcessScoreCard score={score} previousScore={prevScore} />
         </div>
-
-        {/* Row 3: Quick Actions */}
-        <div className="alpha-animate-in alpha-stagger-3">
-          <QuickActions unreflectedCount={unreflected} />
-        </div>
-
-        {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 alpha-animate-in alpha-stagger-4">
-          <div className="lg:col-span-5">
-            <RecentTrades
-              trades={data?.recentTrades ?? []}
-              isLoading={false}
-            />
-          </div>
-          <div className="lg:col-span-4">
-            <WeeklyProgress data={data?.weeklyTrend ?? []} />
-          </div>
-          <div className="lg:col-span-3">
-            <BehavioralTrend tags={[]} />
-          </div>
-        </div>
-
-        {/* Row 5: Reflection Gap */}
-        <div className="alpha-animate-in alpha-stagger-5">
-          <ReflectionGapSummary
-            unreflectedCount={unreflected}
-          />
+        <div className="lg:col-span-5 min-w-0">
+          <AIInsightCard insight={data?.latestInsight ?? null} traderContext={{ todayTradesCount: todayCount, processScore: score }} />
         </div>
       </div>
-    </main>
+
+      {/* Row 3: Quick Actions */}
+      <div className="alpha-animate-in alpha-stagger-3">
+        <QuickActions unreflectedCount={unreflected} />
+      </div>
+
+      {/* Row 4: Recent Trades + Weekly Progress + Behavioral Trend */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 alpha-animate-in alpha-stagger-4">
+        <div className="lg:col-span-5 min-w-0">
+          <RecentTrades
+            trades={data?.recentTrades ?? []}
+            isLoading={false}
+          />
+        </div>
+        <div className="lg:col-span-4 min-w-0">
+          <WeeklyProgress data={data?.weeklyTrend ?? []} />
+        </div>
+        <div className="lg:col-span-3 min-w-0">
+          <BehavioralTrend tags={[]} />
+        </div>
+      </div>
+
+      {/* Row 5: Reflection Gap */}
+      <div className="alpha-animate-in alpha-stagger-5">
+        <ReflectionGapSummary
+          unreflectedCount={unreflected}
+        />
+      </div>
+    </div>
   )
 }

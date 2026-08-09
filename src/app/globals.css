@@ -145,6 +145,8 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-width: 0;
   }
 }
 
@@ -174,6 +176,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    overflow-x: hidden;
+    min-width: 0;
   }
 
   /* Focus: only show ring for keyboard navigation (focus-visible) */

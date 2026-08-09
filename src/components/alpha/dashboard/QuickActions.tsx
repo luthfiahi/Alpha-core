@@ -68,14 +68,12 @@ export function QuickActions({ unreflectedCount }: QuickActionsProps) {
     : actions
 
   return (
-    <div className="alpha-card p-5">
-      <div className="mb-3">
+    <div className="alpha-card p-4 sm:p-5">
+      <div className="mb-3 flex items-center gap-2">
         <span className="alpha-label" style={{ color: '#6B7280' }}>QUICK ACTIONS</span>
+        <span className="w-8 h-px bg-[#232636]" />
       </div>
-      <div
-        className="flex gap-3 overflow-x-auto pb-1 scrollbar-none lg:overflow-visible"
-        style={{ scrollbarWidth: 'none' }}
-      >
+      <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
         {allActions.map((action) => (
           <button
             key={action.page + action.label}
@@ -83,8 +81,8 @@ export function QuickActions({ unreflectedCount }: QuickActionsProps) {
             aria-label={action.ariaLabel}
             className={
               action.primary
-                ? 'alpha-press alpha-hover-lift flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-6 py-4 text-center transition-all duration-200 min-w-[110px]'
-                : 'alpha-press alpha-hover-lift flex-shrink-0 flex flex-col items-center gap-2 rounded-xl px-5 py-4 text-center transition-all duration-200 min-w-[110px]'
+                ? 'alpha-press alpha-hover-lift flex-shrink-0 flex items-center gap-3 rounded-xl px-5 py-3 text-left transition-all duration-200'
+                : 'alpha-press alpha-hover-lift flex-shrink-0 flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all duration-200'
             }
             style={
               action.primary
@@ -100,10 +98,10 @@ export function QuickActions({ unreflectedCount }: QuickActionsProps) {
             }
           >
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-lg"
+              className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
               style={
                 action.primary
-                  ? { backgroundColor: 'rgba(99,102,241,0.2)' }
+                  ? { backgroundColor: 'rgba(99,102,241,0.25)' }
                   : { backgroundColor: 'rgba(255,255,255,0.04)' }
               }
             >
@@ -111,15 +109,17 @@ export function QuickActions({ unreflectedCount }: QuickActionsProps) {
                 {action.icon}
               </span>
             </div>
-            <span
-              className="text-sm font-semibold whitespace-nowrap"
-              style={{ color: action.primary ? '#F3F4F6' : '#9CA3AF' }}
-            >
-              {action.label}
-            </span>
-            <span className="text-[11px] whitespace-nowrap" style={{ color: '#6B7280' }}>
-              {action.description}
-            </span>
+            <div className="min-w-0">
+              <span
+                className="text-sm font-semibold block whitespace-nowrap"
+                style={{ color: action.primary ? '#F3F4F6' : '#9CA3AF' }}
+              >
+                {action.label}
+              </span>
+              <span className="text-[11px] block whitespace-nowrap" style={{ color: '#6B7280' }}>
+                {action.description}
+              </span>
+            </div>
           </button>
         ))}
       </div>

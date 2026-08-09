@@ -148,31 +148,37 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
         )}
       </div>
 
-      {/* Table */}
-      <div className="max-h-96 overflow-y-auto">
+      {/* Table — table-fixed prevents content-driven column expansion */}
+      <div className="max-h-96 overflow-y-auto overflow-x-hidden">
         <Table>
+          <style>{`
+            [data-slot="table"] {
+              table-layout: fixed;
+              width: 100%;
+            }
+          `}</style>
           <TableHeader>
             <TableRow className="border-b border-[#232636] hover:bg-transparent">
-              <TableHead className="alpha-caption font-medium h-9 pl-5">
+              <TableHead className="alpha-caption font-medium h-9 pl-5" style={{ width: '25%' }}>
                 Pair
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9">
-                Direction
+              <TableHead className="alpha-caption font-medium h-9" style={{ width: '16%' }}>
+                Dir
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 text-right">
+              <TableHead className="alpha-caption font-medium h-9 text-right" style={{ width: '18%' }}>
                 Entry
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 text-right">
+              <TableHead className="alpha-caption font-medium h-9 text-right" style={{ width: '16%' }}>
                 P/L
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9">
+              <TableHead className="alpha-caption font-medium h-9 text-right" style={{ width: '12%' }}>
                 Status
               </TableHead>
               {/* Hidden columns: Date and Time */}
-              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell">
+              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell" style={{ width: '8%' }}>
                 Date
               </TableHead>
-              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell">
+              <TableHead className="alpha-caption font-medium h-9 text-right hidden lg:table-cell" style={{ width: '5%' }}>
                 Time
               </TableHead>
             </TableRow>
@@ -230,7 +236,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                 >
                   {/* Pair cell with color border-left */}
                   <TableCell
-                    className="text-sm font-medium text-[#F3F4F6] py-3 pl-5"
+                    className="text-sm font-medium text-[#F3F4F6] py-3 pl-5 overflow-hidden"
                     style={{
                       borderLeft: `3px solid ${trade.profitLoss >= 0
                         ? (trade.profitLoss === 0 ? 'rgba(34,197,94,0.3)' : 'rgba(34,197,94,0.7)')
@@ -238,7 +244,7 @@ export function RecentTrades({ trades, isLoading }: RecentTradesProps) {
                       }`,
                     }}
                   >
-                    {trade.pair}
+                    <span className="truncate block">{trade.pair}</span>
                     {/* Show process score badge if available */}
                     {typeof trade.processScore === 'number' && (
                       <span

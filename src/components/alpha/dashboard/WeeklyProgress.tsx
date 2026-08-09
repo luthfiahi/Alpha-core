@@ -38,6 +38,13 @@ function getScoreColor(score: number): string {
   return '#EF4444'
 }
 
+function getScoreTier(score: number): string {
+  if (score > 80) return 'Excellent'
+  if (score > 60) return 'Good'
+  if (score > 40) return 'Fair'
+  return 'Needs Work'
+}
+
 function PremiumTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload?: { fullLabel?: string } }> }) {
   if (!active || !payload?.length) return null
   const value = payload[0].value
@@ -58,7 +65,7 @@ function PremiumTooltip({ active, payload }: { active?: boolean; payload?: Array
           {value}
         </span>
         <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ color, backgroundColor: `${color}18` }}>
-          {value > 80 ? 'Excellent' : value > 60 ? 'Good' : value > 40 ? 'Fair' : 'Needs Work'}
+          {getScoreTier(value)}
         </span>
       </div>
     </div>
@@ -66,6 +73,7 @@ function PremiumTooltip({ active, payload }: { active?: boolean; payload?: Array
 }
 
 export function WeeklyProgress({ data }: WeeklyProgressProps) {
+  // ---- Empty state ----
   if (data.length === 0) {
     return (
       <div className="alpha-card p-5 flex flex-col h-full">
@@ -106,26 +114,41 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
     fullLabel: getFullDayLabel(d.date),
   }))
 
-  // Get the latest (current) score
   const currentScore = chartData[chartData.length - 1]?.score ?? 0
   const currentColor = getScoreColor(currentScore)
 
+  // Calculate trend from first to last
+  const firstScore = chartData[0]?.score ?? 0
+  const trendDiff = currentScore - firstScore
+  const trendPositive = trendDiff >= 0
+
   return (
-    <div className="alpha-card p-5 flex flex-col h-full relative">
-      <div className="flex items-start justify-between">
-        <div>
+    <div className="alpha-card p-5 flex flex-col h-full relative overflow-hidden">
+      {/* Header */}
+      <div className="flex items-start justify-between relative z-10">
+        <div className="min-w-0">
           <h3 className="alpha-heading-sm">Weekly Progress</h3>
           <p className="alpha-caption mt-0.5">Proses mingguan</p>
         </div>
-        {/* Large current score overlay */}
-        <div className="flex flex-col items-end">
-          <span className="font-financial text-3xl font-bold leading-none" style={{ color: currentColor }}>
+        {/* Score display */}
+        <div className="flex flex-col items-end shrink-0 ml-2">
+          <span className="font-financial text-2xl font-bold leading-none" style={{ color: currentColor }}>
             {currentScore}
           </span>
-          <span className="alpha-caption mt-0.5" style={{ color: '#6B7280' }}>Today</span>
+          {/* Trend indicator when multiple data points */}
+          {data.length > 1 && trendDiff !== 0 && (
+            <span
+              className="text-[10px] font-financial font-semibold mt-0.5 flex items-center gap-0.5"
+              style={{ color: trendPositive ? '#22C55E' : '#EF4444' }}
+            >
+              {trendPositive ? '↑' : '↓'} {Math.abs(trendDiff)} pts
+            </span>
+          )}
         </div>
       </div>
-      <div className="flex-1 min-h-[180px] mt-4 alpha-animate-scale relative">
+
+      {/* Chart area */}
+      <div className="flex-1 min-h-[160px] mt-3 alpha-animate-scale relative">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}
@@ -141,7 +164,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
               dataKey="label"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: '#9CA3AF', fontWeight: 500 }}
+              tick={{ fontSize: 10, fill: '#9CA3AF', fontWeight: 500 }}
               dy={8}
               interval={0}
             />
@@ -149,7 +172,7 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
               domain={[0, 100]}
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: '#6B7280' }}
+              tick={{ fontSize: 10, fill: '#6B7280' }}
               ticks={[0, 50, 100]}
               dx={-4}
             />
@@ -178,6 +201,21 @@ export function WeeklyProgress({ data }: WeeklyProgressProps) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Bottom tier badge — makes the card feel more complete */}
+      {data.length >= 1 && (
+        <div className="mt-2 pt-3 border-t border-[#232636] flex items-center justify-between">
+          <span className="text-[10px] text-[#6B7280]">
+            {data.length} data point{data.length > 1 ? 's' : ''}
+          </span>
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+            style={{ color: currentColor, backgroundColor: `${currentColor}12` }}
+          >
+            {getScoreTier(currentScore)}
+          </span>
+        </div>
+      )}
     </div>
   )
 }

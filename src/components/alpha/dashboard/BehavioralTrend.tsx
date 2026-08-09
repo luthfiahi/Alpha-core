@@ -102,7 +102,7 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
   const displayTags = isUsingDefaults ? defaultTags : tags
 
   return (
-    <div className="alpha-card p-5 h-full">
+    <div className="alpha-card p-4 sm:p-5 h-full flex flex-col min-w-0">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="alpha-heading-sm">Behavioral Trend</h3>
@@ -121,7 +121,7 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
           </span>
         )}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-1.5 flex-1">
         {displayTags.map((tag) => {
           const isUp = tag.trend > 0
           const severityColor = getSeverityColor(tag.severity)
@@ -134,19 +134,19 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
           return (
             <div
               key={tag.name}
-              className="flex items-center justify-between py-2.5 px-3 rounded-xl transition-all duration-200 hover:bg-white/[0.04] group cursor-pointer"
+              className="flex items-center justify-between py-2 px-2.5 rounded-xl transition-all duration-200 hover:bg-white/[0.04] group cursor-pointer"
               style={{ backgroundColor: 'rgba(255,255,255,0.015)' }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {/* Severity dot with glow */}
                 <div
-                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{
                     backgroundColor: severityColor,
                     boxShadow: severityGlow,
                   }}
                 />
-                <span className="text-sm font-medium text-[#F3F4F6]">{tag.name}</span>
+                <span className="text-xs font-medium text-[#F3F4F6] truncate">{tag.name}</span>
                 {/* Severity badge */}
                 <span
                   className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full uppercase tracking-wider"
@@ -158,10 +158,10 @@ export function BehavioralTrend({ tags }: BehavioralTrendProps) {
                   {tag.severity}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <MiniSparkline data={tag.sparkline} color={severityColor} />
                 <div
-                  className="flex items-center gap-0.5 text-xs font-financial font-semibold min-w-[52px] justify-end"
+                  className="flex items-center gap-0.5 text-[11px] font-financial font-semibold min-w-[48px] justify-end"
                   style={{ color: trendColor }}
                 >
                   {isUp ? (
