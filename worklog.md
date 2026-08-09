@@ -143,3 +143,25 @@ Stage Summary:
 - Net code reduction of ~850 lines (dedup, cleanup, tighter code)
 - Zero business logic changes — pure presentation layer upgrade
 - All 12 tasks completed
+
+---
+Task ID: qa-1 through qa-12
+Agent: Main Agent + 3 parallel QA sub-agents + 3 parallel fix sub-agents
+Task: Sprint 7.5 — Full QA & Bug Hunt
+
+Work Log:
+- Launched 3 parallel deep code audits covering Auth, Journal, AI Coach, Memory, Dashboard, Playbook, Analytics, DNA, and ALL API routes
+- Combined 35 raw findings into 28 unique bugs (4 Critical, 10 High, 9 Medium, 5 Low)
+- Launched 3 parallel fix agents for Critical, High, and Medium bugs
+- Fixed 23 bugs across 31 files
+- Manual TS error cleanup (TradingDNAPage isLoading props, RecentTrades type guard, dashboard type annotation)
+- Production regression test: login, forgot-password, register pages all functional
+- Mobile viewport test (375x812): register page renders correctly
+- Zero console errors throughout all interactions
+
+Stage Summary:
+- 23 bugs fixed, 5 Low bugs deferred (L1-L5: edge cases, not blocking)
+- Commit: ac9e0d2 pushed to main
+- Lint: 0 errors, 1 pre-existing warning
+- TypeScript: all new files clean, pre-existing JournalNewPage react-hook-form typing issue unchanged
+- All auth pages functional on production
