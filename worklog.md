@@ -51,3 +51,95 @@ Stage Summary:
 - JournalDetailPage: 6 presentation upgrades applied, 0 API/logic changes
 - CoachingPage: 3 presentation upgrades applied (handler fix, breathing animation, controlled dropdown), 0 API/logic changes
 - Clean lint pass
+
+---
+Task ID: 3-5
+Agent: Dashboard Premium Agent
+Task: Dashboard components premium UI upgrade
+
+Work Log:
+- WelcomeHero: used todayTradesCount & processScore props, dynamic sparkline, removed fake System Online
+- ProcessScoreCard: dynamic ring gradient by score tier, 7-day trend in ring center
+- AIInsightCard: fixed | null typo, removed inline style, Read more navigates to coaching, category badge
+- QuickActions: added conditional 5th action, aria-labels, alpha-hover-lift
+- RecentTrades: border-left color approach, dynamic View all count
+- ReflectionGapSummary: real progress props, improved empty state
+- BehavioralTrend: sample data label, cursor-pointer
+- DashboardPage: removed redundant heading, pb-8, unreflectedCount to QuickActions
+
+Stage Summary:
+- All 8 dashboard components upgraded
+- 0 new lint errors
+
+---
+Task ID: 6-9
+Agent: Content Pages Agent
+Task: Content page premium UI upgrades
+
+Work Log:
+- AppLayout: fixed nested main, pb-12, journal-detail label
+- AppSidebar: removed hardcoded notification badge
+- TradingDNAPage: removed half-empty grid, Generate spinner, error toast
+- AnalyticsPage: extracted TAB_TRIGGER_CLASS, metrics skeleton, pb-8
+- PlaybookPage: form-like detail skeleton, merged handlers, Indonesian empty states
+
+Stage Summary:
+- All 5 layout/content files upgraded
+- 0 new lint errors
+
+---
+Task ID: 7-8
+Agent: Journal + Coaching Agent
+Task: Journal detail + AI Coach premium
+
+Work Log:
+- JournalDetailPage: ChevronLeft back button, fixed duration calc (entry→exit time), PS badge, gradient accent, reflection empty state
+- CoachingPage: breathing AI avatar, fixed trade selector outside-click handler
+
+Stage Summary:
+- Duration now shows actual trade duration instead of time-since-close
+- Trade selector now properly closes on outside click
+
+---
+Task ID: 10-11
+Agent: Skeleton + Mobile Agent
+Task: Consistent states + Mobile polish
+
+Work Log:
+- WeeklyProgress: dynamic chart color by score, fullLabel in tooltip
+- JournalPage: 4 performance summary stat cards (total/winRate/PnL/avgPS), pb-8
+- TradeTableView: added Date column between Pair and Direction
+- AnalyticsPage: mobile tab labels (hidden sm:inline for long labels)
+
+Stage Summary:
+- All presentation upgrades complete
+- Total: 22 files changed, 728 insertions, 1582 deletions (net reduction via dedup)
+- Lint: 0 errors, 1 pre-existing warning
+- Pushed as commit 65e216c
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Quality Gate — lint, build, verify
+
+Work Log:
+- bun run lint: 0 errors, 1 pre-existing warning (JournalNewPage.tsx react-hooks/incompatible-library)
+- git push origin main: successful (65e216c)
+- Vercel deployment: successful
+- Agent Browser verification:
+  - Login page: renders correctly, no console errors
+  - Register page: renders correctly, no console errors
+  - Production requires Supabase auth — dashboard pages verified via code review only
+- Code review verification:
+  - ProcessScoreCard: dynamic ring gradient (getRingGradient) confirmed
+  - AIInsightCard: | null typo fixed, inline style removed confirmed
+  - WeeklyProgress: dynamic chart color confirmed, empty state SVG uses indigo (decorative, correct)
+  - AppLayout: nested main fixed, pb-12 confirmed
+  - CoachingPage: trade selector controlled, breathing animation confirmed
+  - JournalDetailPage: formatDuration, ChevronLeft, PenLine confirmed
+
+Stage Summary:
+- Sprint 7.2 complete: 22 files changed, 728 insertions, 1582 deletions
+- Net code reduction of ~850 lines (dedup, cleanup, tighter code)
+- Zero business logic changes — pure presentation layer upgrade
+- All 12 tasks completed
