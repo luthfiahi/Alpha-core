@@ -76,7 +76,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
           })
         } else {
-          clearUser()
+          // Demo mode: when Supabase is not configured, auto-login as demo user
+          const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+          if (!hasSupabase) {
+            console.log('[AUTH] Supabase not configured — demo mode active')
+            setUser({
+              id: 'demo-user',
+              email: 'demo@alpha.dev',
+              name: 'Demo Trader',
+            })
+          } else {
+            clearUser()
+          }
         }
       } catch (err) {
         console.error('[AUTH SESSION CHECK ERROR]', err)
