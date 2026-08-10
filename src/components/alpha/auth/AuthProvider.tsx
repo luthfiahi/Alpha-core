@@ -52,12 +52,31 @@ const forgotErrorMap: Record<string, string> = {
 }
 
 // ========================================
+// Safety timeout: prevent permanent blank screen
+// ========================================
+const AUTH_SAFETY_TIMEOUT_MS = 6000
+
+// ========================================
 // AuthProvider Component
 // ========================================
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, isLoading, setUser, clearUser, setLoading } = useAuthStore()
   const initialized = useRef(false)
+  const sessionChecked = useRef(false)
+
+  // Safety timeout — if isLoading stays true for too long, force clearUser
+  // This prevents the AuthLoadingScreen (near-black bg) from being permanent
+  useEffect(() => {
+    if (!isLoading) return
+    const timer = setTimeout(() => {
+      if (isLoading && !sessionChecked.current) {
+        console.warn('[AUTH] Safety timeout reached — forcing clearUser to prevent blank screen')
+        clearUser()
+      }
+    }, AUTH_SAFETY_TIMEOUT_MS)
+    return () => clearTimeout(timer)
+  }, [isLoading, clearUser])
 
   // Check existing session on mount
   useEffect(() => {
@@ -66,8 +85,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function checkSession() {
       try {
-        // Use browser client to check existing session
-        const { data: { session } } = await supabase.auth.getSession()
+        // Wrap getSession with a timeout to prevent infinite hang
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('[AUTH] getSession timed out')), AUTH_SAFETY_TIMEOUT_MS - 1000)
+        )
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise])
 
         if (session?.user) {
           setUser({
@@ -97,6 +120,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (err) {
         console.error('[AUTH SESSION CHECK ERROR]', err)
         clearUser()
+      } finally {
+        sessionChecked.current = true
       }
     }
 
@@ -115,6 +140,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
         })
       } else if (event === 'SIGNED_OUT') {
+        clearUser()
+      } else if (event === 'INITIAL_SESSION' && !session?.user) {
+        // SAFETY: INITIAL_SESSION with no session — clear loading state
+        // This provides a redundant safety net to prevent blank screen
+        console.log('[AUTH] INITIAL_SESSION with no user — clearing loading state')
         clearUser()
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
         // Update user data on token refresh

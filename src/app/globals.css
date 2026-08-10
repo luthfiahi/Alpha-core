@@ -436,20 +436,27 @@
 }
 
 /* Animation utility classes */
+/* SAFETY: Use 'forwards' instead of 'both' — 'both' applies 'from' keyframe
+   (opacity: 0) BEFORE animation starts, which can leave content invisible
+   if animation fails to trigger. 'forwards' only applies the 'to' keyframe
+   after completion, and the element is visible by default before animation. */
 .alpha-animate-in {
-  animation: alpha-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  opacity: 1; /* Safety: ensure visible even if animation fails */
+  animation: alpha-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .alpha-animate-in-fast {
-  animation: alpha-slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  opacity: 1;
+  animation: alpha-slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .alpha-animate-fade {
-  animation: alpha-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  opacity: 1;
+  animation: alpha-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .alpha-animate-scale {
-  animation: alpha-scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: alpha-scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Stagger delays — apply to child elements */

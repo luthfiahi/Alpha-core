@@ -34,6 +34,7 @@ function ClientOnly({ children }: { children: ReactNode }) {
 
 // ========================================
 // Error Boundary — catches React crashes
+// Must wrap BOTH LoginPage and Dashboard
 // ========================================
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -134,15 +135,35 @@ function PageSkeleton() {
 
 // ========================================
 // Loading screen (shown while checking auth)
+// Has a visible UI — NOT just a dark background
 // ========================================
 function AuthLoadingScreen() {
+  const [showSkip, setShowSkip] = React.useState(false)
+
+  // Show a "skip" option after 3 seconds so user can escape if stuck
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowSkip(true), 3000)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-[#0B0D17]">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#0B0D17]">
       <div className="flex flex-col items-center gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] animate-pulse">
           <span className="text-lg font-bold text-white">A</span>
         </div>
         <p className="text-sm text-[#6B7280]">Memuat...</p>
+        {showSkip && (
+          <button
+            onClick={() => {
+              console.warn('[AUTH] User skipped loading — forcing clearUser')
+              useAuthStore.getState().clearUser()
+            }}
+            className="text-xs text-[#4B5563] hover:text-[#9CA3AF] transition-colors underline"
+          >
+            Skip loading
+          </button>
+        )}
       </div>
     </div>
   )
@@ -155,17 +176,11 @@ export default function Home() {
   return (
     <ClientOnly>
       <AuthProvider>
-        <AuthGuard>
-          <AppErrorBoundary>
-            <AppLayout>
-              <Suspense fallback={<PageSkeleton />}>
-                <div className="alpha-animate-in">
-                  <PageContent />
-                </div>
-              </Suspense>
-            </AppLayout>
-          </AppErrorBoundary>
-        </AuthGuard>
+        {/* Error boundary wraps BOTH LoginPage and Dashboard
+            so ANY crash is caught and shown instead of a blank screen */}
+        <AppErrorBoundary>
+          <AuthGuard />
+        </AppErrorBoundary>
       </AuthProvider>
     </ClientOnly>
   )
@@ -174,7 +189,7 @@ export default function Home() {
 // ========================================
 // Auth Guard — shows login or app based on auth state
 // ========================================
-function AuthGuard({ children }: { children: React.ReactNode }) {
+function AuthGuard({ children }: { children: React.ReactNode } = { children: <></> }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const isLoading = useAuthStore((s) => s.isLoading)
 
@@ -186,5 +201,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     return <LoginPage />
   }
 
-  return <>{children}</>
+  return (
+    <AppLayout>
+      <Suspense fallback={<PageSkeleton />}>
+        <div className="alpha-animate-in">
+          <PageContent />
+        </div>
+      </Suspense>
+    </AppLayout>
+  )
 }
