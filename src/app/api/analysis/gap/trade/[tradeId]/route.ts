@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { requireTrader } from '@/lib/api-auth'
 
 // ========================================
 // GET Handler — Get all gaps for a specific trade
@@ -10,6 +11,10 @@ export async function GET(
   { params }: { params: Promise<{ tradeId: string }> }
 ) {
   try {
+    const { trader, error: authError } = await requireTrader()
+    if (authError) return authError
+    if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
+
     const { tradeId } = await params
 
     if (!tradeId) {
@@ -20,8 +25,8 @@ export async function GET(
     }
 
     // Verify trade exists
-    const trade = await db.tradeEntry.findUnique({
-      where: { id: tradeId },
+    const trade = await db.tradeEntry.findFirst({
+      where: { id: tradeId, traderId: trader.id },
     })
 
     if (!trade) {
@@ -32,7 +37,7 @@ export async function GET(
     }
 
     const gaps = await db.reflectionGapRecord.findMany({
-      where: { tradeId },
+      where: { tradeId, traderId: trader.id },
       orderBy: { createdAt: 'desc' },
     })
 
