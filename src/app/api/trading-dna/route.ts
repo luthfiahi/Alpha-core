@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
   if (!str) return fallback
@@ -56,22 +56,11 @@ Respond ONLY with valid JSON. No markdown, no code blocks, no extra text.
 // ========================================
 
 export async function GET(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
-    const { searchParams } = new URL(request.url)
-    const traderId = searchParams.get('traderId')
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ error: 'No trader found' }, { status: 404 })
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
-    }
-
     const dna = await db.tradingDNA.findUnique({
       where: { traderId: trader.id },
     })
@@ -92,22 +81,11 @@ export async function GET(request: NextRequest) {
 // ========================================
 
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
-    const body = await request.json()
-    const { traderId } = body as { traderId?: string }
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ error: 'No trader found' }, { status: 404 })
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
-    }
-
     // Fetch all trader data for comprehensive analysis
     const trades = await db.tradeEntry.findMany({
       where: { traderId: trader.id, deletedAt: null },
