@@ -1,24 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // GET /api/dashboard - Aggregated dashboard data
 export async function GET() {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
-    // Get first trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      trader = await db.trader.create({
-        data: {
-          email: 'trader@alpha.local',
-          name: 'Luthfi',
-        },
-      })
-    }
-
     // 1. Process score (latest snapshot)
     const latestSnapshot = await db.processScoreSnapshot.findFirst({
       where: { traderId: trader.id },
@@ -157,15 +147,11 @@ export async function GET() {
 
 // POST /api/dashboard — Recalculate process score from existing trades
 export async function POST() {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
-    const trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ error: 'No trader found' }, { status: 404 })
-    }
-
     const recentTrades = await db.tradeEntry.findMany({
       where: { traderId: trader.id, deletedAt: null },
       orderBy: { createdAt: 'desc' },
