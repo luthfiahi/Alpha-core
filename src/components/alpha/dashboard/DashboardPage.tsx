@@ -120,7 +120,7 @@ function DashboardError({
 
 /* -------------------------------------------------------------------------- */
 /*  Dashboard Page — No redundant <main> wrapper.
-     AppLayout already provides scroll context + max-w-[1280px].
+     AppLayout already provides scroll context + padding.
 /* -------------------------------------------------------------------------- */
 
 export function DashboardPage() {

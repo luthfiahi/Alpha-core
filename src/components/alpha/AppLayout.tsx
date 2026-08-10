@@ -34,10 +34,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex-1 overflow-y-auto overflow-x-hidden pb-12">
           <div
             className={cn(
-              'mx-auto w-full px-4 py-6',
-              'max-w-[1280px]',
-              // Extra padding on larger screens
-              'sm:px-6'
+              'w-full px-4 py-6',
+              // Extra padding on larger screens — no max-w, content fills full width
+              'sm:px-6 lg:px-8'
             )}
           >
             {children}
