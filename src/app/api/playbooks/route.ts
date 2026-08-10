@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // GET /api/playbooks — List all playbooks with checklist count and trade count
 export async function GET() {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
-    const trader = await db.trader.findFirst();
     if (!trader) {
       return NextResponse.json({ playbooks: [] });
     }
@@ -38,8 +38,9 @@ export async function GET() {
 
 // POST /api/playbooks — Create a new playbook
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const body = await request.json();
@@ -52,7 +53,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const trader = await db.trader.findFirst();
     if (!trader) {
       return NextResponse.json(
         { error: "Trader not found" },
