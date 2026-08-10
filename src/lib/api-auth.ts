@@ -17,7 +17,13 @@ export async function getAuthUser() {
       return { user: null, isDemo: true }
     }
 
+    // Debug bypass: check for alpha-demo=1 cookie
     const cookieStore = await cookies()
+    const demoCookie = cookieStore.get('alpha-demo')
+    if (demoCookie?.value === '1') {
+      return { user: null, isDemo: true }
+    }
+
     const supabase = await createRouteHandlerClient(cookieStore)
     const { data: { user }, error } = await supabase.auth.getUser()
 

@@ -82,6 +82,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
           if (!hasSupabase || isDemo) {
             console.log('[AUTH] Supabase not configured — demo mode active')
+            if (isDemo) {
+              document.cookie = 'alpha-demo=1; path=/; max-age=86400'
+            }
             setUser({
               id: 'demo-user',
               email: 'demo@alpha.dev',
