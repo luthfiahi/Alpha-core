@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // GET /api/playbooks/[id] — Get single playbook with full checklist data
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
-    const playbook = await db.playbook.findUnique({
-      where: { id },
+    const playbook = await db.playbook.findFirst({
+      where: { id, traderId: trader.id },
       include: {
         checklists: {
           orderBy: { sortOrder: "asc" },
@@ -53,15 +54,16 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
     const body = await request.json();
     const { name, description, sessionType, isActive, sortOrder } = body;
 
-    const existing = await db.playbook.findUnique({ where: { id } });
+    const existing = await db.playbook.findFirst({ where: { id, traderId: trader.id } });
     if (!existing) {
       return NextResponse.json(
         { error: "Playbook not found" },
@@ -95,12 +97,13 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
-    const existing = await db.playbook.findUnique({ where: { id } });
+    const existing = await db.playbook.findFirst({ where: { id, traderId: trader.id } });
     if (!existing) {
       return NextResponse.json(
         { error: "Playbook not found" },
@@ -110,7 +113,7 @@ export async function DELETE(
 
     // Unlink trades that reference this playbook
     await db.tradeEntry.updateMany({
-      where: { playbookId: id },
+      where: { playbookId: id, traderId: trader.id },
       data: { playbookId: null },
     });
 
