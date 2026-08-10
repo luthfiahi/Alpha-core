@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
   if (!str) return fallback
@@ -91,14 +91,14 @@ If no gaps are found, return an empty array: []
 // ========================================
 
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const body = await request.json()
-    const { tradeId, traderId } = body as {
+    const { tradeId } = body as {
       tradeId: string
-      traderId?: string
     }
 
     if (!tradeId) {
@@ -109,8 +109,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch the trade with related data
-    const trade = await db.tradeEntry.findUnique({
-      where: { id: tradeId },
+    const trade = await db.tradeEntry.findFirst({
+      where: { id: tradeId, traderId: trader.id },
       include: {
         playbook: {
           include: {
@@ -128,18 +128,6 @@ export async function POST(request: NextRequest) {
         { error: 'Trade not found' },
         { status: 404 }
       )
-    }
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json(
-        { error: 'No trader found' },
-        { status: 404 }
-      )
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
     }
 
     // Fetch behavioral events linked to this trade
@@ -300,25 +288,15 @@ Identify all gaps between plan and execution. Return a JSON array of gap analyse
 // ========================================
 
 export async function GET(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const { searchParams } = new URL(request.url)
     const gapType = searchParams.get('gapType')
     const resolved = searchParams.get('resolved')
     const severity = searchParams.get('severity')
-    const traderId = searchParams.get('traderId')
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ gaps: [] })
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
-    }
-
     const where: Record<string, unknown> = { traderId: trader.id }
     if (gapType) where.gapType = gapType
     if (resolved === 'true') where.resolved = true
