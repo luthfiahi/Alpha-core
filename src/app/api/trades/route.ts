@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { computeAndSaveProcessScore } from "@/lib/ai/process-score";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // GET /api/trades — List trades with filters
 export async function GET(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
-  if (authError) return authError
+  const { trader, error: authError } = await requireTrader()
+  if (authError || !trader) return authError
 
   try {
     const { searchParams } = new URL(request.url);
@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {
+      traderId: trader.id,
       deletedAt: null,
     };
 
@@ -63,7 +64,7 @@ export async function GET(request: NextRequest) {
 
     // Get distinct pairs for filter dropdown
     const pairs = await db.tradeEntry.findMany({
-      where: { deletedAt: null },
+      where: { traderId: trader.id, deletedAt: null },
       select: { pair: true },
       distinct: ["pair"],
       orderBy: { pair: "asc" },
@@ -90,8 +91,8 @@ export async function GET(request: NextRequest) {
 
 // POST /api/trades — Create new trade
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
-  if (authError) return authError
+  const { trader, error: authError } = await requireTrader()
+  if (authError || !trader) return authError
 
   try {
     const body = await request.json();
@@ -156,17 +157,6 @@ export async function POST(request: NextRequest) {
           )
         }
       }
-    }
-
-    // Get or create a default trader (for MVP)
-    let trader = await db.trader.findFirst();
-    if (!trader) {
-      trader = await db.trader.create({
-        data: {
-          email: "trader@alpha.dev",
-          name: "Default Trader",
-        },
-      });
     }
 
     const trade = await db.tradeEntry.create({
