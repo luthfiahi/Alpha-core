@@ -143,9 +143,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         clearUser()
       } else if (event === 'INITIAL_SESSION' && !session?.user) {
         // SAFETY: INITIAL_SESSION with no session — clear loading state
-        // This provides a redundant safety net to prevent blank screen
-        console.log('[AUTH] INITIAL_SESSION with no user — clearing loading state')
-        clearUser()
+        // Don't clearUser() if ?demo=1 is present — let checkSession() handle demo mode
+        const isDemo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('demo') === '1'
+        if (!isDemo) {
+          console.log('[AUTH] INITIAL_SESSION with no user — clearing loading state')
+          clearUser()
+        }
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
         // Update user data on token refresh
         setUser({
