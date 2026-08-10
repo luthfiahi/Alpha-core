@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 function safeJsonParse(str: string | null | undefined, fallback: unknown = []): unknown {
   if (!str) return fallback
@@ -84,27 +84,14 @@ If no behavioral patterns are detected, return an empty array: []
 // ========================================
 
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const body = await request.json()
-    const { traderId, days } = body as {
-      traderId?: string
+    const { days } = body as {
       days?: number
-    }
-
-    // If no traderId provided, use the first trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json(
-        { error: 'No trader found. Please create a trader first.' },
-        { status: 404 }
-      )
-    }
-
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
     }
 
     const lookbackDays = Math.min(days || 7, 90)
