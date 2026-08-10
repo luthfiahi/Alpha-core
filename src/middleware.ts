@@ -1,4 +1,4 @@
-import { type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
@@ -13,9 +13,6 @@ export async function middleware(request: NextRequest) {
     })
   }
 }
-
-// Need this for the catch block
-import { NextResponse } from 'next/server'
 
 export const config = {
   matcher: [
