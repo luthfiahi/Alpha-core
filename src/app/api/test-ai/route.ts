@@ -1,17 +1,24 @@
 import { NextResponse } from 'next/server'
 
+function productionNotFound() {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 })
+}
+
 /**
- * GET /api/test-ai — Tests OpenRouter API connection.
+ * GET /api/test-ai — Development-only OpenRouter connection check.
  */
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return productionNotFound()
+  }
+
   const apiKey = process.env.OPENROUTER_API_KEY
 
   if (!apiKey) {
-    return NextResponse.json({
-      status: 'error',
-      message: 'OPENROUTER_API_KEY not set',
-      hint: 'Get a free key at https://openrouter.ai/keys and add it in Vercel Settings > Environment Variables',
-    })
+    return NextResponse.json(
+      { status: 'error', message: 'OPENROUTER_API_KEY not set' },
+      { status: 503 },
+    )
   }
 
   const model = process.env.AI_MODEL || 'poolside/laguna-s-2.1:free'
@@ -35,31 +42,30 @@ export async function GET() {
     const elapsed = Date.now() - startTime
 
     if (!response.ok) {
-      const body = await response.text().catch(() => 'unreadable')
-      return NextResponse.json({
-        status: 'error',
-        httpStatus: response.status,
-        body: body.slice(0, 500),
-        elapsed: `${elapsed}ms`,
-        model,
-      })
+      return NextResponse.json(
+        {
+          status: 'error',
+          httpStatus: response.status,
+          elapsed: `${elapsed}ms`,
+          model,
+        },
+        { status: 502 },
+      )
     }
 
     const data = await response.json()
-    const text = data?.choices?.[0]?.message?.content || 'EMPTY'
+    const responseText = data?.choices?.[0]?.message?.content || 'EMPTY'
 
     return NextResponse.json({
       status: 'ok',
       model,
-      response: text,
+      response: responseText,
       elapsed: `${elapsed}ms`,
     })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({
-      status: 'error',
-      message: msg,
-      model,
-    }, { status: 500 })
+  } catch {
+    return NextResponse.json(
+      { status: 'error', message: 'AI connection failed', model },
+      { status: 500 },
+    )
   }
 }

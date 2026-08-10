@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server'
 
+function productionNotFound() {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 })
+}
+
 /**
- * GET /api/test-db — Tests ONLY database connection.
+ * GET /api/test-db — Development-only database connection check.
  */
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return productionNotFound()
+  }
+
   try {
     const { db } = await import('@/lib/db')
     const traderCount = await db.trader.count()
@@ -12,11 +20,14 @@ export async function GET() {
       database: 'connected',
       traderCount,
     })
-  } catch (err: unknown) {
-    return NextResponse.json({
-      status: 'error',
-      source: 'database',
-      message: err instanceof Error ? err.message : String(err),
-    }, { status: 500 })
+  } catch {
+    return NextResponse.json(
+      {
+        status: 'error',
+        source: 'database',
+        message: 'Database connection failed',
+      },
+      { status: 500 },
+    )
   }
 }
