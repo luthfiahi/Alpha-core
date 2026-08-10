@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server'
 import { buildTraderContext } from '@/lib/ai/memory/context-builder'
 import { formatMemoryContextForPrompt } from '@/lib/ai/memory/types'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // GET /api/memory/context — Returns full TraderMemoryContext
 export async function GET(request: Request) {
   try {
-    const { error: authError } = await getAuthUser()
+    const { trader, error: authError } = await requireTrader()
     if (authError) return authError
+    if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
     const { searchParams } = new URL(request.url)
-    const traderId = searchParams.get('traderId') || undefined
     const format = searchParams.get('format') // 'full' (default) or 'prompt'
 
-    const context = await buildTraderContext(traderId)
+    const context = await buildTraderContext(trader.id)
 
     if (format === 'prompt') {
       // Return formatted prompt-ready string
