@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // POST /api/playbooks/[id]/checklists/[checklistId]/items — Add item to checklist
 export async function POST(
@@ -8,12 +8,13 @@ export async function POST(
   { params }: { params: Promise<{ id: string; checklistId: string }> }
 ) {
   try {
-    const { checklistId } = await params;
+    const { id: playbookId, checklistId } = await params;
     const body = await request.json();
     const { text } = body;
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
 
     if (!text?.trim()) {
       return NextResponse.json(
@@ -22,8 +23,8 @@ export async function POST(
       );
     }
 
-    const checklist = await db.playbookChecklist.findUnique({
-      where: { id: checklistId },
+    const checklist = await db.playbookChecklist.findFirst({
+      where: { id: checklistId, playbookId, playbook: { traderId: trader.id } },
     });
     if (!checklist) {
       return NextResponse.json(
@@ -66,20 +67,26 @@ export async function PUT(
   { params }: { params: Promise<{ id: string; checklistId: string }> }
 ) {
   try {
-    const { checklistId } = await params;
+    const { id: playbookId, checklistId } = await params;
     const body = await request.json();
     const { itemId, text, orders } = body;
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+
+    const checklist = await db.playbookChecklist.findFirst({
+      where: { id: checklistId, playbookId, playbook: { traderId: trader.id } },
+    });
+    if (!checklist) return NextResponse.json({ error: "Checklist not found" }, { status: 404 });
 
     // Bulk reorder
     if (orders && Array.isArray(orders)) {
       await Promise.all(
         orders.map(
           (o: { id: string; sortOrder: number }) =>
-            db.playbookChecklistItem.update({
-              where: { id: o.id },
+            db.playbookChecklistItem.updateMany({
+              where: { id: o.id, checklistId },
               data: { sortOrder: o.sortOrder },
             })
         )
@@ -131,12 +138,18 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; checklistId: string }> }
 ) {
   try {
-    const { checklistId } = await params;
+    const { id: playbookId, checklistId } = await params;
     const { searchParams } = new URL(request.url);
     const itemId = searchParams.get("itemId");
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+
+    const checklist = await db.playbookChecklist.findFirst({
+      where: { id: checklistId, playbookId, playbook: { traderId: trader.id } },
+    });
+    if (!checklist) return NextResponse.json({ error: "Checklist not found" }, { status: 404 });
 
     if (!itemId) {
       return NextResponse.json(
