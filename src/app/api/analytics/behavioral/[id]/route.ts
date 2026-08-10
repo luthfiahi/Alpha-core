@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // PUT /api/analytics/behavioral/:id — resolve a behavioral event
 export async function PUT(
@@ -10,11 +10,12 @@ export async function PUT(
   try {
     const { id } = await params
 
-    const { error: authError } = await getAuthUser()
+    const { trader, error: authError } = await requireTrader()
     if (authError) return authError
+    if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
-    const event = await db.behavioralEvent.findUnique({
-      where: { id },
+    const event = await db.behavioralEvent.findFirst({
+      where: { id, traderId: trader.id },
     })
 
     if (!event) {
