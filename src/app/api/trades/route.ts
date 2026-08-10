@@ -6,7 +6,10 @@ import { requireTrader } from "@/lib/api-auth";
 // GET /api/trades — List trades with filters
 export async function GET(request: NextRequest) {
   const { trader, error: authError } = await requireTrader()
-  if (authError || !trader) return authError
+  if (authError) return authError
+  if (!trader) {
+    return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+  }
 
   try {
     const { searchParams } = new URL(request.url);
@@ -92,7 +95,10 @@ export async function GET(request: NextRequest) {
 // POST /api/trades — Create new trade
 export async function POST(request: NextRequest) {
   const { trader, error: authError } = await requireTrader()
-  if (authError || !trader) return authError
+  if (authError) return authError
+  if (!trader) {
+    return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+  }
 
   try {
     const body = await request.json();
