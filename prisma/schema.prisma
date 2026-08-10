@@ -23,8 +23,9 @@ datasource db {
 // ========================================
 
 model Trader {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id         String   @id @default(cuid())
+  authUserId String?  @unique
+  email      String   @unique
   name      String?
   avatar    String?
   timezone  String   @default("Asia/Makassar")
