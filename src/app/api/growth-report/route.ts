@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // ========================================
 // Growth Report Generation System Prompt
@@ -45,23 +45,14 @@ Respond ONLY with valid JSON. No markdown, no code blocks, no extra text.
 // ========================================
 
 export async function GET(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const { searchParams } = new URL(request.url)
-    const traderId = searchParams.get('traderId')
     const reportType = searchParams.get('reportType')
     const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 200)
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ reports: [] })
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
-    }
 
     const where: Record<string, unknown> = { traderId: trader.id }
     if (reportType) where.reportType = reportType
@@ -87,25 +78,16 @@ export async function GET(request: NextRequest) {
 // ========================================
 
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const body = await request.json()
-    const { traderId, reportType, periodStart, periodEnd } = body as {
-      traderId?: string
+    const { reportType, periodStart, periodEnd } = body as {
       reportType?: 'WEEKLY' | 'MONTHLY'
       periodStart?: string
       periodEnd?: string
-    }
-
-    // Get trader
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      return NextResponse.json({ error: 'No trader found' }, { status: 404 })
-    }
-    if (traderId) {
-      trader = await db.trader.findUnique({ where: { id: traderId } }) || trader
     }
 
     // Determine period

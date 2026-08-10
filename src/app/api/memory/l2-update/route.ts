@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateL2Digest } from '@/lib/ai/memory/l2-updater'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // POST /api/memory/l2-update — Triggers L2 digest regeneration
 export async function POST(request: NextRequest) {
   try {
-    const { error: authError } = await getAuthUser()
+    const { trader, error: authError } = await requireTrader()
     if (authError) return authError
+    if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
-    const body = await request.json().catch(() => ({}))
-    const traderId = (body as { traderId?: string }).traderId
-
-    const digest = await updateL2Digest(traderId)
+    await request.json().catch(() => ({}))
+    const digest = await updateL2Digest(trader.id)
 
     return NextResponse.json({
       success: true,

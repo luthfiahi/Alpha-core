@@ -1,11 +1,11 @@
 import { createRouteHandlerClient } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 /**
- * Get the authenticated user from the request.
- * Returns { user, error } — if error, caller should return the NextResponse.
- * Returns null user when Supabase is not configured (demo mode).
+ * Get the authenticated Supabase user from the request.
+ * Demo mode is only available when Supabase is not configured.
  */
 export async function getAuthUser() {
   try {
@@ -13,17 +13,10 @@ export async function getAuthUser() {
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!supabaseUrl || !supabaseKey) {
-      // Demo mode — no auth required
       return { user: null, isDemo: true }
     }
 
-    // Debug bypass: check for alpha-demo=1 cookie
     const cookieStore = await cookies()
-    const demoCookie = cookieStore.get('alpha-demo')
-    if (demoCookie?.value === '1') {
-      return { user: null, isDemo: true }
-    }
-
     const supabase = await createRouteHandlerClient(cookieStore)
     const { data: { user }, error } = await supabase.auth.getUser()
 
@@ -37,21 +30,84 @@ export async function getAuthUser() {
 
     return { user, isDemo: false }
   } catch (err) {
-    // Only use demo mode when Supabase isn't configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
     if (!supabaseUrl || !supabaseKey) {
       return { user: null, isDemo: true }
     }
-    // Real error — don't silently grant access
-    console.error('[AUTH] Unexpected error in getAuthUser:', err)
+
+    console.error('[AUTH] Unexpected authentication error:', err)
     return {
       user: null,
       isDemo: false,
-      error: new Response(JSON.stringify({ error: 'Authentication error' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      }),
+      error: NextResponse.json(
+        { error: 'Authentication error' },
+        { status: 401 },
+      ),
     }
   }
+}
+
+/**
+ * Resolve the current application Trader from the verified Supabase session.
+ *
+ * Existing records are linked by normalized email on the owner's first login,
+ * preserving all historical data without hard-coding an Auth UUID.
+ */
+export async function requireTrader() {
+  const auth = await getAuthUser()
+  if (auth.error) {
+    return { trader: null, isDemo: false, error: auth.error }
+  }
+
+  if (auth.isDemo) {
+    const trader = await db.trader.upsert({
+      where: { email: 'trader@alpha.dev' },
+      update: {},
+      create: {
+        email: 'trader@alpha.dev',
+        name: 'Default Trader',
+      },
+    })
+
+    return { trader, isDemo: true }
+  }
+
+  const authUserId = auth.user?.id
+  const email = auth.user?.email?.trim().toLowerCase()
+
+  if (!authUserId || !email) {
+    return {
+      trader: null,
+      isDemo: false,
+      error: NextResponse.json(
+        { error: 'Authenticated account must have an email address' },
+        { status: 403 },
+      ),
+    }
+  }
+
+  const linkedTrader = await db.trader.findUnique({
+    where: { authUserId },
+  })
+
+  if (linkedTrader) {
+    return { trader: linkedTrader, isDemo: false }
+  }
+
+  const trader = await db.trader.upsert({
+    where: { email },
+    update: { authUserId },
+    create: {
+      authUserId,
+      email,
+      name:
+        typeof auth.user?.user_metadata?.name === 'string'
+          ? auth.user.user_metadata.name
+          : null,
+    },
+  })
+
+  return { trader, isDemo: false }
 }

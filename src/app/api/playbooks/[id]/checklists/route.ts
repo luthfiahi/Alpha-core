@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // POST /api/playbooks/[id]/checklists — Add a checklist
 export async function POST(
@@ -12,8 +12,9 @@ export async function POST(
     const body = await request.json();
     const { title, description, items } = body;
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
 
     if (!title?.trim()) {
       return NextResponse.json(
@@ -22,7 +23,7 @@ export async function POST(
       );
     }
 
-    const playbook = await db.playbook.findUnique({ where: { id: playbookId } });
+    const playbook = await db.playbook.findFirst({ where: { id: playbookId, traderId: trader.id } });
     if (!playbook) {
       return NextResponse.json(
         { error: "Playbook not found" },
@@ -77,8 +78,12 @@ export async function PUT(
     const body = await request.json();
     const { orders } = body; // [{id: "...", sortOrder: 0}, ...]
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+
+    const ownedPlaybook = await db.playbook.findFirst({ where: { id: playbookId, traderId: trader.id } });
+    if (!ownedPlaybook) return NextResponse.json({ error: "Playbook not found" }, { status: 404 });
 
     if (!Array.isArray(orders)) {
       return NextResponse.json(
@@ -117,8 +122,12 @@ export async function DELETE(
     const { searchParams } = new URL(request.url);
     const checklistId = searchParams.get("checklistId");
 
-    const { error: authError } = await getAuthUser();
+    const { trader, error: authError } = await requireTrader();
     if (authError) return authError;
+    if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 });
+
+    const ownedPlaybook = await db.playbook.findFirst({ where: { id: playbookId, traderId: trader.id } });
+    if (!ownedPlaybook) return NextResponse.json({ error: "Playbook not found" }, { status: 404 });
 
     if (!checklistId) {
       return NextResponse.json(

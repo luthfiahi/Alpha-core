@@ -1,20 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // GET /api/analytics/weekly-review/current — get current week's review
 export async function GET() {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      trader = await db.trader.create({
-        data: { email: 'trader@alpha.local', name: 'Luthfi' },
-      })
-    }
-
     // Calculate current week range
     const now = new Date()
     const weekStart = new Date(now)

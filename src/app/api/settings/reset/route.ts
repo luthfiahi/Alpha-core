@@ -1,120 +1,84 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
-// DELETE /api/settings/reset — Reset all trader data (keeps Trader itself)
+// DELETE /api/settings/reset — Reset only the authenticated trader's data.
 export async function DELETE() {
+  const { trader, error: authError } = await requireTrader();
+  if (authError || !trader) return authError;
+
   try {
-    const { error: authError } = await getAuthUser();
-    if (authError) return authError;
+    const traderId = trader.id;
 
-    // Collect delete counts
-    const counts: Record<string, number> = {};
+    const results = await db.$transaction([
+      // Child records without a direct traderId must be scoped through their parent.
+      db.conversationTurn.deleteMany({
+        where: { coachingSession: { traderId } },
+      }),
+      db.coachingSession.deleteMany({ where: { traderId } }),
+      db.tradeEntry.deleteMany({ where: { traderId } }),
+      db.playbookChecklistItem.deleteMany({
+        where: { checklist: { playbook: { traderId } } },
+      }),
+      db.playbookChecklist.deleteMany({
+        where: { playbook: { traderId } },
+      }),
+      db.playbook.deleteMany({ where: { traderId } }),
+      db.behavioralEvent.deleteMany({ where: { traderId } }),
+      db.growthSnapshot.deleteMany({ where: { traderId } }),
+      db.patternFinding.deleteMany({ where: { traderId } }),
+      db.reflectionGapRecord.deleteMany({ where: { traderId } }),
+      db.insightCard.deleteMany({ where: { traderId } }),
+      db.processScoreSnapshot.deleteMany({ where: { traderId } }),
+      db.weeklyReviewRecord.deleteMany({ where: { traderId } }),
+      db.tradingDNA.deleteMany({ where: { traderId } }),
+      db.growthReport.deleteMany({ where: { traderId } }),
+      db.memoryL0Event.deleteMany({ where: { traderId } }),
+      db.memoryL1Summary.deleteMany({ where: { traderId } }),
+      db.memoryL2Digest.deleteMany({ where: { traderId } }),
+      db.traderReadinessScore.deleteMany({ where: { traderId } }),
+      db.eventLog.deleteMany({ where: { traderId } }),
+    ]);
 
-    // Delete in dependency order (child tables first)
+    const labels = [
+      "conversationTurns",
+      "coachingSessions",
+      "tradeEntries",
+      "playbookChecklistItems",
+      "playbookChecklists",
+      "playbooks",
+      "behavioralEvents",
+      "growthSnapshots",
+      "patternFindings",
+      "reflectionGapRecords",
+      "insightCards",
+      "processScoreSnapshots",
+      "weeklyReviewRecords",
+      "tradingDNA",
+      "growthReports",
+      "memoryL0Events",
+      "memoryL1Summaries",
+      "memoryL2Digests",
+      "traderReadinessScores",
+      "eventLogs",
+    ] as const;
 
-    // 1. ConversationTurns (child of CoachingSession)
-    counts.conversationTurns = await db.conversationTurn.count();
-    await db.conversationTurn.deleteMany();
-
-    // 2. CoachingSessions
-    counts.coachingSessions = await db.coachingSession.count();
-    await db.coachingSession.deleteMany();
-
-    // 3. TradeEntries
-    counts.tradeEntries = await db.tradeEntry.count();
-    await db.tradeEntry.deleteMany();
-
-    // 4. PlaybookChecklistItems (child of PlaybookChecklist)
-    counts.playbookChecklistItems = await db.playbookChecklistItem.count();
-    await db.playbookChecklistItem.deleteMany();
-
-    // 5. PlaybookChecklists (child of Playbook)
-    counts.playbookChecklists = await db.playbookChecklist.count();
-    await db.playbookChecklist.deleteMany();
-
-    // 6. Playbooks
-    counts.playbooks = await db.playbook.count();
-    await db.playbook.deleteMany();
-
-    // 7. BehavioralEvents
-    counts.behavioralEvents = await db.behavioralEvent.count();
-    await db.behavioralEvent.deleteMany();
-
-    // 8. GrowthSnapshots
-    counts.growthSnapshots = await db.growthSnapshot.count();
-    await db.growthSnapshot.deleteMany();
-
-    // 9. PatternFindings
-    counts.patternFindings = await db.patternFinding.count();
-    await db.patternFinding.deleteMany();
-
-    // 10. PatternRegistry
-    counts.patternRegistry = await db.patternRegistry.count();
-    await db.patternRegistry.deleteMany();
-
-    // 11. ReflectionGapRecords
-    counts.reflectionGapRecords = await db.reflectionGapRecord.count();
-    await db.reflectionGapRecord.deleteMany();
-
-    // 12. InsightCards
-    counts.insightCards = await db.insightCard.count();
-    await db.insightCard.deleteMany();
-
-    // 13. ProcessScoreSnapshots
-    counts.processScoreSnapshots = await db.processScoreSnapshot.count();
-    await db.processScoreSnapshot.deleteMany();
-
-    // 14. WeeklyReviewRecords
-    counts.weeklyReviewRecords = await db.weeklyReviewRecord.count();
-    await db.weeklyReviewRecord.deleteMany();
-
-    // 15. TradingDNA
-    counts.tradingDNA = await db.tradingDNA.count();
-    await db.tradingDNA.deleteMany();
-
-    // 16. GrowthReports
-    counts.growthReports = await db.growthReport.count();
-    await db.growthReport.deleteMany();
-
-    // 17. MemoryL0Events
-    counts.memoryL0Events = await db.memoryL0Event.count();
-    await db.memoryL0Event.deleteMany();
-
-    // 18. MemoryL1Summaries
-    counts.memoryL1Summaries = await db.memoryL1Summary.count();
-    await db.memoryL1Summary.deleteMany();
-
-    // 19. MemoryL2Digests
-    counts.memoryL2Digests = await db.memoryL2Digest.count();
-    await db.memoryL2Digest.deleteMany();
-
-    // 20. TraderReadinessScores
-    counts.traderReadinessScores = await db.traderReadinessScore.count();
-    await db.traderReadinessScore.deleteMany();
-
-    // 21. EventLog (platform-level, may have no traderId)
-    counts.eventLogs = await db.eventLog.count();
-    await db.eventLog.deleteMany();
-
-    // 22. PromptTemplateRegistry
-    counts.promptTemplates = await db.promptTemplateRegistry.count();
-    await db.promptTemplateRegistry.deleteMany();
-
-    // Calculate total
-    const totalDeleted = Object.values(counts).reduce((sum, n) => sum + n, 0);
+    const details = Object.fromEntries(
+      labels.map((label, index) => [label, results[index].count]),
+    );
+    const totalDeleted = results.reduce((sum, result) => sum + result.count, 0);
 
     return NextResponse.json({
       success: true,
-      message: "All data has been reset successfully.",
+      message: "Your trading data has been reset successfully.",
       totalDeleted,
-      details: counts,
+      details,
     });
   } catch (error) {
     console.error("DELETE /api/settings/reset error:", error);
     return NextResponse.json(
       { error: "Failed to reset data." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

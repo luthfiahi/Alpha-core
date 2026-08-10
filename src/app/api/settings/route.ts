@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 
 // Allowed timezone values (matches frontend TIMEZONES list)
 const ALLOWED_TIMEZONES = [
@@ -28,8 +28,9 @@ interface SettingsPayload {
 
 // PUT /api/settings — Unified settings endpoint
 export async function PUT(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const body: SettingsPayload = await request.json();
@@ -74,7 +75,6 @@ export async function PUT(request: NextRequest) {
       }
 
       // Find the trader
-      const trader = await db.trader.findFirst();
       if (!trader) {
         return NextResponse.json(
           { error: "No trader profile found." },

@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateL1Summary } from '@/lib/ai/memory/l1-updater'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // POST /api/memory/l1-update — Triggers L1 summary regeneration
 export async function POST(request: NextRequest) {
   try {
-    const { error: authError } = await getAuthUser()
+    const { trader, error: authError } = await requireTrader()
     if (authError) return authError
+    if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
-    const body = await request.json().catch(() => ({}))
-    const traderId = (body as { traderId?: string }).traderId
-
-    const summary = await updateL1Summary(traderId)
+    await request.json().catch(() => ({}))
+    const summary = await updateL1Summary(trader.id)
 
     return NextResponse.json({
       success: true,

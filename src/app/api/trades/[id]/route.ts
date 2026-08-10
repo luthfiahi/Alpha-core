@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAuthUser } from "@/lib/api-auth";
+import { requireTrader } from "@/lib/api-auth";
 import { computeAndSaveProcessScore } from "@/lib/ai/process-score";
 
 // GET /api/trades/[id] — Fetch single trade
@@ -8,13 +8,14 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
     const trade = await db.tradeEntry.findUnique({
-      where: { id },
+      where: { id, traderId: trader.id },
     });
 
     if (!trade || trade.deletedAt) {
@@ -36,15 +37,16 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
     const body = await request.json();
 
     // Check trade exists and not deleted
-    const existing = await db.tradeEntry.findUnique({ where: { id } });
+    const existing = await db.tradeEntry.findFirst({ where: { id, traderId: trader.id } });
     if (!existing || existing.deletedAt) {
       return NextResponse.json({ error: "Trade not found" }, { status: 404 });
     }
@@ -152,22 +154,23 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: "Trader not found" }, { status: 404 })
 
   try {
     const { id } = await params;
-    const existing = await db.tradeEntry.findUnique({ where: { id } });
+    const existing = await db.tradeEntry.findFirst({ where: { id, traderId: trader.id } });
     if (!existing || existing.deletedAt) {
       return NextResponse.json({ error: "Trade not found" }, { status: 404 });
     }
 
     // Clean up related records before soft-deleting trade
     await db.reflectionGapRecord.deleteMany({
-      where: { tradeId: id },
+      where: { tradeId: id, traderId: trader.id },
     });
     await db.behavioralEvent.deleteMany({
-      where: { tradeId: id },
+      where: { tradeId: id, traderId: trader.id },
     });
 
     await db.tradeEntry.update({
