@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // ========================================
 // Free Chat System Prompt
@@ -228,8 +228,9 @@ Apa komitmenmu?`
 // ========================================
 
 export async function POST(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const body = await request.json()
@@ -290,8 +291,7 @@ export async function POST(request: NextRequest) {
     try {
       const { buildTraderContext } = await import('@/lib/ai/memory/context-builder')
       const { formatMemoryContextForPrompt } = await import('@/lib/ai/memory/types')
-      const traderId = (traderContext as Record<string, unknown> | undefined)?.traderId as string | undefined
-      const fullContext = await buildTraderContext(traderId)
+      const fullContext = await buildTraderContext(trader.id)
       if (fullContext.traderId) {
         memoryContextStr = '\n\n' + formatMemoryContextForPrompt(fullContext)
       }
