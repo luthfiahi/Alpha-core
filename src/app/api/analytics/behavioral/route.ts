@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getAuthUser } from '@/lib/api-auth'
+import { requireTrader } from '@/lib/api-auth'
 
 // GET /api/analytics/behavioral?type=FOMO&severity=HIGH&resolved=false
 export async function GET(request: NextRequest) {
-  const { error: authError } = await getAuthUser()
+  const { trader, error: authError } = await requireTrader()
   if (authError) return authError
+  if (!trader) return NextResponse.json({ error: 'Trader not found' }, { status: 404 })
 
   try {
     const { searchParams } = new URL(request.url)
@@ -13,13 +14,6 @@ export async function GET(request: NextRequest) {
     const severity = searchParams.get('severity')
     const resolved = searchParams.get('resolved')
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200)
-
-    let trader = await db.trader.findFirst()
-    if (!trader) {
-      trader = await db.trader.create({
-        data: { email: 'trader@alpha.local', name: 'Luthfi' },
-      })
-    }
 
     const where: Record<string, unknown> = {
       traderId: trader.id,
