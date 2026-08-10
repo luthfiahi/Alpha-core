@@ -76,9 +76,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Trader',
           })
         } else {
-          // Demo mode: when Supabase is not configured, auto-login as demo user
+          // Debug bypass: allow ?demo=1 query param for testing
+          const isDemo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('demo') === '1'
+          // Demo mode: when Supabase is not configured OR demo param present
           const hasSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-          if (!hasSupabase) {
+          if (!hasSupabase || isDemo) {
             console.log('[AUTH] Supabase not configured — demo mode active')
             setUser({
               id: 'demo-user',
