@@ -189,7 +189,7 @@ export default function Home() {
 // ========================================
 // Auth Guard — shows login or app based on auth state
 // ========================================
-function AuthGuard({ children }: { children: React.ReactNode } = { children: <></> }) {
+function AuthGuard() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const isLoading = useAuthStore((s) => s.isLoading)
 

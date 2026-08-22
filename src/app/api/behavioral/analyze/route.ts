@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
+import type { BehavioralEvent } from '@prisma/client'
 import { db } from '@/lib/db'
 import { requireTrader } from '@/lib/api-auth'
 
@@ -194,7 +195,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save detected events to database
-    const savedEvents = []
+    const savedEvents: BehavioralEvent[] = []
 
     for (const event of detectedEvents) {
       // Validate the behavior type

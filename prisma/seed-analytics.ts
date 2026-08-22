@@ -1,4 +1,5 @@
 import { db } from '../src/lib/db.js'
+import type { Prisma } from '@prisma/client'
 
 
 async function seedAnalytics() {
@@ -101,7 +102,7 @@ async function seedAnalytics() {
   // ========================================
   // 2. Seed 30 GrowthSnapshots (daily over ~30 days)
   // ========================================
-  const growthSnapshots = []
+  const growthSnapshots: Prisma.GrowthSnapshotCreateManyInput[] = []
   const baseEmotion = 40
   const baseConsistency = 45
   const baseProcess = 48

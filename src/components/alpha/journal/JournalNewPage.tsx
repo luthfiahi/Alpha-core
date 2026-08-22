@@ -39,19 +39,20 @@ const TAG_OPTIONS = ['Planned', 'Revenge', 'Impulsive', 'Overtrading', 'News-dri
 
 const tradeSchema = z.object({
   pair: z.string().min(1, 'Pair wajib diisi').max(10, 'Maksimal 10 karakter'),
-  direction: z.enum(['LONG', 'SHORT'], { required_error: 'Pilih arah trade' }),
+  direction: z.enum(['LONG', 'SHORT'], { error: 'Pilih arah trade' }),
   timeframe: z.string().optional(),
   strategy: z.string().optional(),
-  entryPrice: z.coerce.number({ invalid_type_error: 'Harga harus berupa angka' }).positive('Harga harus positif'),
-  stopLoss: z.coerce.number().positive().optional().nullable(),
-  takeProfit: z.coerce.number().positive().optional().nullable(),
-  lotSize: z.coerce.number().positive().optional().nullable(),
+  entryPrice: z.coerce.number<string | number>({ error: 'Harga harus berupa angka' }).positive('Harga harus positif'),
+  stopLoss: z.coerce.number<string | number>().positive().optional().nullable(),
+  takeProfit: z.coerce.number<string | number>().positive().optional().nullable(),
+  lotSize: z.coerce.number<string | number>().positive().optional().nullable(),
   planNotes: z.string().optional(),
   emotionBefore: z.string().optional(),
   tags: z.array(z.string()).optional(),
   screenshotUrl: z.string().optional(),
 });
 
+type TradeFormInput = z.input<typeof tradeSchema>;
 type TradeFormData = z.infer<typeof tradeSchema>;
 
 function DirectionToggle({
@@ -126,14 +127,14 @@ export function JournalNewPage() {
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const form = useForm<TradeFormData>({
+  const form = useForm<TradeFormInput, unknown, TradeFormData>({
     resolver: zodResolver(tradeSchema),
     defaultValues: {
       pair: '',
       direction: undefined,
       timeframe: 'H1',
       strategy: '',
-      entryPrice: undefined as unknown as number,
+      entryPrice: '',
       stopLoss: null,
       takeProfit: null,
       lotSize: null,
