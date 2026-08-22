@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
 
     // Use VLM for image analysis
     const response = await zai.chat.completions.createVision({
+      model: process.env.ZAI_VISION_MODEL || 'default',
       messages: [
         {
           role: 'user',

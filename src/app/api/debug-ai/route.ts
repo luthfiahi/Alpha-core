@@ -55,18 +55,19 @@ export async function GET() {
       })
       const elapsed = Date.now() - startTime
 
-      results.apiTest = {
+      const apiTest: Record<string, unknown> = {
         status: response.status,
         statusText: response.statusText,
         elapsed: `${elapsed}ms`,
         model,
       }
+      results.apiTest = apiTest
 
       if (response.ok) {
         const data = await response.json()
-        results.apiTest.content = data?.choices?.[0]?.message?.content || 'EMPTY'
+        apiTest.content = data?.choices?.[0]?.message?.content || 'EMPTY'
       } else {
-        results.apiTest.errorBody = (await response.text().catch(() => 'unreadable')).slice(0, 500)
+        apiTest.errorBody = (await response.text().catch(() => 'unreadable')).slice(0, 500)
       }
     } catch (err: unknown) {
       results.apiTest = {

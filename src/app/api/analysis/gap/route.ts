@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ZAI from 'z-ai-web-dev-sdk'
+import type { ReflectionGapRecord } from '@prisma/client'
 import { db } from '@/lib/db'
 import { requireTrader } from '@/lib/api-auth'
 
@@ -246,7 +247,7 @@ Identify all gaps between plan and execution. Return a JSON array of gap analyse
     const validSeverities = ['LOW', 'MEDIUM', 'HIGH']
     const validBehaviorTags = ['FOMO', 'REVENGE', 'FEAR', 'OVERCONFIDENCE', 'IMPATIENCE', 'DISCIPLINE']
 
-    const savedGaps = []
+    const savedGaps: ReflectionGapRecord[] = []
 
     for (const gap of gapAnalyses) {
       if (!validGapTypes.includes(gap.gapType)) continue

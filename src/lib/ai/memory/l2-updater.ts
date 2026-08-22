@@ -40,7 +40,9 @@ Respond ONLY with valid JSON. No markdown, no code blocks, no extra text.`
  * Analyzes all accumulated data and uses LLM to identify patterns.
  * Returns the updated L2 digest.
  */
-export async function updateL2Digest(traderId?: string): Promise<ReturnType<typeof upsertL2>> {
+export async function updateL2Digest(
+  traderId?: string
+): Promise<Awaited<ReturnType<typeof upsertL2>> | null> {
   // Resolve trader
   let trader
   if (traderId) {

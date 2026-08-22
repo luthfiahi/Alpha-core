@@ -28,6 +28,13 @@ export async function POST(request: NextRequest) {
 
     const { user } = data
 
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User tidak ditemukan setelah verifikasi' },
+        { status: 401 }
+      )
+    }
+
     return NextResponse.json({
       user: {
         id: user.id,
